@@ -6,5 +6,8 @@ import ru.ulyanaab.lifemates.di.DaggerAppComponent
 
 class App : Application() {
 
-    val appComponent: AppComponent = DaggerAppComponent.factory().create("")
+    val appComponent: AppComponent =
+        DaggerAppComponent
+            .factory()
+            .create("", applicationContext)
 }
