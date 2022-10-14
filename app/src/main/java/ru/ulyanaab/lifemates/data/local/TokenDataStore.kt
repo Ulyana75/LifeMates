@@ -7,14 +7,13 @@ import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import ru.ulyanaab.lifemates.domain.model.TokensModel
-import ru.ulyanaab.lifemates.domain.repository.TokensRepository
 import javax.inject.Inject
 
 class TokenDataStore @Inject constructor(
     private val context: Context,
-) : TokensRepository {
+) {
 
-    override suspend fun get(): TokensModel {
+    suspend fun get(): TokensModel {
         return context.dataStore.data
             .map {
                 TokensModel(
@@ -26,7 +25,7 @@ class TokenDataStore @Inject constructor(
             ?: TokensModel.EMPTY
     }
 
-    override suspend fun put(model: TokensModel) {
+    suspend fun put(model: TokensModel) {
         context.dataStore.edit {
             it[ACCESS_TOKEN_KEY] = model.accessToken
             it[REFRESH_TOKEN_KEY] = model.refreshToken

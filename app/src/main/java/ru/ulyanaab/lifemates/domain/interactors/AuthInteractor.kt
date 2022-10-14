@@ -3,7 +3,8 @@ package ru.ulyanaab.lifemates.domain.interactors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import ru.ulyanaab.lifemates.common.Response
+import ru.ulyanaab.lifemates.common.Error
+import ru.ulyanaab.lifemates.common.Result
 import ru.ulyanaab.lifemates.domain.model.LoginModel
 import ru.ulyanaab.lifemates.domain.repository.AuthRepository
 import ru.ulyanaab.lifemates.domain.repository.TokensRepository
@@ -19,14 +20,14 @@ class AuthInteractor @Inject constructor(
 
     fun login(loginModel: LoginModel) {
         CoroutineScope(Dispatchers.IO).launch {
-            when (val response = authRepository.login(loginModel)) {
-                is Response.Success -> {
-                    tokensRepository.put(response.data)
+            when (val result = authRepository.login(loginModel)) {
+                is Result.Success -> {
+                    tokensRepository.put(result.data)
                     authorizationState.authStateFlow.value = AuthEvent.AUTHORIZATION_SUCCESS
                 }
-                is Response.Error -> {
-                    authorizationState.authStateFlow.value = when (response.code) {
-                        400 -> AuthEvent.WRONG_PASSWORD
+                is Result.Failure -> {
+                    authorizationState.authStateFlow.value = when (result.error) {
+                        Error.Forbidden -> AuthEvent.WRONG_PASSWORD
                         else -> AuthEvent.UNKNOWN_ERROR
                     }
                 }
