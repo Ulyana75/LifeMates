@@ -6,6 +6,7 @@ import ru.ulyanaab.lifemates.common.Error
 import ru.ulyanaab.lifemates.common.Result
 import ru.ulyanaab.lifemates.data.api.UserApi
 import ru.ulyanaab.lifemates.data.dto.common.TokensDto
+import ru.ulyanaab.lifemates.data.dto.common.toTokensModel
 import ru.ulyanaab.lifemates.data.dto.request.LoginRequestDto
 import ru.ulyanaab.lifemates.domain.model.LoginModel
 import ru.ulyanaab.lifemates.domain.model.TokensModel
@@ -30,8 +31,4 @@ class AuthRepositoryImpl @Inject constructor(
 
 private fun LoginModel.toLoginRequestDto(): LoginRequestDto {
     return LoginRequestDto(email, password)
-}
-
-private fun TokensDto.toTokensModel(): TokensModel {
-    return TokensModel(accessToken, refreshToken)
 }

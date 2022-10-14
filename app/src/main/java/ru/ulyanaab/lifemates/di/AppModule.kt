@@ -16,8 +16,7 @@ import ru.ulyanaab.lifemates.data.api.UserApi
 import ru.ulyanaab.lifemates.data.local.TokensCachedStorage
 import ru.ulyanaab.lifemates.data.repositoryimpl.AuthRepositoryImpl
 import ru.ulyanaab.lifemates.domain.repository.AuthRepository
-import ru.ulyanaab.lifemates.domain.repository.TokensRepository
-import java.util.logging.Level
+import ru.ulyanaab.lifemates.domain.repository.TokensStorage
 import javax.inject.Named
 
 @Module
@@ -25,7 +24,7 @@ interface AppModule {
 
     @AppScope
     @Binds
-    fun bindTokensRepository(impl: TokensCachedStorage): TokensRepository
+    fun bindTokensRepository(impl: TokensCachedStorage): TokensStorage
 
     @Binds
     fun bindAuthRepository(impl: AuthRepositoryImpl): AuthRepository
@@ -34,9 +33,9 @@ interface AppModule {
 
         @IntoSet
         @Provides
-        fun provideAuthInterceptor(tokensRepository: TokensRepository): Interceptor {
+        fun provideAuthInterceptor(tokensStorage: TokensStorage): Interceptor {
             return Interceptor { chain ->
-                val accessToken = runBlocking { tokensRepository.get().accessToken }
+                val accessToken = runBlocking { tokensStorage.get().accessToken }
                 val request = chain
                     .request()
                     .newBuilder()

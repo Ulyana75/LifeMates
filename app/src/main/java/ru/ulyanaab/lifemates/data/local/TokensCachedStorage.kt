@@ -1,12 +1,12 @@
 package ru.ulyanaab.lifemates.data.local
 
 import ru.ulyanaab.lifemates.domain.model.TokensModel
-import ru.ulyanaab.lifemates.domain.repository.TokensRepository
+import ru.ulyanaab.lifemates.domain.repository.TokensStorage
 import javax.inject.Inject
 
 class TokensCachedStorage @Inject constructor(
     private val tokenDataStore: TokenDataStore,
-) : TokensRepository {
+) : TokensStorage {
 
     private var cachedTokensModel: TokensModel? = null
 
