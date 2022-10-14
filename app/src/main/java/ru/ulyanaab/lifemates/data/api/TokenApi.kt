@@ -7,9 +7,9 @@ import ru.ulyanaab.lifemates.data.dto.common.TokensDto
 
 interface TokenApi {
 
-    @POST("refresh")
+    @POST("Token/refresh")
     fun refresh(@Body tokensDto: TokensDto): Call<TokensDto>
 
-    @POST("revoke")
+    @POST("Token/revoke")
     fun revoke(@Body tokensDto: TokensDto): Call<TokensDto>
 }

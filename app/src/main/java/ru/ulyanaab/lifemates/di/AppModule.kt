@@ -7,6 +7,7 @@ import dagger.multibindings.IntoSet
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import ru.ulyanaab.lifemates.data.api.FeedApi
@@ -16,6 +17,7 @@ import ru.ulyanaab.lifemates.data.local.TokensCachedStorage
 import ru.ulyanaab.lifemates.data.repositoryimpl.AuthRepositoryImpl
 import ru.ulyanaab.lifemates.domain.repository.AuthRepository
 import ru.ulyanaab.lifemates.domain.repository.TokensRepository
+import java.util.logging.Level
 import javax.inject.Named
 
 @Module
@@ -38,7 +40,7 @@ interface AppModule {
                 val request = chain
                     .request()
                     .newBuilder()
-                    .addHeader("authorization", "Bearer $accessToken")
+                    .addHeader("Authorization", "Bearer $accessToken")
                     .build()
 
                 chain.proceed(request)
@@ -48,8 +50,12 @@ interface AppModule {
         @AppScope
         @Provides
         fun provideOkHttpClient(interceptors: Set<@JvmSuppressWildcards Interceptor>): OkHttpClient {
+            val interceptor = HttpLoggingInterceptor()
+            interceptor.level = HttpLoggingInterceptor.Level.BODY
+
             return OkHttpClient()
                 .newBuilder()
+                .addInterceptor(interceptor)
                 .apply {
                     interceptors.forEach {
                         addInterceptor(it)

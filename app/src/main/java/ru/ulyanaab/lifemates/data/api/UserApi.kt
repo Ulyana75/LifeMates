@@ -9,9 +9,9 @@ import ru.ulyanaab.lifemates.data.dto.common.TokensDto
 
 interface UserApi {
 
-    @POST("register")
+    @POST("Auth/register")
     fun register(@Body registerUserRequestDto: RegisterUserRequestDto): Call<TokensDto>
 
-    @POST("login")
+    @POST("Auth/login")
     fun login(@Body loginRequestDto: LoginRequestDto): Call<TokensDto>
 }

@@ -9,15 +9,15 @@ import ru.ulyanaab.lifemates.data.dto.response.GetFeedResponseDto
 
 interface FeedApi {
 
-    @GET
+    @GET("Feed")
     fun getFeed(
         @Query("offset") offset: Int,
         @Query("limit") limit: Int,
     ): Call<GetFeedResponseDto>
 
-    @POST("{userId}/like")
+    @POST("Feed/{userId}/like")
     fun like(@Path("userId") userId: String): Call<Unit>
 
-    @POST("{userId}/dislike")
+    @POST("Feed/{userId}/dislike")
     fun dislike(@Path("userId") userId: String): Call<Unit>
 }

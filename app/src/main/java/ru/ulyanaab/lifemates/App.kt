@@ -6,8 +6,9 @@ import ru.ulyanaab.lifemates.di.DaggerAppComponent
 
 class App : Application() {
 
-    val appComponent: AppComponent =
+    val appComponent: AppComponent by lazy {
         DaggerAppComponent
             .factory()
-            .create("", applicationContext)
+            .create("http://test.u1790484.plsk.regruhosting.ru", applicationContext)
+    }
 }
