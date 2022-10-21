@@ -1,25 +1,19 @@
-package ru.ulyanaab.lifemates.data.dto.response
+package ru.ulyanaab.lifemates.data.dto.common
 
 import com.squareup.moshi.Json
-import ru.ulyanaab.lifemates.data.dto.common.ContactDto
 
-data class GetFeedResponseDto(
-    @Json(name = "mates")
-    val mates: List<MateDto>,
-)
-
-data class MateDto(
+data class OtherUserDto(
     @Json(name = "id")
-    val id: Int,
+    val id: Long,
 
     @Json(name = "name")
-    val name: String,
+    val name: String?,
 
     @Json(name = "description")
-    val description: String,
+    val description: String?,
 
     @Json(name = "gender")
-    val gender: Int,
+    val gender: GenderDto,
 
     @Json(name = "age")
     val age: Int,

@@ -1,10 +1,31 @@
 package ru.ulyanaab.lifemates.data.dto.common
 
+import com.squareup.moshi.Json
+
 data class ContactDto(
-    val type: Int,
-    val value: String,
+    @Json(name = "id")
+    val id: Long,
+
+    @Json(name = "type")
+    val type: ContactTypeDto,
+
+    @Json(name = "value")
+    val value: String?,
 )
 
-enum class ContactType(type: Int) {
-    TELEGRAM(0), VK(1), VIBER(2), WHATSAPP(3), INSTAGRAM(4)
+enum class ContactTypeDto {
+    @Json(name = "Telegram")
+    TELEGRAM,
+
+    @Json(name = "Vk")
+    VK,
+
+    @Json(name = "Viber")
+    VIBER,
+
+    @Json(name = "Whatsapp")
+    WHATSAPP,
+
+    @Json(name = "Instagram")
+    INSTAGRAM
 }

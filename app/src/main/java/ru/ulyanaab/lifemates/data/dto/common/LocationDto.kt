@@ -2,7 +2,7 @@ package ru.ulyanaab.lifemates.data.dto.common
 
 import com.squareup.moshi.Json
 
-data class GeoPointDto(
+data class LocationDto(
     @Json(name = "latitude")
     val latitude: Double,
 

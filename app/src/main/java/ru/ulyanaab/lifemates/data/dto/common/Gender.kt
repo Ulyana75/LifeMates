@@ -1,5 +1,14 @@
 package ru.ulyanaab.lifemates.data.dto.common
 
-enum class Gender(type: Int) {
-    MALE(0), FEMALE(1), NON_BINARY(2)
+import com.squareup.moshi.Json
+
+enum class GenderDto {
+    @Json(name = "Man")
+    MAN,
+
+    @Json(name = "Woman")
+    WOMAN,
+
+    @Json(name = "NonBinary")
+    NON_BINARY
 }

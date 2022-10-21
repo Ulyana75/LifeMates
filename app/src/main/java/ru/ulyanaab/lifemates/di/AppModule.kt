@@ -10,9 +10,9 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import ru.ulyanaab.lifemates.data.api.FeedApi
-import ru.ulyanaab.lifemates.data.api.TokenApi
 import ru.ulyanaab.lifemates.data.api.UserApi
+import ru.ulyanaab.lifemates.data.api.TokenApi
+import ru.ulyanaab.lifemates.data.api.AuthApi
 import ru.ulyanaab.lifemates.data.local.TokensCachedStorage
 import ru.ulyanaab.lifemates.data.repositoryimpl.AuthRepositoryImpl
 import ru.ulyanaab.lifemates.domain.repository.AuthRepository
@@ -78,14 +78,14 @@ interface AppModule {
 
         @AppScope
         @Provides
-        fun provideFeedApi(retrofit: Retrofit): FeedApi {
-            return retrofit.create(FeedApi::class.java)
+        fun provideFeedApi(retrofit: Retrofit): UserApi {
+            return retrofit.create(UserApi::class.java)
         }
 
         @AppScope
         @Provides
-        fun provideUserApi(retrofit: Retrofit): UserApi {
-            return retrofit.create(UserApi::class.java)
+        fun provideUserApi(retrofit: Retrofit): AuthApi {
+            return retrofit.create(AuthApi::class.java)
         }
 
         @AppScope

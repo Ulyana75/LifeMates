@@ -2,16 +2,11 @@ package ru.ulyanaab.lifemates.data.dto.request
 
 import com.squareup.moshi.Json
 import ru.ulyanaab.lifemates.data.dto.common.ContactDto
+import ru.ulyanaab.lifemates.data.dto.common.GenderDto
 import ru.ulyanaab.lifemates.data.dto.common.LocationDto
-import java.util.Date
+import ru.ulyanaab.lifemates.data.dto.response.UserSettingsDto
 
-data class RegisterUserRequestDto(
-    @Json(name = "email")
-    val email: String,
-
-    @Json(name = "password")
-    val password: String,
-
+data class MeRequestDto(
     @Json(name = "name")
     val name: String,
 
@@ -19,19 +14,25 @@ data class RegisterUserRequestDto(
     val description: String?,
 
     @Json(name = "gender")
-    val gender: Int,
+    val gender: GenderDto,
 
     @Json(name = "birthday")
-    val birthday: Date,
+    val birthday: String?,
 
-    // TODO interests
+    @Json(name = "interests")
+    val interests: List<Int>,
 
-    @Json(name = "imageUrls")
-    val imageUrls: List<String>,
+    @Json(name = "imagesUrls")
+    val imagesUrls: List<String>,
 
     @Json(name = "location")
-    val location: LocationDto,
+    val location: LocationDto?,
+
+    @Json(name = "settings")
+    val settings: UserSettingsDto,
 
     @Json(name = "contacts")
     val contacts: List<ContactDto>,
+
+    // TODO interests
 )
