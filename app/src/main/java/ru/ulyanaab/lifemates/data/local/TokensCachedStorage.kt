@@ -1,7 +1,7 @@
 package ru.ulyanaab.lifemates.data.local
 
-import ru.ulyanaab.lifemates.domain.model.TokensModel
-import ru.ulyanaab.lifemates.domain.repository.TokensStorage
+import ru.ulyanaab.lifemates.domain.common.model.TokensModel
+import ru.ulyanaab.lifemates.domain.common.repository.TokensStorage
 import javax.inject.Inject
 
 class TokensCachedStorage @Inject constructor(

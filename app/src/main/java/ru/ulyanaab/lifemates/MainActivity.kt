@@ -23,8 +23,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
-import ru.ulyanaab.lifemates.ui.model.AuthEvent
-import ru.ulyanaab.lifemates.ui.model.AuthorizationState
+import ru.ulyanaab.lifemates.domain.common.state_holders.AuthEvent
+import ru.ulyanaab.lifemates.domain.common.state_holders.AuthorizationStateHolder
 import ru.ulyanaab.lifemates.ui.presenter.AuthPresenter
 import ru.ulyanaab.lifemates.ui.theme.LifeMatesTheme
 import javax.inject.Inject
@@ -32,7 +32,7 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
 
     @Inject
-    lateinit var authorizationState: AuthorizationState
+    lateinit var authorizationStateHolder: AuthorizationStateHolder
 
     @Inject
     lateinit var authPresenter: AuthPresenter
@@ -47,7 +47,7 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
                     Login(
-                        authEvent = authorizationState.authStateFlow.collectAsState().value,
+                        authEvent = authorizationStateHolder.authStateFlow.collectAsState().value,
                         onClick = authPresenter::login
                     )
                 }

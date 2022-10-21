@@ -1,7 +1,7 @@
 package ru.ulyanaab.lifemates.data.dto.common
 
 import com.squareup.moshi.Json
-import ru.ulyanaab.lifemates.domain.model.TokensModel
+import ru.ulyanaab.lifemates.domain.common.model.TokensModel
 
 data class TokensDto(
     @Json(name = "accessToken")

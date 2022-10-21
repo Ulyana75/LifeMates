@@ -13,10 +13,13 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import ru.ulyanaab.lifemates.data.api.UserApi
 import ru.ulyanaab.lifemates.data.api.TokenApi
 import ru.ulyanaab.lifemates.data.api.AuthApi
+import ru.ulyanaab.lifemates.data.api.MeApi
 import ru.ulyanaab.lifemates.data.local.TokensCachedStorage
 import ru.ulyanaab.lifemates.data.repositoryimpl.AuthRepositoryImpl
-import ru.ulyanaab.lifemates.domain.repository.AuthRepository
-import ru.ulyanaab.lifemates.domain.repository.TokensStorage
+import ru.ulyanaab.lifemates.data.repositoryimpl.UserInfoRepositoryImpl
+import ru.ulyanaab.lifemates.domain.auth.repository.AuthRepository
+import ru.ulyanaab.lifemates.domain.common.repository.TokensStorage
+import ru.ulyanaab.lifemates.domain.user_info.repository.UserInfoRepository
 import javax.inject.Named
 
 @Module
@@ -28,6 +31,9 @@ interface AppModule {
 
     @Binds
     fun bindAuthRepository(impl: AuthRepositoryImpl): AuthRepository
+
+    @Binds
+    fun bindUserInfoRepository(impl: UserInfoRepositoryImpl): UserInfoRepository
 
     companion object {
 
@@ -78,13 +84,13 @@ interface AppModule {
 
         @AppScope
         @Provides
-        fun provideFeedApi(retrofit: Retrofit): UserApi {
+        fun provideUserApi(retrofit: Retrofit): UserApi {
             return retrofit.create(UserApi::class.java)
         }
 
         @AppScope
         @Provides
-        fun provideUserApi(retrofit: Retrofit): AuthApi {
+        fun provideAuthApi(retrofit: Retrofit): AuthApi {
             return retrofit.create(AuthApi::class.java)
         }
 
@@ -92,6 +98,12 @@ interface AppModule {
         @Provides
         fun provideTokenApi(retrofit: Retrofit): TokenApi {
             return retrofit.create(TokenApi::class.java)
+        }
+
+        @AppScope
+        @Provides
+        fun provideMeApi(retrofit: Retrofit): MeApi {
+            return retrofit.create(MeApi::class.java)
         }
     }
 }

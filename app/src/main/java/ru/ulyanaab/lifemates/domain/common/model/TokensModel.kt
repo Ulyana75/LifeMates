@@ -1,4 +1,4 @@
-package ru.ulyanaab.lifemates.domain.model
+package ru.ulyanaab.lifemates.domain.common.model
 
 data class TokensModel(
     val accessToken: String,

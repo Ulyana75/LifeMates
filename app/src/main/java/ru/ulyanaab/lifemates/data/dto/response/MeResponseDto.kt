@@ -27,13 +27,14 @@ data class MeResponseDto(
     @Json(name = "settings")
     val settings: UserSettingsDto,
 
+    @Json(name = "interests")
+    val interests: List<Int>,
+
     @Json(name = "imagesUrls")
     val imagesUrls: List<String>,
 
     @Json(name = "contacts")
     val contacts: List<ContactDto>,
-
-    // TODO interests
 )
 
 data class UserSettingsDto(

@@ -1,4 +1,4 @@
-package ru.ulyanaab.lifemates.domain.model
+package ru.ulyanaab.lifemates.domain.auth.model
 
 data class LoginModel(
     val email: String,

@@ -1,7 +1,7 @@
 package ru.ulyanaab.lifemates.ui.presenter
 
-import ru.ulyanaab.lifemates.domain.interactors.AuthInteractor
-import ru.ulyanaab.lifemates.domain.model.LoginModel
+import ru.ulyanaab.lifemates.domain.auth.interactor.AuthInteractor
+import ru.ulyanaab.lifemates.domain.auth.model.LoginModel
 import javax.inject.Inject
 
 class AuthPresenter @Inject constructor(

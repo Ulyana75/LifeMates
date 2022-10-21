@@ -6,8 +6,8 @@ import ru.ulyanaab.lifemates.common.Result
 import ru.ulyanaab.lifemates.data.api.TokenApi
 import ru.ulyanaab.lifemates.data.dto.common.toTokensDto
 import ru.ulyanaab.lifemates.data.dto.common.toTokensModel
-import ru.ulyanaab.lifemates.domain.model.TokensModel
-import ru.ulyanaab.lifemates.domain.repository.TokensRepository
+import ru.ulyanaab.lifemates.domain.common.model.TokensModel
+import ru.ulyanaab.lifemates.domain.common.repository.TokensRepository
 import javax.inject.Inject
 
 class TokensRepositoryImpl @Inject constructor(

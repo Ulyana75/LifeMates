@@ -33,6 +33,4 @@ data class MeRequestDto(
 
     @Json(name = "contacts")
     val contacts: List<ContactDto>,
-
-    // TODO interests
 )

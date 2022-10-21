@@ -6,7 +6,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
-import ru.ulyanaab.lifemates.domain.model.TokensModel
+import ru.ulyanaab.lifemates.domain.common.model.TokensModel
 import javax.inject.Inject
 
 class TokenDataStore @Inject constructor(
