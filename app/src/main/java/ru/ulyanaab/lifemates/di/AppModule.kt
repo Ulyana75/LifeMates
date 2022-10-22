@@ -17,9 +17,11 @@ import ru.ulyanaab.lifemates.data.api.MeApi
 import ru.ulyanaab.lifemates.data.local.TokensCachedStorage
 import ru.ulyanaab.lifemates.data.repositoryimpl.AuthRepositoryImpl
 import ru.ulyanaab.lifemates.data.repositoryimpl.UserInfoRepositoryImpl
+import ru.ulyanaab.lifemates.data.repositoryimpl.UsersRepositoryImpl
 import ru.ulyanaab.lifemates.domain.auth.repository.AuthRepository
 import ru.ulyanaab.lifemates.domain.common.repository.TokensStorage
 import ru.ulyanaab.lifemates.domain.user_info.repository.UserInfoRepository
+import ru.ulyanaab.lifemates.domain.users.repository.UsersRepository
 import javax.inject.Named
 
 @Module
@@ -34,6 +36,9 @@ interface AppModule {
 
     @Binds
     fun bindUserInfoRepository(impl: UserInfoRepositoryImpl): UserInfoRepository
+
+    @Binds
+    fun bindUsersRepository(impl: UsersRepositoryImpl): UsersRepository
 
     companion object {
 

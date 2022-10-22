@@ -15,13 +15,13 @@ interface UserApi {
     fun getUsers(@Query("Limit") limit: Int, ): Call<GetUsersResponseDto>
 
     @GET("users/{userId}")
-    fun getSingleUser(@Path("userId") userId: String): Call<OtherUserDto>
+    fun getSingleUser(@Path("userId") userId: Long): Call<OtherUserDto>
 
     @POST("users/{userId}/like")
-    fun like(@Path("userId") userId: String): Call<Unit>
+    fun like(@Path("userId") userId: Long): Call<Unit>
 
     @POST("users/{userId}/dislike")
-    fun dislike(@Path("userId") userId: String): Call<Unit>
+    fun dislike(@Path("userId") userId: Long): Call<Unit>
 
 //    @PUT("users/{userId}/status/{newStatus}")
 //    fun changeStatus(

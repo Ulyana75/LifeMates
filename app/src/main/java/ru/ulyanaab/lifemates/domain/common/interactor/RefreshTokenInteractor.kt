@@ -2,7 +2,6 @@ package ru.ulyanaab.lifemates.domain.common.interactor
 
 import ru.ulyanaab.lifemates.common.Error
 import ru.ulyanaab.lifemates.common.Result
-import ru.ulyanaab.lifemates.domain.common.model.TokensModel
 import ru.ulyanaab.lifemates.domain.common.repository.TokensRepository
 import ru.ulyanaab.lifemates.domain.common.repository.TokensStorage
 import ru.ulyanaab.lifemates.domain.common.state_holders.AuthEvent
@@ -20,7 +19,7 @@ class RefreshTokenInteractor @Inject constructor(
      *
      * false if unsuccessful
      * **/
-    suspend fun getAndSaveNewTokens(onSuccess: () -> Unit): Boolean {
+    suspend fun getAndSaveNewTokens(onSuccess: suspend () -> Unit = {}): Boolean {
         val currentTokens = tokensStorage.get()
         val newTokensResult = tokensRepository.refresh(currentTokens)
 

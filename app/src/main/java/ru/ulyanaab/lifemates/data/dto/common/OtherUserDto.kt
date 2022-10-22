@@ -21,11 +21,12 @@ data class OtherUserDto(
     @Json(name = "distance")
     val distance: Int,
 
-    @Json(name = "imageUrls")
-    val imageUrls: List<String>,
+    @Json(name = "interests")
+    val interests: List<Int>,
+
+    @Json(name = "imagesUrls")
+    val imagesUrls: List<String>,
 
     @Json(name = "contacts")
     val contacts: List<ContactDto>,
-
-    // TODO interests
 )
