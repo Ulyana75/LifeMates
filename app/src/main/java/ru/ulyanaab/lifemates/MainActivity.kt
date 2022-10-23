@@ -13,7 +13,6 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,18 +23,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import ru.ulyanaab.lifemates.domain.common.state_holders.AuthEvent
-import ru.ulyanaab.lifemates.domain.common.state_holders.AuthorizationStateHolder
-import ru.ulyanaab.lifemates.ui.presenter.AuthPresenter
+import ru.ulyanaab.lifemates.domain.common.state_holders.AuthStateHolder
 import ru.ulyanaab.lifemates.ui.theme.LifeMatesTheme
 import javax.inject.Inject
 
 class MainActivity : ComponentActivity() {
 
     @Inject
-    lateinit var authorizationStateHolder: AuthorizationStateHolder
-
-    @Inject
-    lateinit var authPresenter: AuthPresenter
+    lateinit var authStateHolder: AuthStateHolder
 
     override fun onCreate(savedInstanceState: Bundle?) {
         (application as App).appComponent.inject(this)
@@ -46,10 +41,7 @@ class MainActivity : ComponentActivity() {
             LifeMatesTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    Login(
-                        authEvent = authorizationStateHolder.authStateFlow.collectAsState().value,
-                        onClick = authPresenter::login
-                    )
+
                 }
             }
         }

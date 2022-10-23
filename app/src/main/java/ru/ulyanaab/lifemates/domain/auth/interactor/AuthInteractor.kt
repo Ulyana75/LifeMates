@@ -11,13 +11,13 @@ import ru.ulyanaab.lifemates.domain.common.model.TokensModel
 import ru.ulyanaab.lifemates.domain.auth.repository.AuthRepository
 import ru.ulyanaab.lifemates.domain.common.repository.TokensStorage
 import ru.ulyanaab.lifemates.domain.common.state_holders.AuthEvent
-import ru.ulyanaab.lifemates.domain.common.state_holders.AuthorizationStateHolder
+import ru.ulyanaab.lifemates.domain.common.state_holders.AuthStateHolder
 import javax.inject.Inject
 
 class AuthInteractor @Inject constructor(
     private val authRepository: AuthRepository,
     private val tokensStorage: TokensStorage,
-    private val authorizationStateHolder: AuthorizationStateHolder,
+    private val authStateHolder: AuthStateHolder,
 ) {
 
     fun login(loginModel: LoginModel) {
@@ -38,10 +38,10 @@ class AuthInteractor @Inject constructor(
         when (result) {
             is Result.Success -> {
                 tokensStorage.put(result.data)
-                authorizationStateHolder.update(AuthEvent.AUTHORIZATION_SUCCESS)
+                authStateHolder.update(AuthEvent.AUTHORIZATION_SUCCESS)
             }
             is Result.Failure -> {
-                authorizationStateHolder.update(
+                authStateHolder.update(
                     when (result.error) {
                         Error.Forbidden -> AuthEvent.WRONG_PASSWORD
                         else -> AuthEvent.UNKNOWN_ERROR

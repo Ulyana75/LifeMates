@@ -7,7 +7,7 @@ import ru.ulyanaab.lifemates.di.AppScope
 import javax.inject.Inject
 
 @AppScope
-class AuthorizationStateHolder @Inject constructor() {
+class AuthStateHolder @Inject constructor() {
     private val _authStateFlow = MutableStateFlow(AuthEvent.UNAUTHORIZED)
     val authStateFlow: StateFlow<AuthEvent> = _authStateFlow.asStateFlow()
 

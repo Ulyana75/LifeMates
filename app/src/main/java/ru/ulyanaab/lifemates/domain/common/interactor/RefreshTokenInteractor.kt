@@ -5,13 +5,13 @@ import ru.ulyanaab.lifemates.common.Result
 import ru.ulyanaab.lifemates.domain.common.repository.TokensRepository
 import ru.ulyanaab.lifemates.domain.common.repository.TokensStorage
 import ru.ulyanaab.lifemates.domain.common.state_holders.AuthEvent
-import ru.ulyanaab.lifemates.domain.common.state_holders.AuthorizationStateHolder
+import ru.ulyanaab.lifemates.domain.common.state_holders.AuthStateHolder
 import javax.inject.Inject
 
 class RefreshTokenInteractor @Inject constructor(
     private val tokensStorage: TokensStorage,
     private val tokensRepository: TokensRepository,
-    private val authorizationStateHolder: AuthorizationStateHolder,
+    private val authStateHolder: AuthStateHolder,
 ) {
 
     /**
@@ -30,7 +30,7 @@ class RefreshTokenInteractor @Inject constructor(
         }
 
         if (newTokensResult is Result.Failure && newTokensResult.error is Error.Unauthorized) {
-            authorizationStateHolder.update(AuthEvent.UNAUTHORIZED)
+            authStateHolder.update(AuthEvent.UNAUTHORIZED)
         }
 
         return false

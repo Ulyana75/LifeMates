@@ -76,4 +76,8 @@ dependencies {
 
     // datastore
     implementation "androidx.datastore:datastore-preferences:1.1.0-dev01"
+
+    // uploadcare
+    implementation 'com.uploadcare.android.library:uploadcare-android:3.1.0'
+    implementation 'com.uploadcare.android.widget:uploadcare-android-widget:3.1.0'
 }
