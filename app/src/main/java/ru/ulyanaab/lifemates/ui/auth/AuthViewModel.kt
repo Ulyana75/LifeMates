@@ -14,6 +14,8 @@ class AuthViewModel @Inject constructor(
     authStateHolder: AuthStateHolder,
 ) {
 
+    // TODO make loading while authorizing
+
     val authEventsFlow: StateFlow<AuthEvent> = authStateHolder.authStateFlow
 
     private val _shouldShowRegisterFormFlow = MutableStateFlow(false)

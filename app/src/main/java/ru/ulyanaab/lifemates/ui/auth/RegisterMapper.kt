@@ -5,17 +5,17 @@ import javax.inject.Inject
 
 class RegisterMapper @Inject constructor() {
 
-    fun mapToModel(uiModel: RegisterUiModel): RegisterModel {
-        return RegisterModel(
-            email = uiModel.email,
-            password = uiModel.password,
-            name = uiModel.name,
-            description = uiModel.description.nullIfEmpty(),
-            gender = uiModel.gender,
-            birthday = uiModel.birthday,
-
-        )
-    }
+//    fun mapToModel(uiModel: RegisterUiModel): RegisterModel {
+//        return RegisterModel(
+//            email = uiModel.email,
+//            password = uiModel.password,
+//            name = uiModel.name,
+//            description = uiModel.description.nullIfEmpty(),
+//            gender = uiModel.gender,
+//            birthday = uiModel.birthday,
+//
+//        )
+//    }
 }
 
 private fun String.nullIfEmpty(): String? {

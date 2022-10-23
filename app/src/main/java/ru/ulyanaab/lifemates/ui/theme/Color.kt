@@ -2,7 +2,9 @@ package ru.ulyanaab.lifemates.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple200 = Color(0xFFBB86FC)
-val Purple500 = Color(0xFF6200EE)
-val Purple700 = Color(0xFF3700B3)
-val Teal200 = Color(0xFF03DAC5)
+val PinkMain = Color(0xFFFF007A)
+val BlueMain = Color(0xFF3498FF)
+val PurpleMain = Color(0xFFAA40E7)
+val GreyLight = Color(0xFFF2F3F5)
+val GreyHint = Color(0x993C3C43)
+val GreyDark = Color(0xFF8E8E93)

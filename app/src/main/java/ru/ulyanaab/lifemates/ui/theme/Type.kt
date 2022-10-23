@@ -1,28 +1,57 @@
 package ru.ulyanaab.lifemates.ui.theme
 
 import androidx.compose.material.Typography
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import ru.ulyanaab.lifemates.R
+
+val SfProFontFamily = FontFamily(
+    Font(R.font.sf_pro_regular),
+    Font(R.font.sf_pro_bold, FontWeight.Bold),
+    Font(R.font.sf_pro_medium, FontWeight.Medium)
+)
+
 
 // Set of Material typography styles to start with
 val Typography = Typography(
+    h1 = TextStyle(
+        fontFamily = SfProFontFamily,
+        fontWeight = FontWeight.Medium,
+        fontSize = 48.sp,
+        letterSpacing = (-0.01).sp,
+        lineHeight = 22.sp
+    ),
     body1 = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = SfProFontFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 17.sp,
+        letterSpacing = (-0.02).sp,
+        lineHeight = 22.sp
+    ),
+    body2 = TextStyle(
+        fontFamily = SfProFontFamily,
         fontWeight = FontWeight.Normal,
-        fontSize = 16.sp
-    )
-    /* Other default text styles to override
-    button = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.W500,
-        fontSize = 14.sp
+        fontSize = 17.sp,
+        letterSpacing = (-0.02).sp,
+        lineHeight = 22.sp
     ),
     caption = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = SfProFontFamily,
         fontWeight = FontWeight.Normal,
-        fontSize = 12.sp
-    )
-    */
+        fontSize = 17.sp,
+        letterSpacing = (-0.02).sp,
+        lineHeight = 22.sp
+    ),
+    button = TextStyle(
+        fontFamily = SfProFontFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 17.sp,
+        letterSpacing = (-0.02).sp,
+        lineHeight = 22.sp
+    ),
 )

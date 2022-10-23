@@ -1,5 +1,7 @@
 package ru.ulyanaab.lifemates.di
 
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -80,9 +82,10 @@ interface AppModule {
             client: OkHttpClient,
             @Named(BASE_URL) baseUrl: String
         ): Retrofit {
+            val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
             return Retrofit.Builder()
                 .baseUrl(baseUrl)
-                .addConverterFactory(MoshiConverterFactory.create())
+                .addConverterFactory(MoshiConverterFactory.create(moshi))
                 .client(client)
                 .build()
         }
