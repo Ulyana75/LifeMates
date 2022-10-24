@@ -32,6 +32,7 @@ import ru.ulyanaab.lifemates.ui.theme.Typography
 fun RoundedBlocksSingleChoice(
     onChoiceChanged: (RoundedBlockUiModel) -> Unit,
     elementsList: List<RoundedBlockUiModel>,
+    modifier: Modifier = Modifier,
 ) {
     var selectedValue by remember {
         mutableStateOf(elementsList.find { it.isChosen })

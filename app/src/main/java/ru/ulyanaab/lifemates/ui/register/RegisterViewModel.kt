@@ -21,10 +21,15 @@ class RegisterViewModel @Inject constructor(
         this.password = password
     }
 
+    fun getLoginAndPassword(): Pair<String, String> {
+        return Pair(login, password)
+    }
+
     fun onRegisterClick(
         name: String,
         age: String,
         gender: RoundedBlockUiModel?,
+        showingGender: RoundedBlockUiModel?,
         description: String,
         telegram: String,
         vk: String,
@@ -39,15 +44,11 @@ class RegisterViewModel @Inject constructor(
                 password = password,
                 name = name,
                 description = description.nullIfEmpty(),
-                gender = when (gender?.text) {
-                    "Мужской" -> GenderModel.MAN
-                    "Женский" -> GenderModel.WOMAN
-                    else -> GenderModel.NON_BINARY
-                },
+                gender = mapGender(gender),
                 birthday = age.nullIfEmpty(),
                 imageUrls = emptyList(),
                 location = null,
-                settings = UserSettingsModel(GenderModel.MAN),
+                settings = UserSettingsModel(mapGender(showingGender)),
                 contacts = listOfNotNull(
                     telegram.nullIfEmpty()?.let { ContactModel(ContactType.TELEGRAM, it) },
                     vk.nullIfEmpty()?.let { ContactModel(ContactType.VK, it) },
@@ -57,6 +58,14 @@ class RegisterViewModel @Inject constructor(
                 )
             )
         )
+    }
+
+    private fun mapGender(uiModel: RoundedBlockUiModel?): GenderModel {
+        return when (uiModel?.text) {
+            "Мужской" -> GenderModel.MAN
+            "Женский" -> GenderModel.WOMAN
+            else -> GenderModel.NON_BINARY
+        }
     }
 }
 

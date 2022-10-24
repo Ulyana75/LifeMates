@@ -24,7 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -50,16 +49,14 @@ fun RegisterFirstStage(
     registerViewModel: RegisterViewModel,
     navController: NavController
 ) {
-    // TODO add minLength to password
-    var login by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var passwordRepeat by remember { mutableStateOf("") }
+    // TODO validate password
+    var login by remember { mutableStateOf(registerViewModel.getLoginAndPassword().first) }
+    var password by remember { mutableStateOf(registerViewModel.getLoginAndPassword().second) }
+    var passwordRepeat by remember { mutableStateOf(registerViewModel.getLoginAndPassword().second) }
 
     var isLoginError by remember { mutableStateOf(false) }
     var isPasswordError by remember { mutableStateOf(false) }
     var isPasswordRepeatError by remember { mutableStateOf(false) }
-
-    val focusManager = LocalFocusManager.current
 
     Column(
         Modifier
@@ -121,7 +118,6 @@ fun RegisterFirstStage(
                         isPasswordRepeatError = true
                         showToast(text = "Пароли не совпадают", context)
                     } else {
-                        focusManager.clearFocus()
                         registerViewModel.saveLoginAndPassword(login, password)
                         navController.navigate("register_second_stage")
                     }
@@ -153,6 +149,7 @@ fun RegisterSecondStage(
     var isNameError by remember { mutableStateOf(false) }
     var isContactsError by remember { mutableStateOf(false) }
     var chosenGender by remember { mutableStateOf<RoundedBlockUiModel?>(null) }
+    var chosenShowingGender by remember { mutableStateOf<RoundedBlockUiModel?>(null) }
 
 
     Column(
@@ -193,7 +190,24 @@ fun RegisterSecondStage(
                 hintList = listOf("Имя", "Возраст"),
                 isErrorList = listOf(isNameError)
             )
-            GenderBlock(onChoiceChanged = { chosenGender = it })
+            RegisterChoiceBlock(
+                title = "Ваш пол",
+                elements = listOf(
+                    RoundedBlockUiModel("Мужской", false),
+                    RoundedBlockUiModel("Женский", false),
+                    RoundedBlockUiModel("Не бинарный", false),
+                ),
+                onChoiceChanged = { chosenGender = it }
+            )
+            RegisterChoiceBlock(
+                title = "Какой пол вам показывать в ленте",
+                elements = listOf(
+                    RoundedBlockUiModel("Мужской", false),
+                    RoundedBlockUiModel("Женский", false),
+                    RoundedBlockUiModel("Не бинарный", false),
+                ),
+                onChoiceChanged = { chosenShowingGender = it }
+            )
             RegisterTitleWithInputs(
                 inputsCount = 1,
                 title = "О себе",
@@ -274,6 +288,7 @@ fun RegisterSecondStage(
                             name = name,
                             age = age,
                             gender = chosenGender,
+                            showingGender = chosenShowingGender,
                             description = description,
                             telegram = telegram,
                             vk = vk,
@@ -418,15 +433,21 @@ fun RegisterPhotoBlock(
 }
 
 @Composable
-fun GenderBlock(onChoiceChanged: (RoundedBlockUiModel) -> Unit) {
-    RegisterBlockTitle(text = "Ваш пол")
+fun RegisterChoiceBlock(
+    title: String,
+    elements: List<RoundedBlockUiModel>,
+    onChoiceChanged: (RoundedBlockUiModel) -> Unit
+) {
+    RegisterBlockTitle(
+        text = title,
+        paddingBottom = 10.dp
+    )
     RoundedBlocksSingleChoice(
         onChoiceChanged = onChoiceChanged,
-        elementsList = listOf(
-            RoundedBlockUiModel("Мужской", false),
-            RoundedBlockUiModel("Женский", false),
-            RoundedBlockUiModel("Не бинарный", false),
-        )
+        elementsList = elements,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 45.dp)
     )
 }
 
@@ -485,7 +506,7 @@ fun RegisterSecondStagePreview() {
                 hintList = listOf("Имя", "Возраст"),
                 isErrorList = listOf(isNameError)
             )
-            GenderBlock(onChoiceChanged = { chosenGender = it })
+            //RegisterChoiceBlock(onChoiceChanged = { chosenGender = it })
             RegisterTitleWithInputs(
                 inputsCount = 1,
                 title = "О себе",

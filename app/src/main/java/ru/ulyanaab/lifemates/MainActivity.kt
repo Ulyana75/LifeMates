@@ -49,7 +49,11 @@ class MainActivity : ComponentActivity() {
                     startDestination = "auth",
                 ) {
                     composable("auth") {
-                        AuthScreen(authViewModel = authViewModel, navController = navController)
+                        AuthScreen(
+                            authViewModel = authViewModel,
+                            navController = navController,
+                            authEvent = authEvent.value
+                        )
                     }
                     composable("register_first_stage") {
                         RegisterFirstStage(

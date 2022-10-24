@@ -27,6 +27,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import ru.ulyanaab.lifemates.domain.common.state_holders.AuthEvent
 import ru.ulyanaab.lifemates.ui.theme.Shapes
 import ru.ulyanaab.lifemates.ui.theme.Typography
 import ru.ulyanaab.lifemates.ui.widget.Button
@@ -36,7 +37,12 @@ import ru.ulyanaab.lifemates.ui.widget.EditText
 fun AuthScreen(
     authViewModel: AuthViewModel,
     navController: NavController,
+    authEvent: AuthEvent,
 ) {
+    if (authEvent == AuthEvent.AUTHORIZATION_SUCCESS) {
+        navController.navigate("feed")
+    }
+
     Surface(Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
