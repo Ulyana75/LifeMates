@@ -59,7 +59,7 @@ fun AuthScreen(
                     authViewModel.onLoginClick(login, password)
                 },
                 onRegisterButtonClick = {
-                    navController.navigate("register")
+                    navController.navigate("register_first_stage")
                 }
             )
         }
@@ -99,7 +99,7 @@ fun LoginForm(
         ) {
             EditText(
                 modifier = Modifier.fillMaxWidth(),
-                hint = "Логин",
+                hint = "Почта",
                 isError = isLoginError,
                 value = login,
                 onValueChange = { value ->
@@ -118,8 +118,7 @@ fun LoginForm(
                     isPasswordError = false
                 },
                 onClearClicked = { password = "" },
-                visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+                isPassword = true,
             )
             Button(
                 modifier = Modifier.fillMaxWidth(),

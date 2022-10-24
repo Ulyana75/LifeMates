@@ -23,30 +23,39 @@ class AuthInteractor @Inject constructor(
     fun login(loginModel: LoginModel) {
         // TODO hash password
         CoroutineScope(Dispatchers.IO).launch {
-            proceedResult(authRepository.login(loginModel))
+            proceedResult(authRepository.login(loginModel)) {
+                authStateHolder.update(
+                    when (it.error) {
+                        Error.Forbidden -> AuthEvent.WRONG_PASSWORD
+                        else -> AuthEvent.UNKNOWN_ERROR
+                    }
+                )
+            }
         }
     }
 
     fun register(registerModel: RegisterModel) {
         // TODO hash password
         CoroutineScope(Dispatchers.IO).launch {
-            proceedResult(authRepository.register(registerModel))
+            proceedResult(authRepository.register(registerModel)) {
+                authStateHolder.update(
+                    when (it.error) {
+                        Error.Forbidden -> AuthEvent.REGISTRATION_FAILED
+                        else -> AuthEvent.UNKNOWN_ERROR
+                    }
+                )
+            }
         }
     }
 
-    private suspend fun proceedResult(result: Result<TokensModel>) {
+    private suspend fun proceedResult(result: Result<TokensModel>, onFailure: (Result.Failure<*>) -> Unit) {
         when (result) {
             is Result.Success -> {
                 tokensStorage.put(result.data)
                 authStateHolder.update(AuthEvent.AUTHORIZATION_SUCCESS)
             }
             is Result.Failure -> {
-                authStateHolder.update(
-                    when (result.error) {
-                        Error.Forbidden -> AuthEvent.WRONG_PASSWORD
-                        else -> AuthEvent.UNKNOWN_ERROR
-                    }
-                )
+                onFailure.invoke(result)
             }
         }
     }

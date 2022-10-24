@@ -19,6 +19,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -38,8 +40,7 @@ fun EditText(
     onValueChange: (String) -> Unit,
     onClearClicked: () -> Unit,
     maxLines: Int = 1,
-    visualTransformation: VisualTransformation = VisualTransformation.None,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    isPassword: Boolean = false
 ) {
 
     Box(modifier = modifier) {
@@ -60,8 +61,8 @@ fun EditText(
                 .fillMaxWidth(),
             maxLines = maxLines,
             textStyle = Typography.caption.copy(color = Color.Black),
-            visualTransformation = visualTransformation,
-            keyboardOptions = keyboardOptions,
+            visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
+            keyboardOptions = if (isPassword) KeyboardOptions(keyboardType = KeyboardType.Password) else KeyboardOptions.Default,
             decorationBox = { innerTextField ->
                 Row(
                     Modifier.padding(start = 16.dp, end = 13.5.dp),

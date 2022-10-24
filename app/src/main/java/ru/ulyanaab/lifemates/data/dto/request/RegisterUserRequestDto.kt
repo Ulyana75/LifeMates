@@ -4,6 +4,7 @@ import com.squareup.moshi.Json
 import ru.ulyanaab.lifemates.data.dto.common.ContactDto
 import ru.ulyanaab.lifemates.data.dto.common.GenderDto
 import ru.ulyanaab.lifemates.data.dto.common.LocationDto
+import ru.ulyanaab.lifemates.data.dto.response.UserSettingsDto
 import java.util.Date
 
 data class RegisterUserRequestDto(
@@ -23,7 +24,7 @@ data class RegisterUserRequestDto(
     val gender: GenderDto,
 
     @Json(name = "birthday")
-    val birthday: String,
+    val birthday: String?,
 
     @Json(name = "interests")
     val interests: List<Int>,
@@ -33,6 +34,9 @@ data class RegisterUserRequestDto(
 
     @Json(name = "location")
     val location: LocationDto?,
+
+    @Json(name = "settings")
+    val settings: UserSettingsDto,
 
     @Json(name = "contacts")
     val contacts: List<ContactDto>,
