@@ -453,6 +453,36 @@ fun RegisterChoiceBlock(
 
 @Preview
 @Composable
+fun ChoicePreview() {
+    Column(
+        Modifier
+            .fillMaxSize()
+            .background(color = Color.White),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        RegisterChoiceBlock(
+            title = "Ваш пол",
+            elements = listOf(
+                RoundedBlockUiModel("Мужской", false),
+                RoundedBlockUiModel("Женский", false),
+                RoundedBlockUiModel("Не бинарный", false),
+            ),
+            onChoiceChanged = {  }
+        )
+        RegisterChoiceBlock(
+            title = "Какой пол вам показывать",
+            elements = listOf(
+                RoundedBlockUiModel("Мужской", false),
+                RoundedBlockUiModel("Женский", false),
+                RoundedBlockUiModel("Не бинарный", false),
+            ),
+            onChoiceChanged = {  }
+        )
+    }
+}
+
+@Preview
+@Composable
 fun RegisterSecondStagePreview() {
     var name by remember { mutableStateOf("") }
     var age by remember { mutableStateOf("") }

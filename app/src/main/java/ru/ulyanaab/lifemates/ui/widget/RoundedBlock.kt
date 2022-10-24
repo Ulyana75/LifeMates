@@ -39,7 +39,7 @@ fun RoundedBlocksSingleChoice(
     }
 
     Row(
-        modifier = Modifier.horizontalScroll(rememberScrollState()),
+        modifier = modifier.horizontalScroll(rememberScrollState()),
         horizontalArrangement = Arrangement.spacedBy(5.dp)
     ) {
         elementsList.forEach {
