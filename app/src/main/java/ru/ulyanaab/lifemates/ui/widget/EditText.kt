@@ -42,51 +42,53 @@ fun EditText(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
 ) {
 
-    BasicTextField(
-        value = value,
-        onValueChange = { onValueChange.invoke(it) },
-        modifier = Modifier
-            .background(
-                color = GreyLight,
-                shape = Shapes.medium
-            )
-            .border(
-                width = 1.dp,
-                color = if (isError) Color.Red else Color.Transparent,
-                shape = Shapes.medium
-            )
-            .height(44.dp)
-            .then(modifier),
-        maxLines = maxLines,
-        textStyle = Typography.caption.copy(color = Color.Black),
-        visualTransformation = visualTransformation,
-        keyboardOptions = keyboardOptions,
-        decorationBox = { innerTextField ->
-            Row(
-                Modifier.padding(start = 16.dp, end = 13.5.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(Modifier.weight(1f)) {
-                    if (value.isEmpty()) {
-                        Text(
-                            text = hint,
-                            color = GreyHint,
-                            style = Typography.caption,
-                        )
-                    }
-                    innerTextField()
-                }
-                Icon(
-                    painter = painterResource(id = R.drawable.xmark_circle_fill),
-                    contentDescription = null,
-                    modifier = Modifier.clickable {
-                        onClearClicked.invoke()
-                    },
-                    tint = GreyDark
+    Box(modifier = modifier) {
+        BasicTextField(
+            value = value,
+            onValueChange = { onValueChange.invoke(it) },
+            modifier = Modifier
+                .background(
+                    color = GreyLight,
+                    shape = Shapes.medium
                 )
+                .border(
+                    width = 1.dp,
+                    color = if (isError) Color.Red else Color.Transparent,
+                    shape = Shapes.medium
+                )
+                .height(44.dp)
+                .fillMaxWidth(),
+            maxLines = maxLines,
+            textStyle = Typography.caption.copy(color = Color.Black),
+            visualTransformation = visualTransformation,
+            keyboardOptions = keyboardOptions,
+            decorationBox = { innerTextField ->
+                Row(
+                    Modifier.padding(start = 16.dp, end = 13.5.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(Modifier.weight(1f)) {
+                        if (value.isEmpty()) {
+                            Text(
+                                text = hint,
+                                color = GreyHint,
+                                style = Typography.caption,
+                            )
+                        }
+                        innerTextField()
+                    }
+                    Icon(
+                        painter = painterResource(id = R.drawable.xmark_circle_fill),
+                        contentDescription = null,
+                        modifier = Modifier.clickable {
+                            onClearClicked.invoke()
+                        },
+                        tint = GreyDark
+                    )
+                }
             }
-        }
-    )
+        )
+    }
 }
 
 @Preview

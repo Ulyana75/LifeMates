@@ -1,6 +1,7 @@
 package ru.ulyanaab.lifemates.di
 
 import android.content.Context
+import androidx.compose.foundation.ExperimentalFoundationApi
 import dagger.BindsInstance
 import dagger.Component
 import ru.ulyanaab.lifemates.MainActivity
@@ -12,6 +13,7 @@ const val BASE_URL = "baseUrl"
 @Component(modules = [AppModule::class])
 interface AppComponent {
 
+    @ExperimentalFoundationApi
     fun inject(activity: MainActivity)
 
     @Component.Factory

@@ -26,6 +26,20 @@ val Typography = Typography(
         letterSpacing = (-0.01).sp,
         lineHeight = 22.sp
     ),
+    h2 = TextStyle(
+        fontFamily = SfProFontFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 24.sp,
+        letterSpacing = 0.02.sp,
+        lineHeight = 41.sp
+    ),
+    h3 = TextStyle(
+        fontFamily = SfProFontFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 17.sp,
+        letterSpacing = 0.02.sp,
+        lineHeight = 37.sp
+    ),
     body1 = TextStyle(
         fontFamily = SfProFontFamily,
         fontWeight = FontWeight.Bold,
