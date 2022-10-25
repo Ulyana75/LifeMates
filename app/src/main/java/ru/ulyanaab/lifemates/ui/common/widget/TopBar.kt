@@ -1,4 +1,4 @@
-package ru.ulyanaab.lifemates.ui.widget
+package ru.ulyanaab.lifemates.ui.common.widget
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -19,8 +19,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.ulyanaab.lifemates.R
-import ru.ulyanaab.lifemates.ui.theme.GreyLine
-import ru.ulyanaab.lifemates.ui.theme.Typography
+import ru.ulyanaab.lifemates.ui.common.theme.GreyLine
+import ru.ulyanaab.lifemates.ui.common.theme.Typography
 
 @Composable
 fun TopBar(

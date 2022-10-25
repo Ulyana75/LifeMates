@@ -20,11 +20,4 @@ class AuthViewModel @Inject constructor(
     fun onLoginClick(login: String, password: String) {
         authInteractor.login(LoginModel(login, password))
     }
-
-    fun onRegisterClick() {
-    }
-
-    fun onSubmitRegisterClick(registerUiModel: RegisterUiModel) {
-
-    }
 }

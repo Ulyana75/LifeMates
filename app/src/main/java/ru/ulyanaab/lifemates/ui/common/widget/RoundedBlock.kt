@@ -1,4 +1,4 @@
-package ru.ulyanaab.lifemates.ui.widget
+package ru.ulyanaab.lifemates.ui.common.widget
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,10 +23,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.ulyanaab.lifemates.ui.common.model.RoundedBlockUiModel
-import ru.ulyanaab.lifemates.ui.theme.GreyLight
-import ru.ulyanaab.lifemates.ui.theme.PinkMain
-import ru.ulyanaab.lifemates.ui.theme.Shapes
-import ru.ulyanaab.lifemates.ui.theme.Typography
+import ru.ulyanaab.lifemates.ui.common.theme.GreyLight
+import ru.ulyanaab.lifemates.ui.common.theme.PinkMain
+import ru.ulyanaab.lifemates.ui.common.theme.Shapes
+import ru.ulyanaab.lifemates.ui.common.theme.Typography
 
 @Composable
 fun RoundedBlocksSingleChoice(

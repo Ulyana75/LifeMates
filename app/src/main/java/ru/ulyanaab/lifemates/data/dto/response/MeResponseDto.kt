@@ -38,6 +38,6 @@ data class MeResponseDto(
 )
 
 data class UserSettingsDto(
-    @Json(name = "showingGenderDto")
+    @Json(name = "showingGender")
     val showingGenderDto: GenderDto,
 )

@@ -1,4 +1,4 @@
-package ru.ulyanaab.lifemates.ui.widget
+package ru.ulyanaab.lifemates.ui.common.widget
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth

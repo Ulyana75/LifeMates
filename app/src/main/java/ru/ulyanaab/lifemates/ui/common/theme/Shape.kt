@@ -1,4 +1,4 @@
-package ru.ulyanaab.lifemates.ui.theme
+package ru.ulyanaab.lifemates.ui.common.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes

@@ -1,6 +1,7 @@
 package ru.ulyanaab.lifemates.data.api
 
 import retrofit2.Call
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PUT
 import ru.ulyanaab.lifemates.data.dto.request.MeRequestDto
@@ -12,5 +13,5 @@ interface MeApi {
     fun getMe(): Call<MeResponseDto>
 
     @PUT("me")
-    fun putMe(meRequest: MeRequestDto): Call<Unit>
+    fun putMe(@Body meRequest: MeRequestDto): Call<Unit>
 }

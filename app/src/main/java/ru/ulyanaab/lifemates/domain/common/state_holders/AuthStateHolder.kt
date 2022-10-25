@@ -1,5 +1,6 @@
 package ru.ulyanaab.lifemates.domain.common.state_holders
 
+import android.util.Log
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,6 +13,7 @@ class AuthStateHolder @Inject constructor() {
     val authStateFlow: StateFlow<AuthEvent> = _authStateFlow.asStateFlow()
 
     fun update(newState: AuthEvent) {
+        Log.d("LOL", "AuthStateHolder update")
         _authStateFlow.value = newState
     }
 }

@@ -7,6 +7,7 @@ import ru.ulyanaab.lifemates.domain.common.model.ContactType
 import ru.ulyanaab.lifemates.domain.common.model.GenderModel
 import ru.ulyanaab.lifemates.domain.user_info.model.UserSettingsModel
 import ru.ulyanaab.lifemates.ui.common.model.RoundedBlockUiModel
+import ru.ulyanaab.lifemates.ui.common.utils.nullIfEmpty
 import javax.inject.Inject
 
 class RegisterViewModel @Inject constructor(
@@ -60,6 +61,7 @@ class RegisterViewModel @Inject constructor(
         )
     }
 
+    // TODO map beautiful
     private fun mapGender(uiModel: RoundedBlockUiModel?): GenderModel {
         return when (uiModel?.text) {
             "Мужской" -> GenderModel.MAN
@@ -67,8 +69,4 @@ class RegisterViewModel @Inject constructor(
             else -> GenderModel.NON_BINARY
         }
     }
-}
-
-private fun String.nullIfEmpty(): String? {
-    return if (isEmpty()) null else this
 }
