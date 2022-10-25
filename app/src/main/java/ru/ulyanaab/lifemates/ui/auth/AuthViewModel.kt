@@ -11,11 +11,12 @@ import ru.ulyanaab.lifemates.domain.auth.interactor.AuthInteractor
 import ru.ulyanaab.lifemates.domain.auth.model.LoginModel
 import ru.ulyanaab.lifemates.domain.common.state_holders.AuthEvent
 import ru.ulyanaab.lifemates.domain.common.state_holders.AuthStateHolder
+import ru.ulyanaab.lifemates.ui.common.utils.HandledAuthEventRepository
 import javax.inject.Inject
 
 class AuthViewModel @Inject constructor(
     private val authInteractor: AuthInteractor,
-    private val authStateHolder: AuthStateHolder
+    private val handledAuthEventRepository: HandledAuthEventRepository,
 ) {
 
     private val _isLoading: MutableStateFlow<Boolean> = MutableStateFlow(false)
@@ -23,15 +24,6 @@ class AuthViewModel @Inject constructor(
 
     var savedLoginModel: LoginModel? = null
         private set
-
-    var handledAuthEvent: AuthEvent? = null
-        private set
-
-    fun attach() {
-        authStateHolder.authStateFlow.onEach {
-            handledAuthEvent = it
-        }
-    }
 
     fun onLoginClick(login: String, password: String) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -43,7 +35,11 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun shouldHandleAuthEvent(): Boolean {
-        return authStateHolder.authStateFlow.value != handledAuthEvent
+    fun shouldHandleAuthEvent(authEvent: AuthEvent): Boolean {
+        return handledAuthEventRepository.getEvent() != authEvent
+    }
+
+    fun saveHandledAuthEvent(authEvent: AuthEvent) {
+        handledAuthEventRepository.saveEvent(authEvent)
     }
 }

@@ -25,7 +25,7 @@ class UserInfoRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateUserInfo(newInfo: UserInfoUpdateModel): Result<Unit> {
-        val response = meApi.putMe(meMapper.mapToDto(newInfo)).awaitResponse()
+        val response = meApi.updateMe(meMapper.mapToDto(newInfo)).awaitResponse()
         return when (response.code()) {
             200 -> Result.Success(Unit)
             401 -> Result.Failure(Error.Unauthorized)

@@ -40,7 +40,6 @@ fun AuthScreen(
     navController: NavController,
     authEvent: AuthEvent
 ) {
-    authViewModel.attach()
     val isLoading by authViewModel.isLoading.collectAsState()
 
     LaunchedEffect(authEvent) {
@@ -49,7 +48,11 @@ fun AuthScreen(
         }
     }
 
-    AuthDialogController(authEvent = authEvent)
+    AuthDialogController(
+        authEvent = authEvent,
+        shouldShowDialog = authViewModel::shouldHandleAuthEvent,
+        saveHandledEvent = authViewModel::saveHandledAuthEvent
+    )
 
     if (isLoading) {
         LoadingView()
@@ -96,31 +99,40 @@ fun AuthView(
 }
 
 @Composable
-fun AuthDialogController(authEvent: AuthEvent) {
-    val openDialog = remember { mutableStateOf(false) }
-    var title by remember { mutableStateOf("") }
-    var text by remember { mutableStateOf<String?>(null) }
+fun AuthDialogController(
+    authEvent: AuthEvent,
+    shouldShowDialog: (AuthEvent) -> Boolean,
+    saveHandledEvent: (AuthEvent) -> Unit
+) {
+    if (shouldShowDialog.invoke(authEvent)) {
+        val openDialog = remember { mutableStateOf(false) }
+        var title by remember { mutableStateOf("") }
+        var text by remember { mutableStateOf<String?>(null) }
 
-    when (authEvent.type) {
-        AuthEventType.AUTHORIZATION_SUCCESS, AuthEventType.UNAUTHORIZED -> {
-            openDialog.value = false
+        when (authEvent.type) {
+            AuthEventType.AUTHORIZATION_SUCCESS, AuthEventType.UNAUTHORIZED -> {
+                openDialog.value = false
+            }
+            AuthEventType.WRONG_PASSWORD -> {
+                openDialog.value = true
+                title = "Неверный логин или пароль"
+            }
+            else -> {
+                openDialog.value = true
+                title = "Произошла неизвестная ошибка"
+                text = "Попробуйте еще раз"
+            }
         }
-        AuthEventType.WRONG_PASSWORD -> {
-            openDialog.value = true
-            title = "Неверный логин или пароль"
-        }
-        else -> {
-            openDialog.value = true
-            title = "Произошла неизвестная ошибка"
-            text = "Попробуйте еще раз"
-        }
+
+        InfoDialog(
+            openDialog = openDialog,
+            title = title,
+            text = text,
+            onButtonClick = {
+                saveHandledEvent.invoke(authEvent)
+            }
+        )
     }
-
-    InfoDialog(
-        openDialog = openDialog,
-        title = title,
-        text = text
-    )
 }
 
 @Composable

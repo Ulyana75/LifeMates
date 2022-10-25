@@ -1,24 +1,22 @@
 package ru.ulyanaab.lifemates.ui.register
 
-import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import ru.ulyanaab.lifemates.domain.auth.interactor.AuthInteractor
+import ru.ulyanaab.lifemates.domain.common.model.GenderModel
 import ru.ulyanaab.lifemates.domain.common.state_holders.AuthEvent
-import ru.ulyanaab.lifemates.domain.common.state_holders.AuthStateHolder
 import ru.ulyanaab.lifemates.ui.common.model.RoundedBlockUiModel
+import ru.ulyanaab.lifemates.ui.common.utils.HandledAuthEventRepository
 import javax.inject.Inject
 
 class RegisterViewModel @Inject constructor(
     private val authInteractor: AuthInteractor,
     private val registerMapper: RegisterMapper,
-    private val authStateHolder: AuthStateHolder
+    private val handledAuthEventRepository: HandledAuthEventRepository,
 ) {
 
     private val _isLoading: MutableStateFlow<Boolean> = MutableStateFlow(false)
@@ -26,9 +24,6 @@ class RegisterViewModel @Inject constructor(
 
     private var login = ""
     private var password = ""
-
-    var handledAuthEvent: AuthEvent? = null
-        private set
 
     var savedRegisterModel: RegisterUiModel? = null
         private set
@@ -79,10 +74,28 @@ class RegisterViewModel @Inject constructor(
     }
 
     fun shouldHandleAuthEvent(authEvent: AuthEvent): Boolean {
-        return authEvent != handledAuthEvent
+        return handledAuthEventRepository.getEvent() != authEvent
     }
 
     fun saveHandledAuthEvent(authEvent: AuthEvent) {
-        handledAuthEvent = authEvent
+        handledAuthEventRepository.saveEvent(authEvent)
+    }
+
+    fun getGenderModels(): List<RoundedBlockUiModel> {
+        val gender = savedRegisterModel?.gender
+        return listOf(
+            RoundedBlockUiModel("Мужской", gender?.text == "Мужской"),
+            RoundedBlockUiModel("Женский", gender?.text == "Женский"),
+            RoundedBlockUiModel("Не бинарный", gender?.text == "Не бинарный"),
+        )
+    }
+
+    fun getShowingGenderModels(): List<RoundedBlockUiModel> {
+        val gender = savedRegisterModel?.showingGender
+        return listOf(
+            RoundedBlockUiModel("Мужской", gender?.text == "Мужской"),
+            RoundedBlockUiModel("Женский", gender?.text == "Женский"),
+            RoundedBlockUiModel("Не бинарный", gender?.text == "Не бинарный"),
+        )
     }
 }

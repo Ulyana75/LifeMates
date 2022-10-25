@@ -212,19 +212,11 @@ fun RegisterSecondStageView(
                 isNameError = isNameError
             )
             GenderChoiceBlock(
-                elements = listOf(
-                    RoundedBlockUiModel("Мужской", false),
-                    RoundedBlockUiModel("Женский", false),
-                    RoundedBlockUiModel("Не бинарный", false),
-                ),
+                elements = registerViewModel.getGenderModels(),
                 onChoiceChanged = { chosenGender = it }
             )
             ShowingGenderChoiceBlock(
-                elements = listOf(
-                    RoundedBlockUiModel("Мужской", false),
-                    RoundedBlockUiModel("Женский", false),
-                    RoundedBlockUiModel("Не бинарный", false),
-                ),
+                elements = registerViewModel.getShowingGenderModels(),
                 onChoiceChanged = { chosenShowingGender = it }
             )
             DescriptionBlock(
