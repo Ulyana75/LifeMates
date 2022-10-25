@@ -14,5 +14,6 @@ data class RegisterUiModel(
     val vk: String,
     val viber: String,
     val whatsapp: String,
-    val instagram: String
+    val instagram: String,
+    val imageUrl: String?,
 )

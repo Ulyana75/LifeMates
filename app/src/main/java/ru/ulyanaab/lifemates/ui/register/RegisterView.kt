@@ -27,7 +27,7 @@ import androidx.navigation.NavController
 import ru.ulyanaab.lifemates.R
 import ru.ulyanaab.lifemates.domain.common.state_holders.AuthEvent
 import ru.ulyanaab.lifemates.domain.common.state_holders.AuthEventType
-import ru.ulyanaab.lifemates.ui.common.model.RoundedBlockUiModel
+import ru.ulyanaab.lifemates.ui.common.UploadPhotoViewModel
 import ru.ulyanaab.lifemates.ui.common.utils.showToast
 import ru.ulyanaab.lifemates.ui.common.widget.ContactsBlock
 import ru.ulyanaab.lifemates.ui.common.widget.DescriptionBlock
@@ -153,6 +153,7 @@ fun RegisterSecondStage(
     }
     RegisterSecondStageView(
         registerViewModel = registerViewModel,
+        uploadPhotoViewModel = registerViewModel,
         navController = navController
     )
 }
@@ -160,6 +161,7 @@ fun RegisterSecondStage(
 @Composable
 fun RegisterSecondStageView(
     registerViewModel: RegisterViewModel,
+    uploadPhotoViewModel: UploadPhotoViewModel,
     navController: NavController
 ) {
     val savedModel = registerViewModel.savedRegisterModel
@@ -178,7 +180,6 @@ fun RegisterSecondStageView(
     var chosenGender by remember { mutableStateOf(savedModel?.gender) }
     var chosenShowingGender by remember { mutableStateOf(savedModel?.showingGender) }
 
-
     Column(
         Modifier
             .fillMaxSize()
@@ -196,9 +197,10 @@ fun RegisterSecondStageView(
                 .weight(1f, fill = false),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            UserInfoPhotoBlock {
-                // TODO
-            }
+            UserInfoPhotoBlock(
+                uploadPhotoViewModel = uploadPhotoViewModel,
+                imageUrl = savedModel?.imageUrl
+            )
             PersonalUserInfo(
                 name = name,
                 age = age,

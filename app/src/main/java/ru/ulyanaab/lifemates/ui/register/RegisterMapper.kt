@@ -19,7 +19,7 @@ class RegisterMapper @Inject constructor() {
             description = uiModel.description.nullIfEmpty(),
             gender = mapGender(uiModel.gender),
             birthday = uiModel.age.nullIfEmpty(),
-            imageUrls = emptyList(),
+            imageUrls = listOfNotNull(uiModel.imageUrl),
             location = null,
             settings = UserSettingsModel(mapGender(uiModel.showingGender)),
             contacts = listOfNotNull(

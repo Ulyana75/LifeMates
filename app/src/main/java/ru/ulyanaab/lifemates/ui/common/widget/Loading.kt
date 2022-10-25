@@ -11,11 +11,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.zIndex
 
 @Composable
-fun LoadingView() {
+fun LoadingView(
+    backgroundColor: Color = Color.Black.copy(alpha = 0.5f)
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color.Black.copy(alpha = 0.5f))
+            .background(color = backgroundColor)
             .zIndex(3f)
     ) {
         CircularProgressIndicator(Modifier.align(Alignment.Center))

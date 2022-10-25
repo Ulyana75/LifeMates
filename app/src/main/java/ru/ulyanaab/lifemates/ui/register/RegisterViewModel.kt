@@ -7,8 +7,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ru.ulyanaab.lifemates.domain.auth.interactor.AuthInteractor
-import ru.ulyanaab.lifemates.domain.common.model.GenderModel
+import ru.ulyanaab.lifemates.domain.common.interactor.UploadPhotoInteractor
 import ru.ulyanaab.lifemates.domain.common.state_holders.AuthEvent
+import ru.ulyanaab.lifemates.ui.common.UploadPhotoViewModel
 import ru.ulyanaab.lifemates.ui.common.model.RoundedBlockUiModel
 import ru.ulyanaab.lifemates.ui.common.utils.HandledAuthEventRepository
 import javax.inject.Inject
@@ -17,7 +18,8 @@ class RegisterViewModel @Inject constructor(
     private val authInteractor: AuthInteractor,
     private val registerMapper: RegisterMapper,
     private val handledAuthEventRepository: HandledAuthEventRepository,
-) {
+    uploadPhotoInteractor: UploadPhotoInteractor,
+) : UploadPhotoViewModel(uploadPhotoInteractor) {
 
     private val _isLoading: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
@@ -64,7 +66,8 @@ class RegisterViewModel @Inject constructor(
                 vk = vk,
                 viber = viber,
                 whatsapp = whatsapp,
-                instagram = instagram
+                instagram = instagram,
+                imageUrl = linkStateFlow.value
             )
             savedRegisterModel = model
             authInteractor.register(registerMapper.mapToDomainModel(model))

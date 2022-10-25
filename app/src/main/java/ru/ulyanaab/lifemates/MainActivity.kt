@@ -15,6 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import ru.ulyanaab.lifemates.domain.common.state_holders.AuthStateHolder
 import ru.ulyanaab.lifemates.ui.auth.AuthScreen
 import ru.ulyanaab.lifemates.ui.auth.AuthViewModel
+import ru.ulyanaab.lifemates.ui.common.UploadPhotoViewModel
 import ru.ulyanaab.lifemates.ui.common.navigation.BottomNavGraph
 import ru.ulyanaab.lifemates.ui.common.navigation.BottomNavigation
 import ru.ulyanaab.lifemates.ui.register.RegisterFirstStage
@@ -83,7 +84,7 @@ class MainActivity : ComponentActivity() {
                             Box(modifier = Modifier.padding(innerPadding)) {
                                 BottomNavGraph(
                                     navController = navController2,
-                                    profileViewModel = profileViewModel
+                                    profileViewModel = profileViewModel,
                                 )
                             }
                         }

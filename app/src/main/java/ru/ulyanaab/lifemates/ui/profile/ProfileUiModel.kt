@@ -13,4 +13,5 @@ data class ProfileUiModel(
     val viber: String,
     val whatsapp: String,
     val instagram: String,
+    val imageUrl: String?,
 )

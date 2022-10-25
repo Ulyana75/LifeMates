@@ -6,15 +6,18 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import ru.ulyanaab.lifemates.domain.common.interactor.UploadPhotoInteractor
 import ru.ulyanaab.lifemates.domain.common.model.GenderModel
 import ru.ulyanaab.lifemates.domain.user_info.interactor.UserInfoInteractor
+import ru.ulyanaab.lifemates.ui.common.UploadPhotoViewModel
 import ru.ulyanaab.lifemates.ui.common.model.RoundedBlockUiModel
 import javax.inject.Inject
 
 class ProfileViewModel @Inject constructor(
     private val userInfoInteractor: UserInfoInteractor,
     private val profileMapper: ProfileMapper,
-) {
+    uploadPhotoInteractor: UploadPhotoInteractor,
+) : UploadPhotoViewModel(uploadPhotoInteractor) {
 
     private val _profileState: MutableStateFlow<ProfileUiModel?> = MutableStateFlow(null)
     val profileState: StateFlow<ProfileUiModel?> = _profileState.asStateFlow()
@@ -22,14 +25,19 @@ class ProfileViewModel @Inject constructor(
     private val _isLoading: MutableStateFlow<Boolean> = MutableStateFlow(true)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
+    private val _isModelReady = MutableStateFlow(false)
+    val isModelReady: StateFlow<Boolean> = _isModelReady.asStateFlow()
+
     fun attach() {
         CoroutineScope(Dispatchers.IO).launch {
+            _isModelReady.value = false
             _isLoading.value = true
             val userInfoModel = userInfoInteractor.getUserInfo()
             val uiModel = userInfoModel?.let {
                 profileMapper.mapToUiModel(userInfoModel)
             }
             _profileState.value = uiModel
+            _isModelReady.value = true
             _isLoading.value = false
         }
     }
@@ -56,7 +64,8 @@ class ProfileViewModel @Inject constructor(
             vk = vk,
             viber = viber,
             whatsapp = whatsapp,
-            instagram = instagram
+            instagram = instagram,
+            imageUrl = linkStateFlow.value ?: _profileState.value?.imageUrl
         )
         val updateModel = profileMapper.mapToUpdateModel(uiModel)
         userInfoInteractor.updateUserInfo(updateModel)

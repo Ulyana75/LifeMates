@@ -32,6 +32,7 @@ class ProfileMapper @Inject constructor() {
             instagram = model.contacts.find {
                 it.type == ContactType.INSTAGRAM
             }?.value ?: "",
+            imageUrl = model.imagesUrls.firstOrNull()
         )
     }
 
@@ -41,7 +42,7 @@ class ProfileMapper @Inject constructor() {
             description = model.description.nullIfEmpty(),
             gender = model.gender,
             birthday = model.birthday.nullIfEmpty(),
-            imagesUrls = emptyList(),
+            imagesUrls = listOfNotNull(model.imageUrl),
             location = null,
             settings = UserSettingsModel(model.showingGender),
             contacts = listOfNotNull(

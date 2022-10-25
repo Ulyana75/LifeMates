@@ -10,20 +10,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import ru.ulyanaab.lifemates.ui.common.UploadPhotoViewModel
 import ru.ulyanaab.lifemates.ui.profile.ProfileScreen
 import ru.ulyanaab.lifemates.ui.profile.ProfileViewModel
 
 @Composable
 fun BottomNavGraph(
     navController: NavHostController,
-    profileViewModel: ProfileViewModel
+    profileViewModel: ProfileViewModel,
 ) {
     NavHost(
         navController = navController,
         startDestination = "feed"
     ) {
         composable(BottomNavItem.Profile.screenRoute) {
-            ProfileScreen(profileViewModel = profileViewModel)
+            ProfileScreen(
+                profileViewModel = profileViewModel,
+            )
         }
         composable(BottomNavItem.Feed.screenRoute) {
             Box(modifier = Modifier
