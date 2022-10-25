@@ -24,25 +24,47 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import ru.ulyanaab.lifemates.domain.auth.model.LoginModel
 import ru.ulyanaab.lifemates.domain.common.state_holders.AuthEvent
+import ru.ulyanaab.lifemates.domain.common.state_holders.AuthEventType
 import ru.ulyanaab.lifemates.ui.common.theme.Shapes
 import ru.ulyanaab.lifemates.ui.common.theme.Typography
 import ru.ulyanaab.lifemates.ui.common.widget.Button
 import ru.ulyanaab.lifemates.ui.common.widget.EditText
+import ru.ulyanaab.lifemates.ui.common.widget.InfoDialog
+import ru.ulyanaab.lifemates.ui.common.widget.LoadingView
 
 @Composable
 fun AuthScreen(
     authViewModel: AuthViewModel,
     navController: NavController,
+    authEvent: AuthEvent
 ) {
-    val authEvent by authViewModel.authEventsFlow.collectAsState()
+    authViewModel.attach()
+    val isLoading by authViewModel.isLoading.collectAsState()
 
     LaunchedEffect(authEvent) {
-        if (authEvent == AuthEvent.AUTHORIZATION_SUCCESS) {
+        if (authEvent.type == AuthEventType.AUTHORIZATION_SUCCESS) {
             navController.navigate("main")
         }
     }
 
+    AuthDialogController(authEvent = authEvent)
+
+    if (isLoading) {
+        LoadingView()
+    }
+    AuthView(
+        authViewModel = authViewModel,
+        navController = navController
+    )
+}
+
+@Composable
+fun AuthView(
+    authViewModel: AuthViewModel,
+    navController: NavController
+) {
     Surface(Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -61,6 +83,7 @@ fun AuthScreen(
         ) {
             NameText(Modifier.padding(bottom = 67.dp))
             LoginForm(
+                savedLoginModel = authViewModel.savedLoginModel,
                 onLoginButtonClick = { login, password ->
                     authViewModel.onLoginClick(login, password)
                 },
@@ -70,6 +93,34 @@ fun AuthScreen(
             )
         }
     }
+}
+
+@Composable
+fun AuthDialogController(authEvent: AuthEvent) {
+    val openDialog = remember { mutableStateOf(false) }
+    var title by remember { mutableStateOf("") }
+    var text by remember { mutableStateOf<String?>(null) }
+
+    when (authEvent.type) {
+        AuthEventType.AUTHORIZATION_SUCCESS, AuthEventType.UNAUTHORIZED -> {
+            openDialog.value = false
+        }
+        AuthEventType.WRONG_PASSWORD -> {
+            openDialog.value = true
+            title = "Неверный логин или пароль"
+        }
+        else -> {
+            openDialog.value = true
+            title = "Произошла неизвестная ошибка"
+            text = "Попробуйте еще раз"
+        }
+    }
+
+    InfoDialog(
+        openDialog = openDialog,
+        title = title,
+        text = text
+    )
 }
 
 @Composable
@@ -83,12 +134,13 @@ fun NameText(modifier: Modifier = Modifier) {
 
 @Composable
 fun LoginForm(
+    savedLoginModel: LoginModel?,
     onLoginButtonClick: (login: String, password: String) -> Unit,
     onRegisterButtonClick: () -> Unit,
 ) {
 
-    var login by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    var login by remember { mutableStateOf(savedLoginModel?.email ?: "") }
+    var password by remember { mutableStateOf(savedLoginModel?.password ?: "") }
 
     var isLoginError by remember { mutableStateOf(false) }
     var isPasswordError by remember { mutableStateOf(false) }
@@ -175,7 +227,8 @@ fun AuthPreview() {
         ) {
             NameText(Modifier.padding(bottom = 67.dp))
             LoginForm(
-                onLoginButtonClick = { login, password ->
+                savedLoginModel = null,
+                onLoginButtonClick = { _, _ ->
                 },
                 onRegisterButtonClick = {
                     // TODO navigate

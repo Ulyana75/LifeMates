@@ -16,7 +16,8 @@ import ru.ulyanaab.lifemates.ui.common.theme.Typography
 fun InfoDialog(
     openDialog: MutableState<Boolean>,
     title: String,
-    text: String
+    text: String? = null,
+    onButtonClick: () -> Unit = {}
 ) {
     if (openDialog.value) {
         AlertDialog(
@@ -26,8 +27,12 @@ fun InfoDialog(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
-                    onClick = { openDialog.value = false },
-                    text = "Понятно"
+                    onClick = {
+                        openDialog.value = false
+                        onButtonClick.invoke()
+                    },
+                    text = "Понятно",
+                    isHighlighted = false
                 )
             },
             title = {
@@ -36,12 +41,14 @@ fun InfoDialog(
                     style = Typography.h2.copy(color = Color.Black)
                 )
             },
-            text = {
-                Text(
-                    text = text,
-                    style = Typography.body1.copy(color = Color.Black)
-                )
-            },
+            text = if (text != null) {
+                {
+                    Text(
+                        text = text,
+                        style = Typography.body1.copy(color = Color.Black)
+                    )
+                }
+            } else null,
             shape = Shapes.large
         )
     }

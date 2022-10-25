@@ -1,6 +1,12 @@
 package ru.ulyanaab.lifemates.ui.auth
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import ru.ulyanaab.lifemates.domain.auth.interactor.AuthInteractor
 import ru.ulyanaab.lifemates.domain.auth.model.LoginModel
 import ru.ulyanaab.lifemates.domain.common.state_holders.AuthEvent
@@ -9,15 +15,35 @@ import javax.inject.Inject
 
 class AuthViewModel @Inject constructor(
     private val authInteractor: AuthInteractor,
-    authStateHolder: AuthStateHolder,
+    private val authStateHolder: AuthStateHolder
 ) {
 
-    // TODO make loading while authorizing
-    // TODO add dialog with auth events
+    private val _isLoading: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
-    val authEventsFlow: StateFlow<AuthEvent> = authStateHolder.authStateFlow
+    var savedLoginModel: LoginModel? = null
+        private set
+
+    var handledAuthEvent: AuthEvent? = null
+        private set
+
+    fun attach() {
+        authStateHolder.authStateFlow.onEach {
+            handledAuthEvent = it
+        }
+    }
 
     fun onLoginClick(login: String, password: String) {
-        authInteractor.login(LoginModel(login, password))
+        CoroutineScope(Dispatchers.IO).launch {
+            _isLoading.value = true
+            val loginModel = LoginModel(login, password)
+            savedLoginModel = loginModel
+            authInteractor.login(loginModel)
+            _isLoading.value = false
+        }
+    }
+
+    fun shouldHandleAuthEvent(): Boolean {
+        return authStateHolder.authStateFlow.value != handledAuthEvent
     }
 }

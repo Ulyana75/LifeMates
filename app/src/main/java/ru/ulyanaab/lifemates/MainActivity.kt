@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import dagger.Lazy
 import ru.ulyanaab.lifemates.domain.common.state_holders.AuthStateHolder
 import ru.ulyanaab.lifemates.ui.auth.AuthScreen
 import ru.ulyanaab.lifemates.ui.auth.AuthViewModel
@@ -48,7 +47,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             LifeMatesTheme {
                 val navController1 = rememberNavController()
-                val authEvent = authViewModel.authEventsFlow.collectAsState()
+                val authEvent = authStateHolder.authStateFlow.collectAsState()
 
                 NavHost(
                     navController = navController1,
@@ -58,6 +57,7 @@ class MainActivity : ComponentActivity() {
                         AuthScreen(
                             authViewModel = authViewModel,
                             navController = navController1,
+                            authEvent = authEvent.value
                         )
                     }
                     composable("register_first_stage") {

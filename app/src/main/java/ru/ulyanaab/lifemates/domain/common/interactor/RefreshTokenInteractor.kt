@@ -5,6 +5,7 @@ import ru.ulyanaab.lifemates.common.Result
 import ru.ulyanaab.lifemates.domain.common.repository.TokensRepository
 import ru.ulyanaab.lifemates.domain.common.repository.TokensStorage
 import ru.ulyanaab.lifemates.domain.common.state_holders.AuthEvent
+import ru.ulyanaab.lifemates.domain.common.state_holders.AuthEventType
 import ru.ulyanaab.lifemates.domain.common.state_holders.AuthStateHolder
 import javax.inject.Inject
 
@@ -30,7 +31,7 @@ class RefreshTokenInteractor @Inject constructor(
         }
 
         if (newTokensResult is Result.Failure && newTokensResult.error is Error.Unauthorized) {
-            authStateHolder.update(AuthEvent.UNAUTHORIZED)
+            authStateHolder.update(AuthEvent(AuthEventType.UNAUTHORIZED))
         }
 
         return false

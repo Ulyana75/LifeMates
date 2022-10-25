@@ -1,21 +1,37 @@
 package ru.ulyanaab.lifemates.ui.register
 
+import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import ru.ulyanaab.lifemates.domain.auth.interactor.AuthInteractor
-import ru.ulyanaab.lifemates.domain.auth.model.RegisterModel
-import ru.ulyanaab.lifemates.domain.common.model.ContactModel
-import ru.ulyanaab.lifemates.domain.common.model.ContactType
-import ru.ulyanaab.lifemates.domain.common.model.GenderModel
-import ru.ulyanaab.lifemates.domain.user_info.model.UserSettingsModel
+import ru.ulyanaab.lifemates.domain.common.state_holders.AuthEvent
+import ru.ulyanaab.lifemates.domain.common.state_holders.AuthStateHolder
 import ru.ulyanaab.lifemates.ui.common.model.RoundedBlockUiModel
-import ru.ulyanaab.lifemates.ui.common.utils.nullIfEmpty
 import javax.inject.Inject
 
 class RegisterViewModel @Inject constructor(
-    private val authInteractor: AuthInteractor
+    private val authInteractor: AuthInteractor,
+    private val registerMapper: RegisterMapper,
+    private val authStateHolder: AuthStateHolder
 ) {
+
+    private val _isLoading: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
     private var login = ""
     private var password = ""
+
+    var handledAuthEvent: AuthEvent? = null
+        private set
+
+    var savedRegisterModel: RegisterUiModel? = null
+        private set
 
     fun saveLoginAndPassword(login: String, password: String) {
         this.login = login
@@ -38,35 +54,35 @@ class RegisterViewModel @Inject constructor(
         whatsapp: String,
         instagram: String
     ) {
+        CoroutineScope(Dispatchers.IO).launch {
+            _isLoading.value = true
 
-        authInteractor.register(
-            RegisterModel(
+            val model = RegisterUiModel(
                 email = login,
                 password = password,
                 name = name,
-                description = description.nullIfEmpty(),
-                gender = mapGender(gender),
-                birthday = age.nullIfEmpty(),
-                imageUrls = emptyList(),
-                location = null,
-                settings = UserSettingsModel(mapGender(showingGender)),
-                contacts = listOfNotNull(
-                    telegram.nullIfEmpty()?.let { ContactModel(ContactType.TELEGRAM, it) },
-                    vk.nullIfEmpty()?.let { ContactModel(ContactType.VK, it) },
-                    viber.nullIfEmpty()?.let { ContactModel(ContactType.VIBER, it) },
-                    whatsapp.nullIfEmpty()?.let { ContactModel(ContactType.WHATSAPP, it) },
-                    instagram.nullIfEmpty()?.let { ContactModel(ContactType.INSTAGRAM, it) },
-                )
+                description = description,
+                gender = gender,
+                showingGender = showingGender,
+                age = age,
+                telegram = telegram,
+                vk = vk,
+                viber = viber,
+                whatsapp = whatsapp,
+                instagram = instagram
             )
-        )
+            savedRegisterModel = model
+            authInteractor.register(registerMapper.mapToDomainModel(model))
+
+            _isLoading.value = false
+        }
     }
 
-    // TODO map beautiful
-    private fun mapGender(uiModel: RoundedBlockUiModel?): GenderModel {
-        return when (uiModel?.text) {
-            "Мужской" -> GenderModel.MAN
-            "Женский" -> GenderModel.WOMAN
-            else -> GenderModel.NON_BINARY
-        }
+    fun shouldHandleAuthEvent(authEvent: AuthEvent): Boolean {
+        return authEvent != handledAuthEvent
+    }
+
+    fun saveHandledAuthEvent(authEvent: AuthEvent) {
+        handledAuthEvent = authEvent
     }
 }

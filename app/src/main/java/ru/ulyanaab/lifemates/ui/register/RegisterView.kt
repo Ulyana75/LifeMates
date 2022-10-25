@@ -11,6 +11,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,11 +26,14 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ru.ulyanaab.lifemates.R
 import ru.ulyanaab.lifemates.domain.common.state_holders.AuthEvent
+import ru.ulyanaab.lifemates.domain.common.state_holders.AuthEventType
 import ru.ulyanaab.lifemates.ui.common.model.RoundedBlockUiModel
 import ru.ulyanaab.lifemates.ui.common.utils.showToast
 import ru.ulyanaab.lifemates.ui.common.widget.ContactsBlock
 import ru.ulyanaab.lifemates.ui.common.widget.DescriptionBlock
 import ru.ulyanaab.lifemates.ui.common.widget.GenderChoiceBlock
+import ru.ulyanaab.lifemates.ui.common.widget.InfoDialog
+import ru.ulyanaab.lifemates.ui.common.widget.LoadingView
 import ru.ulyanaab.lifemates.ui.common.widget.PersonalUserInfo
 import ru.ulyanaab.lifemates.ui.common.widget.ShowingGenderChoiceBlock
 import ru.ulyanaab.lifemates.ui.common.widget.SimpleSpacer
@@ -44,6 +49,7 @@ fun RegisterFirstStage(
     registerViewModel: RegisterViewModel,
     navController: NavController
 ) {
+
     // TODO validate password
     var login by remember { mutableStateOf(registerViewModel.getLoginAndPassword().first) }
     var password by remember { mutableStateOf(registerViewModel.getLoginAndPassword().second) }
@@ -128,28 +134,49 @@ fun RegisterSecondStage(
     navController: NavController,
     authEvent: AuthEvent
 ) {
-    // TODO
-    var wasNavigated by remember {
-        mutableStateOf(false)
-    }
-    if (authEvent == AuthEvent.AUTHORIZATION_SUCCESS && !wasNavigated) {
-        wasNavigated = true
-        navController.navigate("feed")
+    val isLoading by registerViewModel.isLoading.collectAsState()
+
+    LaunchedEffect(authEvent) {
+        if (authEvent.type == AuthEventType.AUTHORIZATION_SUCCESS) {
+            navController.navigate("main")
+        }
     }
 
-    var name by remember { mutableStateOf("") }
-    var age by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
-    var telegram by remember { mutableStateOf("") }
-    var vk by remember { mutableStateOf("") }
-    var viber by remember { mutableStateOf("") }
-    var whatsapp by remember { mutableStateOf("") }
-    var instagram by remember { mutableStateOf("") }
+    RegisterDialogController(
+        authEvent = authEvent,
+        shouldShowDialog = registerViewModel::shouldHandleAuthEvent,
+        saveHandledEvent = registerViewModel::saveHandledAuthEvent
+    )
+
+    if (isLoading) {
+        LoadingView()
+    }
+    RegisterSecondStageView(
+        registerViewModel = registerViewModel,
+        navController = navController
+    )
+}
+
+@Composable
+fun RegisterSecondStageView(
+    registerViewModel: RegisterViewModel,
+    navController: NavController
+) {
+    val savedModel = registerViewModel.savedRegisterModel
+
+    var name by remember { mutableStateOf(savedModel?.name ?: "") }
+    var age by remember { mutableStateOf(savedModel?.age ?: "") }
+    var description by remember { mutableStateOf(savedModel?.description ?: "") }
+    var telegram by remember { mutableStateOf(savedModel?.telegram ?: "") }
+    var vk by remember { mutableStateOf(savedModel?.vk ?: "") }
+    var viber by remember { mutableStateOf(savedModel?.viber ?: "") }
+    var whatsapp by remember { mutableStateOf(savedModel?.whatsapp ?: "") }
+    var instagram by remember { mutableStateOf(savedModel?.instagram ?: "") }
 
     var isNameError by remember { mutableStateOf(false) }
     var isContactsError by remember { mutableStateOf(false) }
-    var chosenGender by remember { mutableStateOf<RoundedBlockUiModel?>(null) }
-    var chosenShowingGender by remember { mutableStateOf<RoundedBlockUiModel?>(null) }
+    var chosenGender by remember { mutableStateOf(savedModel?.gender) }
+    var chosenShowingGender by remember { mutableStateOf(savedModel?.showingGender) }
 
 
     Column(
@@ -274,6 +301,40 @@ fun RegisterSecondStage(
                 }
             )
         }
+    }
+}
+
+@Composable
+fun RegisterDialogController(
+    authEvent: AuthEvent,
+    shouldShowDialog: (AuthEvent) -> Boolean,
+    saveHandledEvent: (AuthEvent) -> Unit
+) {
+    if (shouldShowDialog.invoke(authEvent)) {
+        val openDialog = remember { mutableStateOf(false) }
+        var title by remember { mutableStateOf("") }
+        var text by remember { mutableStateOf<String?>(null) }
+
+        when (authEvent.type) {
+            AuthEventType.REGISTRATION_FAILED -> {
+                openDialog.value = true
+                title = "Не удалось зарегистрироваться"
+                text = "Возможно, вы придумали слабый пароль. " +
+                        "Либо пользователь с такой почтой уже существует"
+            }
+            else -> {
+                openDialog.value = false
+            }
+        }
+
+        InfoDialog(
+            openDialog = openDialog,
+            title = title,
+            text = text,
+            onButtonClick = {
+                saveHandledEvent.invoke(authEvent)
+            }
+        )
     }
 }
 

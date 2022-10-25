@@ -8,12 +8,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.zIndex
 
 @Composable
 fun LoadingView() {
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(color = Color.White)) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.Black.copy(alpha = 0.5f))
+            .zIndex(3f)
+    ) {
         CircularProgressIndicator(Modifier.align(Alignment.Center))
     }
 }
