@@ -1,5 +1,6 @@
 package ru.ulyanaab.lifemates.ui.common.navigation
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +17,7 @@ import ru.ulyanaab.lifemates.ui.feed.FeedViewModel
 import ru.ulyanaab.lifemates.ui.profile.ProfileScreen
 import ru.ulyanaab.lifemates.ui.profile.ProfileViewModel
 
+@ExperimentalAnimationApi
 @Composable
 fun BottomNavGraph(
     navController: NavHostController,

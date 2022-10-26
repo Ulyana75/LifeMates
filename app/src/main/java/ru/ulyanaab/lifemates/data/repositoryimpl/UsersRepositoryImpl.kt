@@ -33,10 +33,10 @@ class UsersRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun likeUser(id: Long): Result<Unit> {
+    override suspend fun likeUser(id: Long): Result<Boolean?> {
         val response = userApi.like(id).awaitResponse()
         return when (response.code()) {
-            200 -> Result.Success(Unit)
+            200 -> Result.Success(response.body()?.isMatch)
             401 -> Result.Failure(Error.Unauthorized)
             else -> Result.Failure(Error.Unknown)
         }

@@ -2,6 +2,7 @@ package ru.ulyanaab.lifemates.ui.common.widget
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -17,7 +18,7 @@ fun InfoDialog(
     openDialog: MutableState<Boolean>,
     title: String,
     text: String? = null,
-    onButtonClick: () -> Unit = {}
+    onButtonClick: () -> Unit = {},
 ) {
     if (openDialog.value) {
         AlertDialog(
@@ -43,10 +44,12 @@ fun InfoDialog(
             },
             text = if (text != null) {
                 {
-                    Text(
-                        text = text,
-                        style = Typography.body1.copy(color = Color.Black)
-                    )
+                    SelectionContainer {
+                        Text(
+                            text = text,
+                            style = Typography.body1.copy(color = Color.Black)
+                        )
+                    }
                 }
             } else null,
             shape = Shapes.large

@@ -29,7 +29,7 @@ val Typography = Typography(
         fontWeight = FontWeight.Bold,
         fontSize = 24.sp,
         letterSpacing = 0.02.sp,
-        lineHeight = 41.sp
+        lineHeight = 30.sp
     ),
     h3 = TextStyle(
         fontFamily = SfProFontFamily,
@@ -43,7 +43,14 @@ val Typography = Typography(
         fontWeight = FontWeight.Medium,
         fontSize = 32.sp,
         letterSpacing = (-0.01).sp,
-        lineHeight = 22.sp
+        lineHeight = 30.sp
+    ),
+    subtitle1 = TextStyle(
+        fontFamily = SfProFontFamily,
+        fontWeight = FontWeight.Medium,
+        fontSize = 11.sp,
+        letterSpacing = 0.01.sp,
+        lineHeight = 13.sp
     ),
     body1 = TextStyle(
         fontFamily = SfProFontFamily,

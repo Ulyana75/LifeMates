@@ -10,7 +10,7 @@ data class ContactDto(
     val type: ContactTypeDto,
 
     @Json(name = "value")
-    val value: String?,
+    val value: String,
 )
 
 enum class ContactTypeDto {

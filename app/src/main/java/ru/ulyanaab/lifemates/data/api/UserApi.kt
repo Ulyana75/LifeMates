@@ -8,6 +8,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 import ru.ulyanaab.lifemates.data.dto.common.OtherUserDto
 import ru.ulyanaab.lifemates.data.dto.response.GetUsersResponseDto
+import ru.ulyanaab.lifemates.data.dto.response.LikeResponseDto
 
 interface UserApi {
 
@@ -18,7 +19,7 @@ interface UserApi {
     fun getSingleUser(@Path("userId") userId: Long): Call<OtherUserDto>
 
     @POST("users/{userId}/like")
-    fun like(@Path("userId") userId: Long): Call<Unit>
+    fun like(@Path("userId") userId: Long): Call<LikeResponseDto>
 
     @POST("users/{userId}/dislike")
     fun dislike(@Path("userId") userId: Long): Call<Unit>

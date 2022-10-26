@@ -21,13 +21,16 @@ class FeedViewModel @Inject constructor(
     private val _currentUserStateFlow: MutableStateFlow<OtherUserUiModel?> = MutableStateFlow(null)
     val currentUserStateFlow: StateFlow<OtherUserUiModel?> = _currentUserStateFlow.asStateFlow()
 
-    private val _currentUserIdStateFlow: MutableStateFlow<Long?> = MutableStateFlow(null)
+    private val _currentUserModelStateFlow: MutableStateFlow<OtherUserModel?> = MutableStateFlow(null)
 
     private val _usersAreFinishedFlow = MutableStateFlow(false)
     val usersAreFinishedFlow: StateFlow<Boolean> = _usersAreFinishedFlow.asStateFlow()
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
+    private val _matchStateFlow: MutableStateFlow<MatchUiModel?> = MutableStateFlow(null)
+    val matchStateFlow: StateFlow<MatchUiModel?> = _matchStateFlow.asStateFlow()
 
     private val usersList = mutableListOf<OtherUserModel>()
     private var currentIndex = 0
@@ -37,10 +40,24 @@ class FeedViewModel @Inject constructor(
     }
 
     fun onLikeClick() {
+        val model = _currentUserModelStateFlow.value
+
         requestNextSingleUser()
+
+        model?.let {
+            CoroutineScope(Dispatchers.IO).launch {
+                val isMatch = usersInteractor.like(it.id)
+                if (isMatch == true) {
+                    _matchStateFlow.value = otherUserMapper.mapToMatchUiModel(it)
+                }
+            }
+        }
     }
 
     fun onDislikeClick() {
+        _currentUserModelStateFlow.value?.let {
+            usersInteractor.dislike(it.id)
+        }
         requestNextSingleUser()
     }
 
@@ -49,7 +66,7 @@ class FeedViewModel @Inject constructor(
 
         if (nextUser != null) {
             _currentUserStateFlow.value = otherUserMapper.mapToUiModel(nextUser)
-            _currentUserIdStateFlow.value = nextUser.id
+            _currentUserModelStateFlow.value = nextUser
 
             if (usersList.size - (currentIndex + 1) == USERS_TILL_END_TO_REQUEST) {
                 requestNextUsersAsync()

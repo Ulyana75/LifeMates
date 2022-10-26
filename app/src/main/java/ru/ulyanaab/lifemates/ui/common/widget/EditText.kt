@@ -77,7 +77,7 @@ fun EditText(
                         innerTextField()
                     }
                     Icon(
-                        painter = painterResource(id = R.drawable.xmark_circle_fill),
+                        painter = painterResource(id = R.drawable.ic_close),
                         contentDescription = null,
                         modifier = Modifier.clickable {
                             onClearClicked.invoke()

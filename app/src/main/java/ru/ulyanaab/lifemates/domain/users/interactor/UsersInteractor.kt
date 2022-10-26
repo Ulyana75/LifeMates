@@ -33,8 +33,8 @@ class UsersInteractor @Inject constructor(
         )
     }
 
-    fun like(id: Long) {
-        resultProcessorWithTokensRefreshing.proceed(
+    suspend fun like(id: Long): Boolean? {
+        return resultProcessorWithTokensRefreshing.proceedAndReturn(
             resultProducer = {
                 usersRepository.likeUser(id)
             },

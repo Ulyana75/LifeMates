@@ -16,7 +16,7 @@ data class OtherUserDto(
     val gender: GenderDto,
 
     @Json(name = "age")
-    val age: Int,
+    val age: Int?,
 
     @Json(name = "distance")
     val distance: Int?,
