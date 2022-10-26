@@ -86,4 +86,7 @@ dependencies {
 
     // coil
     implementation "io.coil-kt:coil-compose:2.0.0-rc01"
+
+    // slider
+    implementation "com.github.krottv:compose-sliders:0.1.4"
 }

@@ -12,6 +12,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -177,32 +178,8 @@ fun UserInfoPhotoBlock(
                     )
                 }
             }
-        } else if (imageUrl != null) {
-            Image(
-                painter = rememberAsyncImagePainter(imageUrl),
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .align(Alignment.Center),
-                contentScale = ContentScale.Crop
-            )
         } else {
-            Box(
-                modifier = Modifier
-                    .height(439.dp)
-                    .fillMaxWidth()
-                    .clip(Shapes.small)
-                    .background(color = GreyLight)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_image),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .width(50.dp)
-                        .align(Alignment.Center),
-                    tint = GreyDark
-                )
-            }
+            PhotoOrPlaceholder(imageUrl = imageUrl)
         }
     }
     UserInfoButton(
@@ -213,6 +190,39 @@ fun UserInfoPhotoBlock(
             launcher.launch("image/*")
         }
     )
+}
+
+@Composable
+fun BoxScope.PhotoOrPlaceholder(
+    imageUrl: String? = null,
+) {
+    if (imageUrl != null) {
+        Image(
+            painter = rememberAsyncImagePainter(imageUrl),
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxSize()
+                .align(Alignment.Center),
+            contentScale = ContentScale.Crop
+        )
+    } else {
+        Box(
+            modifier = Modifier
+                .height(439.dp)
+                .fillMaxWidth()
+                .clip(Shapes.small)
+                .background(color = GreyLight)
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_image),
+                contentDescription = null,
+                modifier = Modifier
+                    .width(50.dp)
+                    .align(Alignment.Center),
+                tint = GreyDark
+            )
+        }
+    }
 }
 
 @Composable

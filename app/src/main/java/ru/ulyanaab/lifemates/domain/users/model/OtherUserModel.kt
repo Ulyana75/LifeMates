@@ -5,7 +5,7 @@ import ru.ulyanaab.lifemates.domain.common.model.GenderModel
 
 data class OtherUserModel(
     val id: Long,
-    val name: String?,
+    val name: String,
     val description: String?,
     val gender: GenderModel,
     val age: Int?,

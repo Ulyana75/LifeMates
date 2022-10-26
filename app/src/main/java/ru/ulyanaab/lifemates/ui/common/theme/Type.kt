@@ -38,6 +38,13 @@ val Typography = Typography(
         letterSpacing = 0.02.sp,
         lineHeight = 37.sp
     ),
+    h4 = TextStyle(
+        fontFamily = SfProFontFamily,
+        fontWeight = FontWeight.Medium,
+        fontSize = 32.sp,
+        letterSpacing = (-0.01).sp,
+        lineHeight = 22.sp
+    ),
     body1 = TextStyle(
         fontFamily = SfProFontFamily,
         fontWeight = FontWeight.Bold,

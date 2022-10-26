@@ -15,14 +15,14 @@ import androidx.navigation.compose.rememberNavController
 import ru.ulyanaab.lifemates.domain.common.state_holders.AuthStateHolder
 import ru.ulyanaab.lifemates.ui.auth.AuthScreen
 import ru.ulyanaab.lifemates.ui.auth.AuthViewModel
-import ru.ulyanaab.lifemates.ui.common.UploadPhotoViewModel
 import ru.ulyanaab.lifemates.ui.common.navigation.BottomNavGraph
 import ru.ulyanaab.lifemates.ui.common.navigation.BottomNavigation
+import ru.ulyanaab.lifemates.ui.common.theme.LifeMatesTheme
+import ru.ulyanaab.lifemates.ui.feed.FeedViewModel
+import ru.ulyanaab.lifemates.ui.profile.ProfileViewModel
 import ru.ulyanaab.lifemates.ui.register.RegisterFirstStage
 import ru.ulyanaab.lifemates.ui.register.RegisterSecondStage
 import ru.ulyanaab.lifemates.ui.register.RegisterViewModel
-import ru.ulyanaab.lifemates.ui.common.theme.LifeMatesTheme
-import ru.ulyanaab.lifemates.ui.profile.ProfileViewModel
 import javax.inject.Inject
 
 @ExperimentalFoundationApi
@@ -39,6 +39,9 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var profileViewModel: ProfileViewModel
+
+    @Inject
+    lateinit var feedViewModel: FeedViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         (application as App).appComponent.inject(this)
@@ -85,6 +88,7 @@ class MainActivity : ComponentActivity() {
                                 BottomNavGraph(
                                     navController = navController2,
                                     profileViewModel = profileViewModel,
+                                    feedViewModel = feedViewModel,
                                 )
                             }
                         }

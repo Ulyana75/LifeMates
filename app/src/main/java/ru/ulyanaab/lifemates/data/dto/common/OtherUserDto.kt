@@ -7,7 +7,7 @@ data class OtherUserDto(
     val id: Long,
 
     @Json(name = "name")
-    val name: String?,
+    val name: String,
 
     @Json(name = "description")
     val description: String?,
@@ -19,7 +19,7 @@ data class OtherUserDto(
     val age: Int,
 
     @Json(name = "distance")
-    val distance: Int,
+    val distance: Int?,
 
     @Json(name = "interests")
     val interests: List<Int>,

@@ -11,6 +11,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import ru.ulyanaab.lifemates.ui.common.UploadPhotoViewModel
+import ru.ulyanaab.lifemates.ui.feed.FeedScreen
+import ru.ulyanaab.lifemates.ui.feed.FeedViewModel
 import ru.ulyanaab.lifemates.ui.profile.ProfileScreen
 import ru.ulyanaab.lifemates.ui.profile.ProfileViewModel
 
@@ -18,6 +20,7 @@ import ru.ulyanaab.lifemates.ui.profile.ProfileViewModel
 fun BottomNavGraph(
     navController: NavHostController,
     profileViewModel: ProfileViewModel,
+    feedViewModel: FeedViewModel,
 ) {
     NavHost(
         navController = navController,
@@ -29,11 +32,7 @@ fun BottomNavGraph(
             )
         }
         composable(BottomNavItem.Feed.screenRoute) {
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .background(color = Color.Blue)) {
-                Text(text = "feed")
-            }
+           FeedScreen(feedViewModel = feedViewModel)
         }
         composable(BottomNavItem.Chats.screenRoute) {
             Box(modifier = Modifier
