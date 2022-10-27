@@ -1,4 +1,4 @@
-package ru.ulyanaab.lifemates.ui.common.navigation
+package ru.ulyanaab.lifemates.ui.common.navigation.bottom
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
@@ -11,7 +11,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import ru.ulyanaab.lifemates.ui.common.UploadPhotoViewModel
 import ru.ulyanaab.lifemates.ui.feed.FeedScreen
 import ru.ulyanaab.lifemates.ui.feed.FeedViewModel
 import ru.ulyanaab.lifemates.ui.profile.ProfileScreen
@@ -26,20 +25,20 @@ fun BottomNavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = "feed"
+        startDestination = BottomNavItem.Feed.screenRoute
     ) {
         composable(BottomNavItem.Profile.screenRoute) {
-            ProfileScreen(
-                profileViewModel = profileViewModel,
-            )
+            ProfileScreen(profileViewModel = profileViewModel)
         }
         composable(BottomNavItem.Feed.screenRoute) {
-           FeedScreen(feedViewModel = feedViewModel)
+            FeedScreen(feedViewModel = feedViewModel)
         }
         composable(BottomNavItem.Chats.screenRoute) {
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .background(color = Color.Cyan)) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(color = Color.Cyan)
+            ) {
                 Text(text = "chats")
             }
         }

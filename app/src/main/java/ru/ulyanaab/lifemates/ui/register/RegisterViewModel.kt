@@ -8,18 +8,19 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ru.ulyanaab.lifemates.domain.auth.interactor.AuthInteractor
 import ru.ulyanaab.lifemates.domain.common.interactor.UploadPhotoInteractor
-import ru.ulyanaab.lifemates.domain.common.state_holders.AuthEvent
+import ru.ulyanaab.lifemates.domain.common.state_holders.RegisterEventsStateHolder
 import ru.ulyanaab.lifemates.ui.common.UploadPhotoViewModel
 import ru.ulyanaab.lifemates.ui.common.model.RoundedBlockUiModel
-import ru.ulyanaab.lifemates.ui.common.utils.HandledAuthEventRepository
 import javax.inject.Inject
 
 class RegisterViewModel @Inject constructor(
     private val authInteractor: AuthInteractor,
     private val registerMapper: RegisterMapper,
-    private val handledAuthEventRepository: HandledAuthEventRepository,
+    registerEventsStateHolder: RegisterEventsStateHolder,
     uploadPhotoInteractor: UploadPhotoInteractor,
 ) : UploadPhotoViewModel(uploadPhotoInteractor) {
+
+    val registerEventsFlow = registerEventsStateHolder.registerEventsFlow
 
     private val _isLoading: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
@@ -74,14 +75,6 @@ class RegisterViewModel @Inject constructor(
 
             _isLoading.value = false
         }
-    }
-
-    fun shouldHandleAuthEvent(authEvent: AuthEvent): Boolean {
-        return handledAuthEventRepository.getEvent() != authEvent
-    }
-
-    fun saveHandledAuthEvent(authEvent: AuthEvent) {
-        handledAuthEventRepository.saveEvent(authEvent)
     }
 
     fun getGenderModels(): List<RoundedBlockUiModel> {

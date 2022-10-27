@@ -5,19 +5,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import ru.ulyanaab.lifemates.domain.auth.interactor.AuthInteractor
 import ru.ulyanaab.lifemates.domain.auth.model.LoginModel
-import ru.ulyanaab.lifemates.domain.common.state_holders.AuthEvent
-import ru.ulyanaab.lifemates.domain.common.state_holders.AuthStateHolder
-import ru.ulyanaab.lifemates.ui.common.utils.HandledAuthEventRepository
+import ru.ulyanaab.lifemates.domain.common.state_holders.AuthEventsStateHolder
 import javax.inject.Inject
 
 class AuthViewModel @Inject constructor(
     private val authInteractor: AuthInteractor,
-    private val handledAuthEventRepository: HandledAuthEventRepository,
+    authEventsStateHolder: AuthEventsStateHolder,
 ) {
+
+    val authEventsFlow = authEventsStateHolder.authEventsFlow
 
     private val _isLoading: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
@@ -33,13 +32,5 @@ class AuthViewModel @Inject constructor(
             authInteractor.login(loginModel)
             _isLoading.value = false
         }
-    }
-
-    fun shouldHandleAuthEvent(authEvent: AuthEvent): Boolean {
-        return handledAuthEventRepository.getEvent() != authEvent
-    }
-
-    fun saveHandledAuthEvent(authEvent: AuthEvent) {
-        handledAuthEventRepository.saveEvent(authEvent)
     }
 }

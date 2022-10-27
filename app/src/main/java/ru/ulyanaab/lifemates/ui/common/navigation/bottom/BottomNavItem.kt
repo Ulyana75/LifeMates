@@ -1,4 +1,4 @@
-package ru.ulyanaab.lifemates.ui.common.navigation
+package ru.ulyanaab.lifemates.ui.common.navigation.bottom
 
 import ru.ulyanaab.lifemates.R
 

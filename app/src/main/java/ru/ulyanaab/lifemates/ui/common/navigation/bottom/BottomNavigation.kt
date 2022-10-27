@@ -1,4 +1,4 @@
-package ru.ulyanaab.lifemates.ui.common.navigation
+package ru.ulyanaab.lifemates.ui.common.navigation.bottom
 
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon

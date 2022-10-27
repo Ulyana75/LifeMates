@@ -11,7 +11,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,6 +26,7 @@ import androidx.navigation.NavController
 import ru.ulyanaab.lifemates.domain.auth.model.LoginModel
 import ru.ulyanaab.lifemates.domain.common.state_holders.AuthEvent
 import ru.ulyanaab.lifemates.domain.common.state_holders.AuthEventType
+import ru.ulyanaab.lifemates.ui.common.navigation.auth.AuthNavItem
 import ru.ulyanaab.lifemates.ui.common.theme.Shapes
 import ru.ulyanaab.lifemates.ui.common.theme.Typography
 import ru.ulyanaab.lifemates.ui.common.widget.Button
@@ -38,20 +38,11 @@ import ru.ulyanaab.lifemates.ui.common.widget.LoadingView
 fun AuthScreen(
     authViewModel: AuthViewModel,
     navController: NavController,
-    authEvent: AuthEvent
 ) {
     val isLoading by authViewModel.isLoading.collectAsState()
 
-    LaunchedEffect(authEvent) {
-        if (authEvent.type == AuthEventType.AUTHORIZATION_SUCCESS) {
-            navController.navigate("main")
-        }
-    }
-
     AuthDialogController(
-        authEvent = authEvent,
-        shouldShowDialog = authViewModel::shouldHandleAuthEvent,
-        saveHandledEvent = authViewModel::saveHandledAuthEvent
+        authEvent = authViewModel.authEventsFlow.collectAsState(initial = null).value
     )
 
     if (isLoading) {
@@ -91,7 +82,7 @@ fun AuthView(
                     authViewModel.onLoginClick(login, password)
                 },
                 onRegisterButtonClick = {
-                    navController.navigate("register_first_stage")
+                    navController.navigate(AuthNavItem.RegisterFirst.screenRoute)
                 }
             )
         }
@@ -100,24 +91,19 @@ fun AuthView(
 
 @Composable
 fun AuthDialogController(
-    authEvent: AuthEvent,
-    shouldShowDialog: (AuthEvent) -> Boolean,
-    saveHandledEvent: (AuthEvent) -> Unit
+    authEvent: AuthEvent?,
 ) {
-    if (shouldShowDialog.invoke(authEvent)) {
+    if (authEvent != null) {
         val openDialog = remember { mutableStateOf(false) }
         var title by remember { mutableStateOf("") }
         var text by remember { mutableStateOf<String?>(null) }
 
         when (authEvent.type) {
-            AuthEventType.AUTHORIZATION_SUCCESS, AuthEventType.UNAUTHORIZED -> {
-                openDialog.value = false
-            }
             AuthEventType.WRONG_PASSWORD -> {
                 openDialog.value = true
                 title = "Неверный логин или пароль"
             }
-            else -> {
+            AuthEventType.UNKNOWN_ERROR -> {
                 openDialog.value = true
                 title = "Произошла неизвестная ошибка"
                 text = "Попробуйте еще раз"
@@ -128,9 +114,6 @@ fun AuthDialogController(
             openDialog = openDialog,
             title = title,
             text = text,
-            onButtonClick = {
-                saveHandledEvent.invoke(authEvent)
-            }
         )
     }
 }

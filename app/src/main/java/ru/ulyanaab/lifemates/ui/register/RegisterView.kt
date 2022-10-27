@@ -11,7 +11,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,9 +24,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ru.ulyanaab.lifemates.R
-import ru.ulyanaab.lifemates.domain.common.state_holders.AuthEvent
-import ru.ulyanaab.lifemates.domain.common.state_holders.AuthEventType
+import ru.ulyanaab.lifemates.domain.common.state_holders.RegisterEvent
+import ru.ulyanaab.lifemates.domain.common.state_holders.RegisterEventType
 import ru.ulyanaab.lifemates.ui.common.UploadPhotoViewModel
+import ru.ulyanaab.lifemates.ui.common.navigation.auth.AuthNavItem
 import ru.ulyanaab.lifemates.ui.common.utils.showToast
 import ru.ulyanaab.lifemates.ui.common.widget.ContactsBlock
 import ru.ulyanaab.lifemates.ui.common.widget.DescriptionBlock
@@ -120,7 +120,7 @@ fun RegisterFirstStage(
                         showToast(text = "Пароли не совпадают", context)
                     } else {
                         registerViewModel.saveLoginAndPassword(login, password)
-                        navController.navigate("register_second_stage")
+                        navController.navigate(AuthNavItem.RegisterSecond.screenRoute)
                     }
                 }
             }
@@ -132,20 +132,11 @@ fun RegisterFirstStage(
 fun RegisterSecondStage(
     registerViewModel: RegisterViewModel,
     navController: NavController,
-    authEvent: AuthEvent
 ) {
     val isLoading by registerViewModel.isLoading.collectAsState()
 
-    LaunchedEffect(authEvent) {
-        if (authEvent.type == AuthEventType.AUTHORIZATION_SUCCESS) {
-            navController.navigate("main")
-        }
-    }
-
     RegisterDialogController(
-        authEvent = authEvent,
-        shouldShowDialog = registerViewModel::shouldHandleAuthEvent,
-        saveHandledEvent = registerViewModel::saveHandledAuthEvent
+        registerEvent = registerViewModel.registerEventsFlow.collectAsState(initial = null).value
     )
 
     if (isLoading) {
@@ -300,24 +291,23 @@ fun RegisterSecondStageView(
 
 @Composable
 fun RegisterDialogController(
-    authEvent: AuthEvent,
-    shouldShowDialog: (AuthEvent) -> Boolean,
-    saveHandledEvent: (AuthEvent) -> Unit
+    registerEvent: RegisterEvent?
 ) {
-    if (shouldShowDialog.invoke(authEvent)) {
+    if (registerEvent != null) {
         val openDialog = remember { mutableStateOf(false) }
         var title by remember { mutableStateOf("") }
         var text by remember { mutableStateOf<String?>(null) }
 
-        when (authEvent.type) {
-            AuthEventType.REGISTRATION_FAILED -> {
+        when (registerEvent.type) {
+            RegisterEventType.REGISTRATION_FAILED -> {
                 openDialog.value = true
                 title = "Не удалось зарегистрироваться"
                 text = "Возможно, вы придумали слабый пароль. " +
                         "Либо пользователь с такой почтой уже существует"
             }
-            else -> {
-                openDialog.value = false
+            RegisterEventType.UNKNOWN_ERROR -> {
+                openDialog.value = true
+                title = "Произошла неизвестная ошибка"
             }
         }
 
@@ -325,9 +315,6 @@ fun RegisterDialogController(
             openDialog = openDialog,
             title = title,
             text = text,
-            onButtonClick = {
-                saveHandledEvent.invoke(authEvent)
-            }
         )
     }
 }
