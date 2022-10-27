@@ -5,9 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.navigation.compose.rememberNavController
-import dagger.Lazy
 import ru.ulyanaab.lifemates.domain.common.state_holders.AuthStateHolder
 import ru.ulyanaab.lifemates.ui.auth.AuthViewModel
 import ru.ulyanaab.lifemates.ui.common.navigation.general.GeneralNavGraph
@@ -18,6 +17,7 @@ import ru.ulyanaab.lifemates.ui.profile.ProfileViewModel
 import ru.ulyanaab.lifemates.ui.register.RegisterViewModel
 import javax.inject.Inject
 
+@ExperimentalComposeUiApi
 @ExperimentalFoundationApi
 @ExperimentalAnimationApi
 class MainActivity : ComponentActivity() {

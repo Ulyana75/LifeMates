@@ -29,7 +29,7 @@ class RefreshTokenInteractor @Inject constructor(
             return true
         }
 
-        if (newTokensResult is Result.Failure && newTokensResult.error is Error.Unauthorized) {
+        if (newTokensResult is Result.Failure && newTokensResult.error is Error.Forbidden) {
             authStateHolder.update(AuthState.UNAUTHORIZED)
         }
 

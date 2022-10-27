@@ -31,6 +31,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
@@ -41,7 +42,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.github.krottv.compose.sliders.SliderValueHorizontal
 import ru.ulyanaab.lifemates.R
 import ru.ulyanaab.lifemates.ui.common.model.ContactUiModel
@@ -60,6 +62,7 @@ import ru.ulyanaab.lifemates.ui.common.widget.MainHeartIcon
 import ru.ulyanaab.lifemates.ui.common.widget.OtherUserView
 import ru.ulyanaab.lifemates.ui.common.widget.PhotoOrPlaceholder
 
+@ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @Composable
 fun FeedScreen(feedViewModel: FeedViewModel) {
@@ -75,6 +78,7 @@ fun FeedScreen(feedViewModel: FeedViewModel) {
     FeedView(feedViewModel = feedViewModel)
 }
 
+@ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @Composable
 fun FeedView(feedViewModel: FeedViewModel) {
@@ -110,6 +114,7 @@ fun FeedView(feedViewModel: FeedViewModel) {
     }
 }
 
+@ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @Composable
 fun MatchView(
@@ -125,58 +130,63 @@ fun MatchView(
 
     if (needShow) {
         BoxWithConstraints(
-            modifier = Modifier
-                .fillMaxSize()
-                .zIndex(2f)
-                .background(color = Color.Black.copy(alpha = 0.7f))
+            modifier = Modifier.fillMaxSize()
         ) {
             val height = maxHeight / 2
 
-            Box(
-                modifier = Modifier
-                    .padding(horizontal = 24.dp)
-                    .align(Alignment.Center)
-                    .clip(Shapes.large)
-                    .shadow(elevation = 4.dp, shape = Shapes.large)
-                    .background(Color.White),
+            Dialog(
+                onDismissRequest = { needShow = false },
+                properties = DialogProperties(
+                    usePlatformDefaultWidth = false
+                )
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp)
+                        .align(Alignment.Center)
+                        .clip(Shapes.large)
+                        .shadow(elevation = 4.dp, shape = Shapes.large)
+                        .background(Color.White),
                 ) {
-                    Box(modifier = Modifier.height(height)) {
-                        PhotoOrPlaceholder(matchUiModel.imageUrl)
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Box(modifier = Modifier.height(height)) {
+                            PhotoOrPlaceholder(matchUiModel.imageUrl)
+                        }
+                        Text(
+                            text = matchUiModel.title,
+                            style = Typography.h4.copy(color = Color.Black),
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                        )
+                        Button(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            onClick = {
+                                openDialog.value = true
+                            },
+                            text = "Начать общение!"
+                        )
                     }
-                    Text(
-                        text = matchUiModel.title,
-                        style = Typography.h4.copy(color = Color.Black),
+
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_close),
+                        contentDescription = null,
                         modifier = Modifier
-                            .padding(16.dp)
-                            .fillMaxWidth(),
-                        textAlign = TextAlign.Center
-                    )
-                    Button(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        onClick = {
-                            openDialog.value = true
-                        },
-                        text = "Начать общение!"
+                            .align(Alignment.TopEnd)
+                            .padding(8.dp)
+                            .size(40.dp)
+                            .clickable {
+                                needShow = false
+                            }
+                            .shadow(elevation = 4.dp, shape = CircleShape)
                     )
                 }
-
-                Image(
-                    painter = painterResource(id = R.drawable.ic_close),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(8.dp)
-                        .size(40.dp)
-                        .clickable {
-                            needShow = false
-                        }
-                        .shadow(elevation = 4.dp, shape = CircleShape)
-                )
             }
         }
     }
@@ -308,6 +318,7 @@ private fun getColor(
     )
 }
 
+@ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @Preview
 @Composable

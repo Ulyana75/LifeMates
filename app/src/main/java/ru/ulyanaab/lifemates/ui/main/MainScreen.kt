@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import ru.ulyanaab.lifemates.domain.common.state_holders.AuthState
@@ -18,6 +19,7 @@ import ru.ulyanaab.lifemates.ui.common.navigation.general.GeneralNavItem
 import ru.ulyanaab.lifemates.ui.feed.FeedViewModel
 import ru.ulyanaab.lifemates.ui.profile.ProfileViewModel
 
+@ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @Composable
 fun MainScreen(

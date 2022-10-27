@@ -80,16 +80,17 @@ class FeedViewModel @Inject constructor(
         } else {
             CoroutineScope(Dispatchers.IO).launch {
                 _isLoading.value = true
-                requestNextUsersAsync().await()
-                _isLoading.value = false
-                if (!_usersAreFinishedFlow.value) {
+
+                requestNextUsersAsync {
                     requestNextSingleUser()
-                }
+                }.await()
+
+                _isLoading.value = false
             }
         }
     }
 
-    private fun requestNextUsersAsync(): Deferred<Unit> {
+    private fun requestNextUsersAsync(onSuccess: () -> Unit = {}): Deferred<Unit> {
         return CoroutineScope(Dispatchers.IO).async {
             val nextUsersList = usersInteractor.getFeed(USERS_REQUEST_COUNT)?.users ?: return@async
 
@@ -97,6 +98,7 @@ class FeedViewModel @Inject constructor(
                 _usersAreFinishedFlow.value = true
             } else {
                 usersList.addAll(nextUsersList)
+                onSuccess.invoke()
             }
         }
     }
