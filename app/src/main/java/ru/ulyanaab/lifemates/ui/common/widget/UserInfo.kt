@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -92,6 +93,12 @@ fun UserInfoPhotoBlock(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         imageUri = uri
+    }
+
+    LaunchedEffect(imageUri) {
+        imageUri?.let {
+            uploadPhotoViewModel.onImagePickedFromGallery(it)
+        }
     }
 
     UserInfoBlockTitle(
