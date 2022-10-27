@@ -1,26 +1,14 @@
 package ru.ulyanaab.lifemates.ui.common.widget
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.ImageDecoder
 import android.net.Uri
-import android.os.Build
-import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -28,26 +16,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberAsyncImagePainter
-import ru.ulyanaab.lifemates.R
 import ru.ulyanaab.lifemates.ui.common.UploadPhotoViewModel
 import ru.ulyanaab.lifemates.ui.common.model.RoundedBlockUiModel
-import ru.ulyanaab.lifemates.ui.common.theme.GreyDark
-import ru.ulyanaab.lifemates.ui.common.utils.showToast
 import ru.ulyanaab.lifemates.ui.common.theme.GreyLight
 import ru.ulyanaab.lifemates.ui.common.theme.Shapes
 import ru.ulyanaab.lifemates.ui.common.theme.Typography
+import ru.ulyanaab.lifemates.ui.common.utils.showToast
 
 @Composable
 fun UserInfoEditText(
@@ -108,21 +88,10 @@ fun UserInfoPhotoBlock(
     imageUrl: String? = null
 ) {
     var imageUri by remember { mutableStateOf<Uri?>(null) }
-    val context = LocalContext.current
-    var bitmap by remember { mutableStateOf<Bitmap?>(null) }
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         imageUri = uri
-        uri?.let {
-            bitmap = if (Build.VERSION.SDK_INT < 28) {
-                MediaStore.Images.Media.getBitmap(context.contentResolver, it)
-            } else {
-                val source = ImageDecoder.createSource(context.contentResolver, it)
-                ImageDecoder.decodeBitmap(source)
-            }
-            uploadPhotoViewModel.onImagePickedFromGallery(it)
-        }
     }
 
     UserInfoBlockTitle(
@@ -137,47 +106,18 @@ fun UserInfoPhotoBlock(
             .clip(Shapes.small)
             .background(color = GreyLight)
     ) {
-        if (bitmap != null) {
-            Image(
-                bitmap = bitmap!!.asImageBitmap(),
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .align(Alignment.Center),
-                contentScale = ContentScale.Crop
+        if (imageUri != null) {
+            PhotoWithProgress(
+                imageUri = imageUri!!,
+                isProgressVisible = uploadPhotoViewModel.isProgressVisible.collectAsState().value,
+                isFailure = uploadPhotoViewModel.isFailure.collectAsState().value,
+                progress = uploadPhotoViewModel.progressValue.collectAsState().value,
+                onReloadClick = {
+                    imageUri?.let {
+                        uploadPhotoViewModel.onImagePickedFromGallery(it)
+                    }
+                },
             )
-            if (uploadPhotoViewModel.isProgressVisible.collectAsState().value) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(color = Color.Black.copy(alpha = 0.5f))
-                ) {
-                    CircularProgressIndicator(
-                        progress = uploadPhotoViewModel.progressValue.collectAsState().value,
-                        color = Color.White,
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .size(50.dp)
-                    )
-                }
-            }
-            if (uploadPhotoViewModel.isFailure.collectAsState().value) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(color = Color.Black.copy(alpha = 0.5f))
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_try_again),
-                        contentDescription = null,
-                        Modifier.clickable {
-                            imageUri?.let {
-                                uploadPhotoViewModel.onImagePickedFromGallery(it)
-                            }
-                        }
-                    )
-                }
-            }
         } else {
             PhotoOrPlaceholder(imageUrl = imageUrl)
         }
@@ -190,39 +130,6 @@ fun UserInfoPhotoBlock(
             launcher.launch("image/*")
         }
     )
-}
-
-@Composable
-fun BoxScope.PhotoOrPlaceholder(
-    imageUrl: String? = null,
-) {
-    if (imageUrl != null) {
-        Image(
-            painter = rememberAsyncImagePainter(imageUrl),
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxSize()
-                .align(Alignment.Center),
-            contentScale = ContentScale.Crop
-        )
-    } else {
-        Box(
-            modifier = Modifier
-                .height(439.dp)
-                .fillMaxWidth()
-                .clip(Shapes.small)
-                .background(color = GreyLight)
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_image),
-                contentDescription = null,
-                modifier = Modifier
-                    .width(50.dp)
-                    .align(Alignment.Center),
-                tint = GreyDark
-            )
-        }
-    }
 }
 
 @Composable

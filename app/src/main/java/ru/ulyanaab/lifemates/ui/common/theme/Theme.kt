@@ -1,7 +1,7 @@
 package ru.ulyanaab.lifemates.ui.common.theme
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.gestures.LocalOverScrollConfiguration
+import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.lightColors
@@ -44,7 +44,7 @@ fun LifeMatesTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composa
         shapes = Shapes,
     ) {
         CompositionLocalProvider(
-            LocalOverScrollConfiguration provides null,
+            LocalOverscrollConfiguration provides null,
             content = content
         )
     }

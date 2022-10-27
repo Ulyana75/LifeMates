@@ -36,7 +36,9 @@ class FeedViewModel @Inject constructor(
     private var currentIndex = 0
 
     fun attach() {
-        requestNextSingleUser()
+        if (_currentUserModelStateFlow.value == null) {
+            requestNextSingleUser()
+        }
     }
 
     fun onLikeClick() {
