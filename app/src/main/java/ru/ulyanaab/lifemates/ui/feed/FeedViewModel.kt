@@ -33,7 +33,6 @@ class FeedViewModel @Inject constructor(
     val matchStateFlow: StateFlow<MatchUiModel?> = _matchStateFlow.asStateFlow()
 
     private val usersList = mutableListOf<OtherUserModel>()
-    private var currentIndex = 0
 
     fun attach() {
         if (_currentUserModelStateFlow.value == null) {
@@ -57,24 +56,27 @@ class FeedViewModel @Inject constructor(
     }
 
     fun onDislikeClick() {
-        _currentUserModelStateFlow.value?.let {
+        val model = _currentUserModelStateFlow.value
+
+        requestNextSingleUser()
+
+        model?.let {
             usersInteractor.dislike(it.id)
         }
-        requestNextSingleUser()
     }
 
     private fun requestNextSingleUser() {
-        val nextUser = usersList.getOrNull(currentIndex)
+        val nextUser = usersList.firstOrNull()
+        usersList.removeFirstOrNull()
 
         if (nextUser != null) {
-            _currentUserStateFlow.value = otherUserMapper.mapToUiModel(nextUser)
             _currentUserModelStateFlow.value = nextUser
 
-            if (usersList.size - (currentIndex + 1) == USERS_TILL_END_TO_REQUEST) {
+            if (usersList.size == USERS_TILL_END_TO_REQUEST) {
                 requestNextUsersAsync()
             }
 
-            currentIndex++
+            _currentUserStateFlow.value = otherUserMapper.mapToUiModel(nextUser)
         } else {
             CoroutineScope(Dispatchers.IO).launch {
                 _isLoading.value = true

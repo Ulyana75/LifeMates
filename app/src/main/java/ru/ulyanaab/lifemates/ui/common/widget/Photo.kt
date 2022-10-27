@@ -81,13 +81,19 @@ fun BoxScope.PhotoOrPlaceholder(
     imageUrl: String? = null,
 ) {
     if (imageUrl != null) {
-        Image(
-            painter = rememberAsyncImagePainter(imageUrl),
+        SubcomposeAsyncImage(
+            model = imageUrl,
             contentDescription = null,
             modifier = Modifier
                 .fillMaxSize()
                 .align(Alignment.Center),
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.Crop,
+            loading = {
+                PhotoLoadingPlaceholder()
+            },
+            error = {
+                PhotoPlaceholder()
+            }
         )
     } else {
         PhotoPlaceholder()
