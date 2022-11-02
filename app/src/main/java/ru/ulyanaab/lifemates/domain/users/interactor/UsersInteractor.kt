@@ -11,13 +11,13 @@ class UsersInteractor @Inject constructor(
     private val resultProcessorWithTokensRefreshing: ResultProcessorWithTokensRefreshing,
 ) {
 
-    suspend fun getFeed(count: Int): FeedModel? {
+    suspend fun getFeed(count: Int, offset: Int): FeedModel? {
         return resultProcessorWithTokensRefreshing.proceedAndReturn(
             resultProducer = {
-                usersRepository.getUsers(count)
+                usersRepository.getUsers(count, offset)
             },
             onTokensRefreshedSuccessfully = {
-                getFeed(count)
+                getFeed(count, offset)
             }
         )
     }

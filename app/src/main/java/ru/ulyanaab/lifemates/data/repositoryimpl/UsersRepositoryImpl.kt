@@ -15,8 +15,8 @@ class UsersRepositoryImpl @Inject constructor(
     private val usersMapper: UsersMapper,
 ) : UsersRepository {
 
-    override suspend fun getUsers(count: Int): Result<FeedModel?> {
-        val response = userApi.getUsers(count).awaitResponse()
+    override suspend fun getUsers(count: Int, offset: Int): Result<FeedModel?> {
+        val response = userApi.getUsers(count, offset).awaitResponse()
         return when (response.code()) {
             200 -> Result.Success(response.body()?.let(usersMapper::mapToFeedModel))
             401 -> Result.Failure(Error.Unauthorized)

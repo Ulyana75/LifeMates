@@ -120,7 +120,7 @@ class FeedViewModel @Inject constructor(
             _currentUserModelStateFlow.value = nextUser
 
             if (usersList.size == USERS_TILL_END_TO_REQUEST) {
-                requestNextUsersAsync()
+                requestNextUsersAsync(USERS_TILL_END_TO_REQUEST)
             }
 
             _currentUserStateFlow.value = otherUserMapper.mapToUiModel(nextUser)
@@ -137,11 +137,16 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private fun requestNextUsersAsync(onSuccess: () -> Unit = {}): Deferred<Unit> {
+    private fun requestNextUsersAsync(
+        offset: Int = 0,
+        onSuccess: () -> Unit = {}
+    ): Deferred<Unit> {
         return CoroutineScope(Dispatchers.IO).async {
             locationUpdateJob?.join()
 
-            val nextUsersList = usersInteractor.getFeed(USERS_REQUEST_COUNT)?.users ?: return@async
+            val nextUsersList = usersInteractor.getFeed(
+                USERS_REQUEST_COUNT, offset
+            )?.users ?: return@async
 
             if (nextUsersList.isEmpty()) {
                 _usersAreFinishedFlow.value = true
