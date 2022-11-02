@@ -9,6 +9,6 @@ class App : Application() {
     val appComponent: AppComponent by lazy {
         DaggerAppComponent
             .factory()
-            .create("http://test.u1790484.plsk.regruhosting.ru", applicationContext)
+            .create("http://u1790484.plsk.regruhosting.ru", applicationContext)
     }
 }

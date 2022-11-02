@@ -29,7 +29,7 @@ data class RegisterUserRequestDto(
     @Json(name = "interests")
     val interests: List<Int>,
 
-    @Json(name = "imageUrls")
+    @Json(name = "imagesUrls")
     val imageUrls: List<String>,
 
     @Json(name = "location")

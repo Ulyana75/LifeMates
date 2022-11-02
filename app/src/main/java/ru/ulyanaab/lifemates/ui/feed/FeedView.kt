@@ -1,5 +1,7 @@
 package ru.ulyanaab.lifemates.ui.feed
 
+import android.Manifest
+import android.content.pm.PackageManager
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
@@ -37,6 +39,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,6 +47,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.core.content.ContextCompat
 import com.github.krottv.compose.sliders.SliderValueHorizontal
 import ru.ulyanaab.lifemates.R
 import ru.ulyanaab.lifemates.ui.common.model.ContactUiModel
@@ -55,6 +59,7 @@ import ru.ulyanaab.lifemates.ui.common.theme.PinkMain
 import ru.ulyanaab.lifemates.ui.common.theme.PurpleMain
 import ru.ulyanaab.lifemates.ui.common.theme.Shapes
 import ru.ulyanaab.lifemates.ui.common.theme.Typography
+import ru.ulyanaab.lifemates.ui.common.utils.RequestPermission
 import ru.ulyanaab.lifemates.ui.common.widget.Button
 import ru.ulyanaab.lifemates.ui.common.widget.InfoDialog
 import ru.ulyanaab.lifemates.ui.common.widget.LoadingView
@@ -66,16 +71,32 @@ import ru.ulyanaab.lifemates.ui.common.widget.PhotoOrPlaceholder
 @ExperimentalAnimationApi
 @Composable
 fun FeedScreen(feedViewModel: FeedViewModel) {
-    LaunchedEffect(Unit) {
-        feedViewModel.attach()
-    }
+    FeedScreenWithPermissionRequest(feedViewModel = feedViewModel)
+}
 
-    val isLoading by feedViewModel.isLoading.collectAsState()
+@ExperimentalAnimationApi
+@ExperimentalComposeUiApi
+@Composable
+fun FeedScreenWithPermissionRequest(feedViewModel: FeedViewModel) {
+    val permissionResultReceived = remember { mutableStateOf(false) }
 
-    if (isLoading) {
-        LoadingView(backgroundColor = Color.White)
+    SendLocation(
+        feedViewModel = feedViewModel,
+        permissionResultReceived = permissionResultReceived
+    )
+
+    if (permissionResultReceived.value) {
+        LaunchedEffect(Unit) {
+            feedViewModel.attach()
+        }
+
+        val isLoading by feedViewModel.isLoading.collectAsState()
+
+        if (isLoading) {
+            LoadingView(backgroundColor = Color.White)
+        }
+        FeedView(feedViewModel = feedViewModel)
     }
-    FeedView(feedViewModel = feedViewModel)
 }
 
 @ExperimentalComposeUiApi
@@ -111,6 +132,37 @@ fun FeedView(feedViewModel: FeedViewModel) {
                 }
             )
         }
+    }
+}
+
+@Composable
+fun SendLocation(
+    feedViewModel: FeedViewModel,
+    permissionResultReceived: MutableState<Boolean>
+) {
+    val context = LocalContext.current
+
+    val isPermissionGranted = ContextCompat.checkSelfPermission(
+        context,
+        Manifest.permission.ACCESS_COARSE_LOCATION
+    ) == PackageManager.PERMISSION_GRANTED
+
+    if (isPermissionGranted) {
+        LaunchedEffect(isPermissionGranted) {
+            feedViewModel.onLocationPermissionGranted {
+                permissionResultReceived.value = true
+            }
+        }
+    } else {
+        RequestPermission(
+            permissionResultReceived = permissionResultReceived,
+            onGranted = {
+                feedViewModel.onLocationPermissionGranted()
+            },
+            onNotGranted = {
+                feedViewModel.onLocationPermissionNotGranted()
+            }
+        )
     }
 }
 

@@ -1,13 +1,19 @@
 package ru.ulyanaab.lifemates.ui.feed
 
+import android.annotation.SuppressLint
+import android.util.Log
+import com.google.android.gms.location.FusedLocationProviderClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import ru.ulyanaab.lifemates.domain.common.model.LocationModel
+import ru.ulyanaab.lifemates.domain.user_info.interactor.UserInfoInteractor
 import ru.ulyanaab.lifemates.domain.users.interactor.UsersInteractor
 import ru.ulyanaab.lifemates.domain.users.model.OtherUserModel
 import ru.ulyanaab.lifemates.ui.common.model.OtherUserUiModel
@@ -16,12 +22,14 @@ import javax.inject.Inject
 class FeedViewModel @Inject constructor(
     private val usersInteractor: UsersInteractor,
     private val otherUserMapper: OtherUserMapper,
+    private val userInfoInteractor: UserInfoInteractor,
 ) {
 
     private val _currentUserStateFlow: MutableStateFlow<OtherUserUiModel?> = MutableStateFlow(null)
     val currentUserStateFlow: StateFlow<OtherUserUiModel?> = _currentUserStateFlow.asStateFlow()
 
-    private val _currentUserModelStateFlow: MutableStateFlow<OtherUserModel?> = MutableStateFlow(null)
+    private val _currentUserModelStateFlow: MutableStateFlow<OtherUserModel?> =
+        MutableStateFlow(null)
 
     private val _usersAreFinishedFlow = MutableStateFlow(false)
     val usersAreFinishedFlow: StateFlow<Boolean> = _usersAreFinishedFlow.asStateFlow()
@@ -33,6 +41,12 @@ class FeedViewModel @Inject constructor(
     val matchStateFlow: StateFlow<MatchUiModel?> = _matchStateFlow.asStateFlow()
 
     private val usersList = mutableListOf<OtherUserModel>()
+
+    private var fusedLocationClient: FusedLocationProviderClient? = null
+
+    private var locationWasSent = false
+
+    private var locationUpdateJob: Job? = null
 
     fun attach() {
         if (_currentUserModelStateFlow.value == null) {
@@ -65,6 +79,39 @@ class FeedViewModel @Inject constructor(
         }
     }
 
+    fun setFusedLocationClient(fusedLocationProviderClient: FusedLocationProviderClient) {
+        this.fusedLocationClient = fusedLocationProviderClient
+    }
+
+    @SuppressLint("MissingPermission")
+    fun onLocationPermissionGranted(afterRequestCallback: () -> Unit = {}) {
+        if (!locationWasSent) {
+            fusedLocationClient?.lastLocation?.addOnSuccessListener {
+                locationUpdateJob = CoroutineScope(Dispatchers.IO).launch {
+                    userInfoInteractor.updateLocation(
+                        LocationModel(it.latitude, it.longitude)
+                    )
+                }
+                afterRequestCallback.invoke()
+            }
+            locationWasSent = true
+        } else {
+            afterRequestCallback.invoke()
+        }
+    }
+
+    fun onLocationPermissionNotGranted() {
+        // TODO send null
+        if (!locationWasSent) {
+            locationUpdateJob = CoroutineScope(Dispatchers.IO).launch {
+                userInfoInteractor.updateLocation(
+                    LocationModel(0.0, 0.0)
+                )
+            }
+        }
+        locationWasSent = true
+    }
+
     private fun requestNextSingleUser() {
         val nextUser = usersList.firstOrNull()
         usersList.removeFirstOrNull()
@@ -92,6 +139,8 @@ class FeedViewModel @Inject constructor(
 
     private fun requestNextUsersAsync(onSuccess: () -> Unit = {}): Deferred<Unit> {
         return CoroutineScope(Dispatchers.IO).async {
+            locationUpdateJob?.join()
+
             val nextUsersList = usersInteractor.getFeed(USERS_REQUEST_COUNT)?.users ?: return@async
 
             if (nextUsersList.isEmpty()) {

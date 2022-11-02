@@ -7,6 +7,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.navigation.compose.rememberNavController
+import com.google.android.gms.location.LocationServices
 import ru.ulyanaab.lifemates.domain.common.state_holders.AuthStateHolder
 import ru.ulyanaab.lifemates.ui.auth.AuthViewModel
 import ru.ulyanaab.lifemates.ui.common.navigation.general.GeneralNavGraph
@@ -45,6 +46,10 @@ class MainActivity : ComponentActivity() {
         (application as App).appComponent.inject(this)
 
         super.onCreate(savedInstanceState)
+
+        // TODO refactor
+        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        feedViewModel.setFusedLocationClient(fusedLocationClient)
 
         setContent {
             LifeMatesTheme {
