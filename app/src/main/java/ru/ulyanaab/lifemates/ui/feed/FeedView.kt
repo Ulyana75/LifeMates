@@ -105,9 +105,14 @@ fun FeedScreenWithPermissionRequest(feedViewModel: FeedViewModel) {
 fun FeedView(feedViewModel: FeedViewModel) {
     val uiModel by feedViewModel.currentUserStateFlow.collectAsState()
     val matchModel by feedViewModel.matchStateFlow.collectAsState()
+    val areUsersFinished by feedViewModel.usersAreFinishedFlow.collectAsState()
 
     matchModel?.let {
         MatchView(matchUiModel = it)
+    }
+
+    if (areUsersFinished) {
+        FinishedDialog()
     }
 
     AnimatedContent(
@@ -261,6 +266,18 @@ fun ContactsDialog(
         openDialog = openDialog,
         title = "У нас пока не работают чаты",
         text = "Вместо этого мы дадим вам контакты.\n$text"
+    )
+}
+
+@Composable
+fun FinishedDialog() {
+    val openDialog = remember {
+        mutableStateOf(true)
+    }
+    InfoDialog(
+        openDialog = openDialog,
+        title = "Вы просмотрели всех пользователей",
+        text = "Мы покажем вам больше, когда кто-нибудь еще зарегистрируется"
     )
 }
 
