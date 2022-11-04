@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import ru.ulyanaab.lifemates.domain.auth.interactor.AuthInteractor
 import ru.ulyanaab.lifemates.domain.common.interactor.UploadPhotoInteractor
 import ru.ulyanaab.lifemates.domain.common.model.GenderModel
 import ru.ulyanaab.lifemates.domain.user_info.interactor.UserInfoInteractor
@@ -16,6 +17,7 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val userInfoInteractor: UserInfoInteractor,
     private val profileMapper: ProfileMapper,
+    private val authInteractor: AuthInteractor,
     uploadPhotoInteractor: UploadPhotoInteractor,
 ) : UploadPhotoViewModel(uploadPhotoInteractor) {
 
@@ -69,6 +71,12 @@ class ProfileViewModel @Inject constructor(
         )
         val updateModel = profileMapper.mapToUpdateModel(uiModel)
         userInfoInteractor.updateUserInfo(updateModel)
+    }
+
+    fun onExitClick() {
+        CoroutineScope(Dispatchers.IO).launch {
+            authInteractor.logOut()
+        }
     }
 
     fun getGenderModels(): List<RoundedBlockUiModel> {

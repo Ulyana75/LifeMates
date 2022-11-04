@@ -8,7 +8,7 @@ import ru.ulyanaab.lifemates.domain.common.state_holders.AuthState
 import ru.ulyanaab.lifemates.domain.common.state_holders.AuthStateHolder
 import javax.inject.Inject
 
-class RefreshTokenInteractor @Inject constructor(
+class TokenInteractor @Inject constructor(
     private val tokensStorage: TokensStorage,
     private val tokensRepository: TokensRepository,
     private val authStateHolder: AuthStateHolder,
@@ -34,5 +34,11 @@ class RefreshTokenInteractor @Inject constructor(
         }
 
         return false
+    }
+
+    suspend fun revokeTokens() {
+        val currentTokens = tokensStorage.get()
+        tokensRepository.revoke(currentTokens)
+        tokensStorage.clear()
     }
 }

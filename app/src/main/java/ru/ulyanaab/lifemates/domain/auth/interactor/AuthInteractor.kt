@@ -5,6 +5,7 @@ import ru.ulyanaab.lifemates.common.Result
 import ru.ulyanaab.lifemates.domain.auth.model.LoginModel
 import ru.ulyanaab.lifemates.domain.auth.model.RegisterModel
 import ru.ulyanaab.lifemates.domain.auth.repository.AuthRepository
+import ru.ulyanaab.lifemates.domain.common.interactor.TokenInteractor
 import ru.ulyanaab.lifemates.domain.common.model.TokensModel
 import ru.ulyanaab.lifemates.domain.common.repository.TokensStorage
 import ru.ulyanaab.lifemates.domain.common.state_holders.AuthEvent
@@ -23,6 +24,7 @@ class AuthInteractor @Inject constructor(
     private val authEventsStateHolder: AuthEventsStateHolder,
     private val registerEventsStateHolder: RegisterEventsStateHolder,
     private val authStateHolder: AuthStateHolder,
+    private val tokenInteractor: TokenInteractor,
 ) {
 
     suspend fun updateAndGetAuthState(): AuthState {
@@ -46,6 +48,11 @@ class AuthInteractor @Inject constructor(
                 }
             )
         }
+    }
+
+    suspend fun logOut() {
+        tokenInteractor.revokeTokens()
+        authStateHolder.update(AuthState.UNAUTHORIZED)
     }
 
     suspend fun register(registerModel: RegisterModel): Boolean {

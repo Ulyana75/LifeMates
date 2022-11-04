@@ -1,12 +1,14 @@
 package ru.ulyanaab.lifemates.ui.profile
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -18,7 +20,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImagePainter.State.Empty.painter
+import ru.ulyanaab.lifemates.R
 import ru.ulyanaab.lifemates.ui.common.UploadPhotoViewModel
 import ru.ulyanaab.lifemates.ui.common.utils.showToast
 import ru.ulyanaab.lifemates.ui.common.widget.ContactsBlock
@@ -86,7 +91,7 @@ fun ProfileView(
                 )
             }
 
-            ProfileTopBar()
+            ProfileTopBar(profileViewModel::onExitClick)
 
             Column(
                 modifier = Modifier
@@ -199,8 +204,19 @@ fun ProfileView(
 }
 
 @Composable
-fun ProfileTopBar() {
+fun ProfileTopBar(
+    onExitClick: () -> Unit
+) {
     TopBar(
         text = "Профиль",
+        trailIcon = {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_exit),
+                contentDescription = null,
+                modifier = Modifier.clickable {
+                    onExitClick.invoke()
+                }
+            )
+        }
     )
 }

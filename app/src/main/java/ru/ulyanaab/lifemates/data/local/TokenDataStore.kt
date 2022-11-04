@@ -32,6 +32,12 @@ class TokenDataStore @Inject constructor(
         }
     }
 
+    suspend fun clear() {
+        context.dataStore.edit {
+            it.clear()
+        }
+    }
+
     companion object {
         private const val DATASTORE_NAME = "lifemates_tokens_datastore"
         private val ACCESS_TOKEN_KEY = stringPreferencesKey("access_token")

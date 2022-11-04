@@ -5,4 +5,5 @@ import ru.ulyanaab.lifemates.domain.common.model.TokensModel
 
 interface TokensRepository {
     suspend fun refresh(tokensModel: TokensModel): Result<TokensModel>
+    suspend fun revoke(tokensModel: TokensModel)
 }

@@ -23,4 +23,8 @@ class TokensRepositoryImpl @Inject constructor(
             else -> Result.Failure(Error.Unknown)
         }
     }
+
+    override suspend fun revoke(tokensModel: TokensModel) {
+        tokenApi.revoke(tokensModel.toTokensDto()).awaitResponse()
+    }
 }

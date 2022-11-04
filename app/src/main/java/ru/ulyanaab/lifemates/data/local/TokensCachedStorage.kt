@@ -18,4 +18,9 @@ class TokensCachedStorage @Inject constructor(
     override suspend fun get(): TokensModel {
         return cachedTokensModel ?: tokenDataStore.get()
     }
+
+    override suspend fun clear() {
+        cachedTokensModel = null
+        tokenDataStore.clear()
+    }
 }
