@@ -34,7 +34,7 @@ class UserInfoInteractor @Inject constructor(
         )
     }
 
-   suspend fun updateLocation(location: LocationModel) {
+   suspend fun updateLocation(location: LocationModel?) {
        resultProcessorWithTokensRefreshing.proceedAndReturn(
             resultProducer = {
                 userInfoRepository.updateUserLocation(location)

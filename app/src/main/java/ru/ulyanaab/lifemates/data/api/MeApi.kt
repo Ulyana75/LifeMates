@@ -17,5 +17,5 @@ interface MeApi {
     fun updateMe(@Body meRequest: MeRequestDto): Call<Unit>
 
     @POST("me/location")
-    fun updateLocation(@Body location: LocationDto): Call<Unit>
+    fun updateLocation(@Body location: LocationDto?): Call<Unit>
 }

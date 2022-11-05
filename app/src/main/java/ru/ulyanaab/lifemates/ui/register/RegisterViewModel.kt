@@ -31,6 +31,12 @@ class RegisterViewModel @Inject constructor(
     var savedRegisterModel: RegisterUiModel? = null
         private set
 
+    fun detach() {
+        savedRegisterModel = null
+        login = ""
+        password = ""
+    }
+
     fun saveLoginAndPassword(login: String, password: String) {
         this.login = login
         this.password = password

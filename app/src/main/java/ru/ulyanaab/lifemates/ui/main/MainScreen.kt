@@ -5,20 +5,18 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import ru.ulyanaab.lifemates.domain.common.state_holders.AuthState
-import ru.ulyanaab.lifemates.domain.common.state_holders.AuthStateHolder
+import com.google.accompanist.pager.ExperimentalPagerApi
+import ru.ulyanaab.lifemates.ui.chats.ChatsViewModel
 import ru.ulyanaab.lifemates.ui.common.navigation.bottom.BottomNavGraph
 import ru.ulyanaab.lifemates.ui.common.navigation.bottom.BottomNavigation
-import ru.ulyanaab.lifemates.ui.common.navigation.general.GeneralNavItem
 import ru.ulyanaab.lifemates.ui.feed.FeedViewModel
+import ru.ulyanaab.lifemates.ui.match.MatchViewModel
 import ru.ulyanaab.lifemates.ui.profile.ProfileViewModel
 
+@ExperimentalPagerApi
 @ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @Composable
@@ -26,6 +24,8 @@ fun MainScreen(
     navController: NavHostController,
     profileViewModel: ProfileViewModel,
     feedViewModel: FeedViewModel,
+    matchViewModel: MatchViewModel,
+    chatsViewModel: ChatsViewModel,
 ) {
     Scaffold(
         bottomBar = {
@@ -37,6 +37,8 @@ fun MainScreen(
                 navController = navController,
                 profileViewModel = profileViewModel,
                 feedViewModel = feedViewModel,
+                matchViewModel = matchViewModel,
+                chatsViewModel = chatsViewModel,
             )
         }
     }

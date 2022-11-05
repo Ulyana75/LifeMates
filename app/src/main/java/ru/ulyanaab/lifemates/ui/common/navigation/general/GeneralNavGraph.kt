@@ -1,31 +1,29 @@
 package ru.ulyanaab.lifemates.ui.common.navigation.general
 
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.pager.ExperimentalPagerApi
 import ru.ulyanaab.lifemates.domain.common.state_holders.AuthState
 import ru.ulyanaab.lifemates.domain.common.state_holders.AuthStateHolder
 import ru.ulyanaab.lifemates.ui.auth.AuthViewModel
+import ru.ulyanaab.lifemates.ui.chats.ChatsViewModel
 import ru.ulyanaab.lifemates.ui.common.navigation.auth.AuthNavGraph
 import ru.ulyanaab.lifemates.ui.feed.FeedViewModel
 import ru.ulyanaab.lifemates.ui.loading.LoadingScreen
 import ru.ulyanaab.lifemates.ui.loading.LoadingViewModel
 import ru.ulyanaab.lifemates.ui.main.MainScreen
+import ru.ulyanaab.lifemates.ui.match.MatchViewModel
 import ru.ulyanaab.lifemates.ui.profile.ProfileViewModel
 import ru.ulyanaab.lifemates.ui.register.RegisterViewModel
 
+@ExperimentalPagerApi
 @ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @Composable
@@ -37,6 +35,8 @@ fun GeneralNavGraph(
     registerViewModel: RegisterViewModel,
     loadingViewModel: LoadingViewModel,
     authStateHolder: AuthStateHolder,
+    matchViewModel: MatchViewModel,
+    chatsViewModel: ChatsViewModel,
 ) {
     val authState by authStateHolder.authStateFlow.collectAsState()
 
@@ -58,6 +58,8 @@ fun GeneralNavGraph(
                     navController = bottomNavController,
                     profileViewModel = profileViewModel,
                     feedViewModel = feedViewModel,
+                    matchViewModel = matchViewModel,
+                    chatsViewModel = chatsViewModel,
                 )
 
             } else {

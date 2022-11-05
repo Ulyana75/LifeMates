@@ -97,10 +97,12 @@ fun DescriptionBlock(
 fun OtherUserPreview() {
     OtherUserView(
         model = OtherUserUiModel(
+            id = 1,
             title = "Ryan, 36",
             subtitle = "Los Angeles, USA",
             description = "I'm giving you a night call to tell you how I feel. I want to drive you through the night, down the hills.",
-            imageUrl = null
+            imageUrl = null,
+            contacts = emptyList()
         ),
         bottomContent = {
             LikeDislikeSliderWithPrompt(

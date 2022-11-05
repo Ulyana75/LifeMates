@@ -50,7 +50,6 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.ContextCompat
 import com.github.krottv.compose.sliders.SliderValueHorizontal
 import ru.ulyanaab.lifemates.R
-import ru.ulyanaab.lifemates.ui.common.model.ContactUiModel
 import ru.ulyanaab.lifemates.ui.common.model.OtherUserUiModel
 import ru.ulyanaab.lifemates.ui.common.theme.BlueMain
 import ru.ulyanaab.lifemates.ui.common.theme.GreyDark
@@ -61,7 +60,7 @@ import ru.ulyanaab.lifemates.ui.common.theme.Shapes
 import ru.ulyanaab.lifemates.ui.common.theme.Typography
 import ru.ulyanaab.lifemates.ui.common.utils.RequestPermission
 import ru.ulyanaab.lifemates.ui.common.widget.Button
-import ru.ulyanaab.lifemates.ui.common.widget.InfoDialog
+import ru.ulyanaab.lifemates.ui.common.widget.ContactsDialog
 import ru.ulyanaab.lifemates.ui.common.widget.LoadingView
 import ru.ulyanaab.lifemates.ui.common.widget.MainHeartIcon
 import ru.ulyanaab.lifemates.ui.common.widget.OtherUserView
@@ -112,31 +111,51 @@ fun FeedView(feedViewModel: FeedViewModel) {
     }
 
     if (areUsersFinished) {
-        FinishedDialog()
-    }
+        FinishedUsersView()
+    } else {
 
-    AnimatedContent(
-        targetState = uiModel,
-        transitionSpec = {
-            fadeIn(animationSpec = tween(400)) with
-                    fadeOut(animationSpec = tween(400))
+        AnimatedContent(
+            targetState = uiModel,
+            transitionSpec = {
+                fadeIn(animationSpec = tween(400)) with
+                        fadeOut(animationSpec = tween(400))
+            }
+        ) { targetState ->
+            targetState?.let {
+                OtherUserView(
+                    model = it,
+                    bottomContent = {
+                        LikeDislikeSliderWithPrompt(
+                            userModel = it,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 21.dp, end = 21.dp, bottom = 16.dp),
+                            onLike = feedViewModel::onLikeClick,
+                            onDislike = feedViewModel::onDislikeClick
+                        )
+                    }
+                )
+            }
         }
-    ) { targetState ->
-        targetState?.let {
-            OtherUserView(
-                model = it,
-                bottomContent = {
-                    LikeDislikeSliderWithPrompt(
-                        userModel = it,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 21.dp, end = 21.dp, bottom = 16.dp),
-                        onLike = feedViewModel::onLikeClick,
-                        onDislike = feedViewModel::onDislikeClick
-                    )
-                }
-            )
-        }
+    }
+}
+
+@Composable
+fun FinishedUsersView() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.White)
+    ) {
+        Text(
+            text = "Вы просмотрели всех пользователей. " +
+                    "Мы покажем вам больше, когда кто-нибудь еще зарегистрируется",
+            textAlign = TextAlign.Center,
+            style = Typography.body1.copy(color = GreyDark),
+            modifier = Modifier
+                .align(Alignment.Center)
+                .padding(horizontal = 16.dp)
+        )
     }
 }
 
@@ -247,38 +266,6 @@ fun MatchView(
             }
         }
     }
-}
-
-@Composable
-fun ContactsDialog(
-    openDialog: MutableState<Boolean>,
-    contacts: List<ContactUiModel>
-) {
-    var text by remember {
-        mutableStateOf("")
-    }
-    LaunchedEffect(contacts) {
-        contacts.forEach {
-            text += "${it.name}: ${it.value}\n"
-        }
-    }
-    InfoDialog(
-        openDialog = openDialog,
-        title = "У нас пока не работают чаты",
-        text = "Вместо этого мы дадим вам контакты.\n$text"
-    )
-}
-
-@Composable
-fun FinishedDialog() {
-    val openDialog = remember {
-        mutableStateOf(true)
-    }
-    InfoDialog(
-        openDialog = openDialog,
-        title = "Вы просмотрели всех пользователей",
-        text = "Мы покажем вам больше, когда кто-нибудь еще зарегистрируется"
-    )
 }
 
 @Composable

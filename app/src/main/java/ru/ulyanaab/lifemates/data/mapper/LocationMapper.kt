@@ -6,11 +6,13 @@ import javax.inject.Inject
 
 class LocationMapper @Inject constructor() {
 
-    fun mapToDto(model: LocationModel): LocationDto {
-        return LocationDto(
-            latitude = model.latitude,
-            longitude = model.longitude,
-        )
+    fun mapToDto(model: LocationModel?): LocationDto? {
+        return model?.let {
+            LocationDto(
+                latitude = it.latitude,
+                longitude = it.longitude,
+            )
+        }
     }
 
     fun mapToModel(dto: LocationDto): LocationModel {

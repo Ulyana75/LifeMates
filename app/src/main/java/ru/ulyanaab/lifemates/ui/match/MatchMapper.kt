@@ -1,4 +1,4 @@
-package ru.ulyanaab.lifemates.ui.feed
+package ru.ulyanaab.lifemates.ui.match
 
 import ru.ulyanaab.lifemates.domain.common.model.ContactModel
 import ru.ulyanaab.lifemates.domain.common.model.ContactType
@@ -6,15 +6,16 @@ import ru.ulyanaab.lifemates.domain.common.model.GenderModel
 import ru.ulyanaab.lifemates.domain.users.model.OtherUserModel
 import ru.ulyanaab.lifemates.ui.common.model.ContactUiModel
 import ru.ulyanaab.lifemates.ui.common.model.OtherUserUiModel
+import ru.ulyanaab.lifemates.ui.feed.MatchUiModel
 import javax.inject.Inject
 
-class OtherUserMapper @Inject constructor() {
+class MatchMapper @Inject constructor() {
 
     fun mapToUiModel(model: OtherUserModel): OtherUserUiModel {
         val title = if (model.age == null)
-            model.name
+            "${model.name} тоже лайкнул(а) вас!"
         else
-            "${model.name}, ${model.age}"
+            "${model.name}, ${model.age} тоже лайкнул(а) вас!"
 
         val subtitle = if (model.distance == null)
             mapGender(model.gender)
@@ -28,14 +29,6 @@ class OtherUserMapper @Inject constructor() {
             imageUrl = model.imagesUrls.firstOrNull(),
             description = model.description,
             contacts = model.contacts.map(::mapContact),
-        )
-    }
-
-    fun mapToMatchUiModel(model: OtherUserUiModel): MatchUiModel {
-        return MatchUiModel(
-            title = "${model.title} тоже лайкнул(а) вас!",
-            contacts = model.contacts,
-            imageUrl = model.imageUrl
         )
     }
 

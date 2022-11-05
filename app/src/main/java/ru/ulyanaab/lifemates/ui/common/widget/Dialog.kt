@@ -6,10 +6,16 @@ import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import ru.ulyanaab.lifemates.ui.common.model.ContactUiModel
 import ru.ulyanaab.lifemates.ui.common.theme.Shapes
 import ru.ulyanaab.lifemates.ui.common.theme.Typography
 
@@ -55,4 +61,24 @@ fun InfoDialog(
             shape = Shapes.large
         )
     }
+}
+
+@Composable
+fun ContactsDialog(
+    openDialog: MutableState<Boolean>,
+    contacts: List<ContactUiModel>
+) {
+    var text by remember {
+        mutableStateOf("")
+    }
+    LaunchedEffect(contacts) {
+        contacts.forEach {
+            text += "${it.name}: ${it.value}\n"
+        }
+    }
+    InfoDialog(
+        openDialog = openDialog,
+        title = "У нас пока не работают чаты",
+        text = "Вместо этого мы дадим вам контакты.\n$text"
+    )
 }

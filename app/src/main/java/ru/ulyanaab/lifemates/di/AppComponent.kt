@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.ui.ExperimentalComposeUiApi
+import com.google.accompanist.pager.ExperimentalPagerApi
 import dagger.BindsInstance
 import dagger.Component
 import ru.ulyanaab.lifemates.MainActivity
@@ -15,6 +16,7 @@ const val BASE_URL = "baseUrl"
 @Component(modules = [AppModule::class])
 interface AppComponent {
 
+    @ExperimentalPagerApi
     @ExperimentalComposeUiApi
     @ExperimentalFoundationApi
     @ExperimentalAnimationApi

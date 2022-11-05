@@ -12,11 +12,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.pager.ExperimentalPagerApi
+import ru.ulyanaab.lifemates.ui.chats.ChatsViewModel
+import ru.ulyanaab.lifemates.ui.common.navigation.chats.ChatsNavGraph
 import ru.ulyanaab.lifemates.ui.feed.FeedScreen
 import ru.ulyanaab.lifemates.ui.feed.FeedViewModel
+import ru.ulyanaab.lifemates.ui.match.MatchViewModel
 import ru.ulyanaab.lifemates.ui.profile.ProfileScreen
 import ru.ulyanaab.lifemates.ui.profile.ProfileViewModel
 
+@ExperimentalPagerApi
 @ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @Composable
@@ -24,7 +30,11 @@ fun BottomNavGraph(
     navController: NavHostController,
     profileViewModel: ProfileViewModel,
     feedViewModel: FeedViewModel,
+    matchViewModel: MatchViewModel,
+    chatsViewModel: ChatsViewModel,
 ) {
+    val chatsNavController = rememberNavController()
+
     NavHost(
         navController = navController,
         startDestination = BottomNavItem.Feed.screenRoute
@@ -36,13 +46,11 @@ fun BottomNavGraph(
             FeedScreen(feedViewModel = feedViewModel)
         }
         composable(BottomNavItem.Chats.screenRoute) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(color = Color.Cyan)
-            ) {
-                Text(text = "chats")
-            }
+            ChatsNavGraph(
+                navController = chatsNavController,
+                matchViewModel = matchViewModel,
+                chatsViewModel = chatsViewModel,
+            )
         }
     }
 }

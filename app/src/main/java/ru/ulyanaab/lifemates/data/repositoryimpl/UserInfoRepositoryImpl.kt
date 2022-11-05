@@ -36,7 +36,7 @@ class UserInfoRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateUserLocation(location: LocationModel): Result<Unit> {
+    override suspend fun updateUserLocation(location: LocationModel?): Result<Unit> {
         val response = meApi.updateLocation(locationMapper.mapToDto(location)).awaitResponse()
         return when (response.code()) {
             200 -> Result.Success(Unit)

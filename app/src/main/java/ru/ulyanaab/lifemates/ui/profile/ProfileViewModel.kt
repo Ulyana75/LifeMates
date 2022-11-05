@@ -44,6 +44,10 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    fun detach() {
+        _profileState.value = null
+    }
+
     fun onSaveClick(
         name: String,
         age: String,

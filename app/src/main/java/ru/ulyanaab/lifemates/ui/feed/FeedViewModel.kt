@@ -1,7 +1,6 @@
 package ru.ulyanaab.lifemates.ui.feed
 
 import android.annotation.SuppressLint
-import android.util.Log
 import com.google.android.gms.location.FusedLocationProviderClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -28,9 +27,6 @@ class FeedViewModel @Inject constructor(
     private val _currentUserStateFlow: MutableStateFlow<OtherUserUiModel?> = MutableStateFlow(null)
     val currentUserStateFlow: StateFlow<OtherUserUiModel?> = _currentUserStateFlow.asStateFlow()
 
-    private val _currentUserModelStateFlow: MutableStateFlow<OtherUserModel?> =
-        MutableStateFlow(null)
-
     private val _usersAreFinishedFlow = MutableStateFlow(false)
     val usersAreFinishedFlow: StateFlow<Boolean> = _usersAreFinishedFlow.asStateFlow()
 
@@ -49,13 +45,23 @@ class FeedViewModel @Inject constructor(
     private var locationUpdateJob: Job? = null
 
     fun attach() {
-        if (_currentUserModelStateFlow.value == null) {
+        if (_currentUserStateFlow.value == null) {
             requestNextSingleUser()
         }
     }
 
+    fun detach() {
+        _currentUserStateFlow.value = null
+        _usersAreFinishedFlow.value = false
+        _matchStateFlow.value = null
+        usersList.clear()
+        locationWasSent = false
+        locationUpdateJob?.cancel()
+        locationUpdateJob = null
+    }
+
     fun onLikeClick() {
-        val model = _currentUserModelStateFlow.value
+        val model = _currentUserStateFlow.value
 
         requestNextSingleUser()
 
@@ -70,7 +76,7 @@ class FeedViewModel @Inject constructor(
     }
 
     fun onDislikeClick() {
-        val model = _currentUserModelStateFlow.value
+        val model = _currentUserStateFlow.value
 
         requestNextSingleUser()
 
@@ -104,9 +110,7 @@ class FeedViewModel @Inject constructor(
         // TODO send null
         if (!locationWasSent) {
             locationUpdateJob = CoroutineScope(Dispatchers.IO).launch {
-                userInfoInteractor.updateLocation(
-                    LocationModel(0.0, 0.0)
-                )
+                userInfoInteractor.updateLocation(null)
             }
         }
         locationWasSent = true
@@ -117,10 +121,10 @@ class FeedViewModel @Inject constructor(
         usersList.removeFirstOrNull()
 
         if (nextUser != null) {
-            _currentUserModelStateFlow.value = nextUser
-
             if (usersList.size == USERS_TILL_END_TO_REQUEST) {
-                requestNextUsersAsync(USERS_TILL_END_TO_REQUEST)
+                // + 1 because current not rated yet
+                // + 1 because dislike for previous could not to be resolved
+                requestNextUsersAsync(USERS_TILL_END_TO_REQUEST + 2)
             }
 
             _currentUserStateFlow.value = otherUserMapper.mapToUiModel(nextUser)
@@ -128,9 +132,14 @@ class FeedViewModel @Inject constructor(
             CoroutineScope(Dispatchers.IO).launch {
                 _isLoading.value = true
 
-                requestNextUsersAsync {
-                    requestNextSingleUser()
-                }.await()
+                requestNextUsersAsync(
+                    onSuccess = {
+                        requestNextSingleUser()
+                    },
+                    onFailure = {
+                        _usersAreFinishedFlow.value = true
+                    }
+                ).await()
 
                 _isLoading.value = false
             }
@@ -139,7 +148,8 @@ class FeedViewModel @Inject constructor(
 
     private fun requestNextUsersAsync(
         offset: Int = 0,
-        onSuccess: () -> Unit = {}
+        onSuccess: () -> Unit = {},
+        onFailure: () -> Unit = {}
     ): Deferred<Unit> {
         return CoroutineScope(Dispatchers.IO).async {
             locationUpdateJob?.join()
@@ -149,7 +159,7 @@ class FeedViewModel @Inject constructor(
             )?.users ?: return@async
 
             if (nextUsersList.isEmpty()) {
-                _usersAreFinishedFlow.value = true
+                onFailure.invoke()
             } else {
                 usersList.addAll(nextUsersList)
                 onSuccess.invoke()

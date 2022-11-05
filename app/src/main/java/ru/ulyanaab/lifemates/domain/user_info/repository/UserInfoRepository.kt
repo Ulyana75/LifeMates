@@ -8,5 +8,5 @@ import ru.ulyanaab.lifemates.domain.user_info.model.UserInfoUpdateModel
 interface UserInfoRepository {
     suspend fun getUserInfo(): Result<UserInfoGetModel?>
     suspend fun updateUserInfo(newInfo: UserInfoUpdateModel): Result<Unit>
-    suspend fun updateUserLocation(location: LocationModel): Result<Unit>
+    suspend fun updateUserLocation(location: LocationModel?): Result<Unit>
 }
