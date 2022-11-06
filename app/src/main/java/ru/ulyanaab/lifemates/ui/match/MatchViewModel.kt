@@ -38,23 +38,25 @@ class MatchViewModel @Inject constructor(
 
     fun requestNext() {
         CoroutineScope(Dispatchers.Default).launch {
-            val nextMatchesList = matchInteractor.getMatches(
-                _matchesStateFlow.value.size,
-                MATCHES_REQUEST_COUNT
-            ) ?: return@launch
+            if (!_matchesAreFinishedFlow.value) {
+                val nextMatchesList = matchInteractor.getMatches(
+                    _matchesStateFlow.value.size,
+                    MATCHES_REQUEST_COUNT
+                )
 
-            if (nextMatchesList.isEmpty()) {
-                _matchesAreFinishedFlow.value = true
-            } else {
-                _matchesStateFlow.value.addAll(nextMatchesList.map(matchMapper::mapToUiModel))
+                if (nextMatchesList.isNullOrEmpty()) {
+                    _matchesAreFinishedFlow.value = true
+                } else {
+                    _matchesStateFlow.value.addAll(nextMatchesList.map(matchMapper::mapToUiModel))
+                }
+
+                _isLoading.value = false
             }
-
-            _isLoading.value = false
         }
     }
 
     companion object {
-        private const val MATCHES_REQUEST_COUNT = 10
-        const val MATCHES_TILL_END_TO_REQUEST = 4
+        private const val MATCHES_REQUEST_COUNT = 5
+        const val MATCHES_TILL_END_TO_REQUEST = 2
     }
 }

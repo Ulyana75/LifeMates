@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -55,40 +56,43 @@ fun DescriptionBlock(
     modifier: Modifier = Modifier,
     bottomContent: (@Composable () -> Unit)? = null
 ) {
-    Column(
+    Card(
+        shape = Shapes.large,
+        elevation = 4.dp,
+        backgroundColor = Color.White,
         modifier = modifier
-            .clip(Shapes.large)
-            .shadow(elevation = 2.dp, shape = Shapes.large)
-            .background(color = Color.White),
-        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = model.title,
-            style = Typography.h4.copy(color = Color.Black),
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp, bottom = 5.dp, start = 21.dp, end = 21.dp)
-        )
-        Text(
-            text = model.subtitle,
-            style = Typography.body1.copy(color = GreyDark),
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 25.dp, start = 21.dp, end = 21.dp)
-        )
-        if (model.description != null) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Text(
-                text = model.description,
-                style = Typography.body1.copy(color = Color.Black),
+                text = model.title,
+                style = Typography.h4.copy(color = Color.Black),
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 15.dp, start = 21.dp, end = 21.dp)
+                    .padding(top = 16.dp, bottom = 5.dp, start = 21.dp, end = 21.dp)
             )
+            Text(
+                text = model.subtitle,
+                style = Typography.body1.copy(color = GreyDark),
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 25.dp, start = 21.dp, end = 21.dp)
+            )
+            if (model.description != null) {
+                Text(
+                    text = model.description,
+                    style = Typography.body1.copy(color = Color.Black),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 15.dp, start = 21.dp, end = 21.dp)
+                )
+            }
+            bottomContent?.invoke()
         }
-        bottomContent?.invoke()
     }
 }
 
