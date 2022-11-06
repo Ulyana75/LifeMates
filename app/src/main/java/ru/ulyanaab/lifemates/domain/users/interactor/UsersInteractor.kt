@@ -44,8 +44,8 @@ class UsersInteractor @Inject constructor(
         )
     }
 
-    fun dislike(id: Long) {
-        resultProcessorWithTokensRefreshing.proceed(
+    suspend fun dislike(id: Long) {
+        resultProcessorWithTokensRefreshing.proceedAndReturn(
             resultProducer = {
                 usersRepository.dislikeUser(id)
             },

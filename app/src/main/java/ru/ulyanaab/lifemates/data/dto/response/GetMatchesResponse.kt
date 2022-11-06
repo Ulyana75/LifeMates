@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import ru.ulyanaab.lifemates.data.dto.common.OtherUserDto
 
 data class GetMatchesResponse(
-    @Json(name = "chats")
+    @Json(name = "matches")
     val matches: List<MatchDto>,
 )
 

@@ -44,6 +44,8 @@ class FeedViewModel @Inject constructor(
 
     private var locationUpdateJob: Job? = null
 
+    private var likeDislikeJob: Job? = null
+
     fun attach() {
         if (_currentUserStateFlow.value == null) {
             requestNextSingleUser()
@@ -63,9 +65,7 @@ class FeedViewModel @Inject constructor(
     fun onLikeClick() {
         val model = _currentUserStateFlow.value
 
-        requestNextSingleUser()
-
-        model?.let {
+        likeDislikeJob = model?.let {
             CoroutineScope(Dispatchers.IO).launch {
                 val isMatch = usersInteractor.like(it.id)
                 if (isMatch == true) {
@@ -73,16 +73,20 @@ class FeedViewModel @Inject constructor(
                 }
             }
         }
+
+        requestNextSingleUser()
     }
 
     fun onDislikeClick() {
         val model = _currentUserStateFlow.value
 
-        requestNextSingleUser()
-
-        model?.let {
-            usersInteractor.dislike(it.id)
+        likeDislikeJob = model?.let {
+            CoroutineScope(Dispatchers.IO).launch {
+                usersInteractor.dislike(it.id)
+            }
         }
+
+        requestNextSingleUser()
     }
 
     fun setFusedLocationClient(fusedLocationProviderClient: FusedLocationProviderClient) {
@@ -121,10 +125,9 @@ class FeedViewModel @Inject constructor(
         usersList.removeFirstOrNull()
 
         if (nextUser != null) {
-            if (usersList.size == USERS_TILL_END_TO_REQUEST) {
+            if (usersList.size + 1 == USERS_TILL_END_TO_REQUEST) {
                 // + 1 because current not rated yet
-                // + 1 because dislike for previous could not to be resolved
-                requestNextUsersAsync(USERS_TILL_END_TO_REQUEST + 2)
+                requestNextUsersAsync(usersList.size + 1)
             }
 
             _currentUserStateFlow.value = otherUserMapper.mapToUiModel(nextUser)
@@ -133,6 +136,7 @@ class FeedViewModel @Inject constructor(
                 _isLoading.value = true
 
                 requestNextUsersAsync(
+                    offset = 0,
                     onSuccess = {
                         requestNextSingleUser()
                     },
@@ -153,12 +157,13 @@ class FeedViewModel @Inject constructor(
     ): Deferred<Unit> {
         return CoroutineScope(Dispatchers.IO).async {
             locationUpdateJob?.join()
+            likeDislikeJob?.join()
 
             val nextUsersList = usersInteractor.getFeed(
                 USERS_REQUEST_COUNT, offset
-            )?.users ?: return@async
+            )?.users
 
-            if (nextUsersList.isEmpty()) {
+            if (nextUsersList.isNullOrEmpty()) {
                 onFailure.invoke()
             } else {
                 usersList.addAll(nextUsersList)
