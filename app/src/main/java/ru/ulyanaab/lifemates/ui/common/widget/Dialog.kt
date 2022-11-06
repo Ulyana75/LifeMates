@@ -72,6 +72,7 @@ fun ContactsDialog(
         mutableStateOf("")
     }
     LaunchedEffect(contacts) {
+        text = ""
         contacts.forEach {
             text += "${it.name}: ${it.value}\n"
         }

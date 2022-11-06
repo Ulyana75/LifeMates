@@ -52,7 +52,6 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var chatsViewModel: ChatsViewModel
 
-    @Inject
     lateinit var viewModelsDetachHelper: ViewModelsDetachHelper
 
 
@@ -65,6 +64,14 @@ class MainActivity : ComponentActivity() {
         val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         feedViewModel.setFusedLocationClient(fusedLocationClient)
 
+        viewModelsDetachHelper = ViewModelsDetachHelper(
+            profileViewModel,
+            feedViewModel,
+            matchViewModel,
+            chatsViewModel,
+            authStateHolder,
+            registerViewModel
+        )
         viewModelsDetachHelper.observeAuthState()
 
         setContent {

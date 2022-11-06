@@ -20,6 +20,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -65,7 +66,9 @@ fun EditText(
             maxLines = maxLines,
             textStyle = Typography.caption.copy(color = Color.Black),
             visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
-            keyboardOptions = if (isPassword) KeyboardOptions(keyboardType = KeyboardType.Password) else KeyboardOptions.Default,
+            keyboardOptions = if (isPassword)
+                KeyboardOptions(keyboardType = KeyboardType.Password)
+            else KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
             decorationBox = { innerTextField ->
                 Row(
                     Modifier.padding(start = 16.dp, end = 13.5.dp),

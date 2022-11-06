@@ -13,7 +13,7 @@ import ru.ulyanaab.lifemates.ui.profile.ProfileViewModel
 import ru.ulyanaab.lifemates.ui.register.RegisterViewModel
 import javax.inject.Inject
 
-class ViewModelsDetachHelper @Inject constructor(
+class ViewModelsDetachHelper constructor(
     private val profileViewModel: ProfileViewModel,
     private val feedViewModel: FeedViewModel,
     private val matchViewModel: MatchViewModel,
