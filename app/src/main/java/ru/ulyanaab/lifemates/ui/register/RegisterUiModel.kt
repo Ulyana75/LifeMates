@@ -6,7 +6,7 @@ data class RegisterUiModel(
     val email: String,
     val password: String,
     val name: String,
-    val age: String,
+    val birthday: String,
     val gender: RoundedBlockUiModel?,
     val showingGender: RoundedBlockUiModel?,
     val description: String,

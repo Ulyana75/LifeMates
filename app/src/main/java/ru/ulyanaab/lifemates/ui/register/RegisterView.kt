@@ -158,13 +158,14 @@ fun RegisterSecondStageView(
     val savedModel = registerViewModel.savedRegisterModel
 
     var name by remember { mutableStateOf(savedModel?.name ?: "") }
-    var age by remember { mutableStateOf(savedModel?.age ?: "") }
     var description by remember { mutableStateOf(savedModel?.description ?: "") }
     var telegram by remember { mutableStateOf(savedModel?.telegram ?: "") }
     var vk by remember { mutableStateOf(savedModel?.vk ?: "") }
     var viber by remember { mutableStateOf(savedModel?.viber ?: "") }
     var whatsapp by remember { mutableStateOf(savedModel?.whatsapp ?: "") }
     var instagram by remember { mutableStateOf(savedModel?.instagram ?: "") }
+
+    var birthday by remember { mutableStateOf(savedModel?.birthday ?: "") }
 
     var isNameError by remember { mutableStateOf(false) }
     var isContactsError by remember { mutableStateOf(false) }
@@ -194,14 +195,13 @@ fun RegisterSecondStageView(
             )
             PersonalUserInfo(
                 name = name,
-                age = age,
+                birthday = birthday,
                 onNameChange = {
                     name = it
                     isNameError = false
                 },
-                onAgeChange = { age = it },
+                onBirthdayChange = { birthday = it },
                 onNameClear = { name = "" },
-                onAgeClear = { age = "" },
                 isNameError = isNameError
             )
             GenderChoiceBlock(
@@ -272,7 +272,7 @@ fun RegisterSecondStageView(
                     ) {
                         registerViewModel.onRegisterClick(
                             name = name,
-                            age = age,
+                            birthday = birthday,
                             gender = chosenGender,
                             showingGender = chosenShowingGender,
                             description = description,

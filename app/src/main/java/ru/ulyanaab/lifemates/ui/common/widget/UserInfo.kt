@@ -1,10 +1,12 @@
 package ru.ulyanaab.lifemates.ui.common.widget
 
+import android.app.DatePickerDialog
 import android.content.Context
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,18 +19,24 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ru.ulyanaab.lifemates.ui.common.UploadPhotoViewModel
 import ru.ulyanaab.lifemates.ui.common.model.RoundedBlockUiModel
+import ru.ulyanaab.lifemates.ui.common.theme.GreyHint
 import ru.ulyanaab.lifemates.ui.common.theme.GreyLight
 import ru.ulyanaab.lifemates.ui.common.theme.Shapes
 import ru.ulyanaab.lifemates.ui.common.theme.Typography
+import ru.ulyanaab.lifemates.ui.common.utils.dateFormatterUsual
 import ru.ulyanaab.lifemates.ui.common.utils.showToast
+import java.time.LocalDate
+import java.util.Calendar
 
 @Composable
 fun UserInfoEditText(
@@ -56,6 +64,64 @@ fun UserInfoEditText(
 }
 
 @Composable
+fun UserInfoDateOfBirth(
+    value: String,
+    onValueChange: (String) -> Unit
+) {
+    val context = LocalContext.current
+    val calendar = Calendar.getInstance()
+
+    val year by remember { mutableStateOf(calendar.get(Calendar.YEAR)) }
+    val month by remember { mutableStateOf(calendar.get(Calendar.MONTH)) }
+    val day by remember { mutableStateOf(calendar.get(Calendar.DAY_OF_MONTH)) }
+
+    val datePickerDialog = DatePickerDialog(
+        context,
+        { _, y, m, d ->
+            onValueChange(LocalDate.of(y, m, d).format(dateFormatterUsual()))
+        },
+        year,
+        month,
+        day
+    )
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 45.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .background(
+                    color = GreyLight,
+                    shape = Shapes.medium
+                )
+                .height(44.dp)
+                .fillMaxWidth()
+                .clickable {
+                    datePickerDialog.show()
+                },
+            contentAlignment = Alignment.CenterStart
+        ) {
+            if (value.isEmpty()) {
+                Text(
+                    text = "Дата рождения",
+                    color = GreyHint,
+                    style = Typography.caption,
+                    modifier = Modifier.padding(start = 16.dp, end = 13.5.dp),
+                )
+            } else {
+                Text(
+                    text = value,
+                    style = Typography.caption.copy(color = Color.Black),
+                    modifier = Modifier.padding(start = 16.dp, end = 13.5.dp),
+                )
+            }
+        }
+    }
+}
+
+@Composable
 fun UserInfoTitleWithInputs(
     inputsCount: Int,
     title: String,
@@ -64,7 +130,8 @@ fun UserInfoTitleWithInputs(
     onValueClearList: List<() -> Unit>,
     hintList: List<String>,
     isErrorList: List<Boolean> = emptyList(),
-    isPasswordList: List<Boolean> = emptyList()
+    isPasswordList: List<Boolean> = emptyList(),
+    needBigBottomPadding: Boolean = true,
 ) {
     UserInfoBlockTitle(
         text = title,
@@ -77,7 +144,7 @@ fun UserInfoTitleWithInputs(
             onValueClear = onValueClearList[i],
             hint = hintList[i],
             isError = isErrorList.getOrNull(i) ?: false,
-            paddingBottom = if (i == inputsCount - 1) 45.dp else 10.dp,
+            paddingBottom = if (i == inputsCount - 1 && needBigBottomPadding) 45.dp else 10.dp,
             isPassword = isPasswordList.getOrNull(i) ?: false
         )
     }
@@ -194,27 +261,26 @@ fun UserInfoChoiceBlock(
 @Composable
 fun PersonalUserInfo(
     name: String,
-    age: String,
+    birthday: String,
     onNameChange: (String) -> Unit,
-    onAgeChange: (String) -> Unit,
+    onBirthdayChange: (String) -> Unit,
     onNameClear: () -> Unit,
-    onAgeClear: () -> Unit,
     isNameError: Boolean
 ) {
     UserInfoTitleWithInputs(
-        inputsCount = 2,
+        inputsCount = 1,
         title = "Личная информация",
-        valueList = listOf(name, age),
-        onValueChangeList = listOf(
-            onNameChange,
-            onAgeChange
-        ),
-        onValueClearList = listOf(
-            onNameClear,
-            onAgeClear
-        ),
-        hintList = listOf("Имя", "Дата рождения"),
-        isErrorList = listOf(isNameError)
+        valueList = listOf(name),
+        onValueChangeList = listOf(onNameChange),
+        onValueClearList = listOf(onNameClear),
+        hintList = listOf("Имя"),
+        isErrorList = listOf(isNameError),
+        needBigBottomPadding = false,
+    )
+
+    UserInfoDateOfBirth(
+        value = birthday,
+        onValueChange = onBirthdayChange
     )
 }
 

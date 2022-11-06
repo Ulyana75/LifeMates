@@ -8,6 +8,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import java.time.format.DateTimeFormatter
 
 fun String.nullIfEmpty(): String? {
     return if (isEmpty()) null else this
@@ -37,4 +38,16 @@ fun RequestPermission(
     LaunchedEffect(Unit) {
         launcher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
     }
+}
+
+fun dateFormatterUniversal(): DateTimeFormatter {
+    return DateTimeFormatter.ofPattern("yyyy-MM-dd")
+}
+
+fun dateFormatterUsual(): DateTimeFormatter {
+    return DateTimeFormatter.ofPattern("dd.MM.yyyy")
+}
+
+fun dateFormatterWithTime(): DateTimeFormatter {
+    return DateTimeFormatter.ofPattern("dd.MM.yyyy H:mm:ss")
 }

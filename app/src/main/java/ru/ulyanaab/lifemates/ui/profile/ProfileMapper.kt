@@ -5,7 +5,11 @@ import ru.ulyanaab.lifemates.domain.common.model.ContactType
 import ru.ulyanaab.lifemates.domain.user_info.model.UserInfoGetModel
 import ru.ulyanaab.lifemates.domain.user_info.model.UserInfoUpdateModel
 import ru.ulyanaab.lifemates.domain.user_info.model.UserSettingsModel
+import ru.ulyanaab.lifemates.ui.common.utils.dateFormatterUniversal
+import ru.ulyanaab.lifemates.ui.common.utils.dateFormatterUsual
+import ru.ulyanaab.lifemates.ui.common.utils.dateFormatterWithTime
 import ru.ulyanaab.lifemates.ui.common.utils.nullIfEmpty
+import java.time.LocalDate
 import javax.inject.Inject
 
 class ProfileMapper @Inject constructor() {
@@ -15,7 +19,9 @@ class ProfileMapper @Inject constructor() {
             name = model.name ?: "",
             description = model.description ?: "",
             gender = model.gender,
-            birthday = model.birthday ?: "",
+            birthday = model.birthday?.let {
+              LocalDate.parse(it, dateFormatterWithTime()).format(dateFormatterUsual())
+            } ?: "",
             showingGender = model.settings.showingGender,
             telegram = model.contacts.find {
                 it.type == ContactType.TELEGRAM
@@ -41,7 +47,9 @@ class ProfileMapper @Inject constructor() {
             name = model.name,
             description = model.description.nullIfEmpty(),
             gender = model.gender,
-            birthday = model.birthday.nullIfEmpty(),
+            birthday = model.birthday.nullIfEmpty()?.let {
+                LocalDate.parse(it, dateFormatterUsual()).format(dateFormatterUniversal())
+            },
             imagesUrls = listOfNotNull(model.imageUrl),
             location = null,
             settings = UserSettingsModel(model.showingGender),

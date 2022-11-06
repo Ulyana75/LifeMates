@@ -22,7 +22,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImagePainter.State.Empty.painter
 import ru.ulyanaab.lifemates.R
 import ru.ulyanaab.lifemates.ui.common.UploadPhotoViewModel
 import ru.ulyanaab.lifemates.ui.common.utils.showToast
@@ -70,13 +69,14 @@ fun ProfileView(
             val userUiModel by profileViewModel.profileState.collectAsState()
 
             var name by remember { mutableStateOf(userUiModel?.name ?: "") }
-            var age by remember { mutableStateOf(userUiModel?.birthday ?: "") }
             var description by remember { mutableStateOf(userUiModel?.description ?: "") }
             var telegram by remember { mutableStateOf(userUiModel?.telegram ?: "") }
             var vk by remember { mutableStateOf(userUiModel?.vk ?: "") }
             var viber by remember { mutableStateOf(userUiModel?.viber ?: "") }
             var whatsapp by remember { mutableStateOf(userUiModel?.whatsapp ?: "") }
             var instagram by remember { mutableStateOf(userUiModel?.instagram ?: "") }
+
+            var birthday by remember { mutableStateOf(userUiModel?.birthday ?: "") }
 
             var isNameError by remember { mutableStateOf(false) }
             var isContactsError by remember { mutableStateOf(false) }
@@ -87,7 +87,7 @@ fun ProfileView(
             }
             var chosenShowingGender by remember {
                 mutableStateOf(
-                    profileViewModel.getGenderModels().find { it.isChosen }
+                    profileViewModel.getShowingGenderModels().find { it.isChosen }
                 )
             }
 
@@ -106,14 +106,13 @@ fun ProfileView(
                 )
                 PersonalUserInfo(
                     name = name,
-                    age = age,
+                    birthday = birthday,
                     onNameChange = {
                         name = it
                         isNameError = false
                     },
-                    onAgeChange = { age = it },
+                    onBirthdayChange = { birthday = it },
                     onNameClear = { name = "" },
-                    onAgeClear = { age = "" },
                     isNameError = isNameError
                 )
                 GenderChoiceBlock(
@@ -184,7 +183,7 @@ fun ProfileView(
                         ) {
                             profileViewModel.onSaveClick(
                                 name = name,
-                                age = age,
+                                birthday = birthday,
                                 gender = chosenGender,
                                 showingGender = chosenShowingGender,
                                 description = description,

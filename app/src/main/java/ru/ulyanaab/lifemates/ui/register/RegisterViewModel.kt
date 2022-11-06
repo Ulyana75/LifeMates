@@ -48,7 +48,7 @@ class RegisterViewModel @Inject constructor(
 
     fun onRegisterClick(
         name: String,
-        age: String,
+        birthday: String,
         gender: RoundedBlockUiModel?,
         showingGender: RoundedBlockUiModel?,
         description: String,
@@ -68,7 +68,7 @@ class RegisterViewModel @Inject constructor(
                 description = description,
                 gender = gender,
                 showingGender = showingGender,
-                age = age,
+                birthday = birthday,
                 telegram = telegram,
                 vk = vk,
                 viber = viber,

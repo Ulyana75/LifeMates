@@ -6,7 +6,10 @@ import ru.ulyanaab.lifemates.domain.common.model.ContactType
 import ru.ulyanaab.lifemates.domain.common.model.GenderModel
 import ru.ulyanaab.lifemates.domain.user_info.model.UserSettingsModel
 import ru.ulyanaab.lifemates.ui.common.model.RoundedBlockUiModel
+import ru.ulyanaab.lifemates.ui.common.utils.dateFormatterUniversal
+import ru.ulyanaab.lifemates.ui.common.utils.dateFormatterUsual
 import ru.ulyanaab.lifemates.ui.common.utils.nullIfEmpty
+import java.time.LocalDate
 import javax.inject.Inject
 
 class RegisterMapper @Inject constructor() {
@@ -16,9 +19,11 @@ class RegisterMapper @Inject constructor() {
             email = uiModel.email,
             password = uiModel.password,
             name = uiModel.name,
-            description = uiModel.description.nullIfEmpty(),
+            description = uiModel.description.nullIfEmpty()?.let {
+                LocalDate.parse(it, dateFormatterUsual()).format(dateFormatterUniversal())
+            },
             gender = mapGender(uiModel.gender),
-            birthday = uiModel.age.nullIfEmpty(),
+            birthday = uiModel.birthday.nullIfEmpty(),
             imageUrls = listOfNotNull(uiModel.imageUrl),
             location = null,
             settings = UserSettingsModel(mapGender(uiModel.showingGender)),

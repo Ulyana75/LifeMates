@@ -13,8 +13,11 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -40,6 +43,7 @@ fun EditText(
     maxLines: Int = 1,
     isPassword: Boolean = false
 ) {
+    val focusRequester = remember { FocusRequester() }
 
     Box(modifier = modifier) {
         BasicTextField(
@@ -56,7 +60,8 @@ fun EditText(
                     shape = Shapes.medium
                 )
                 .height(44.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .focusRequester(focusRequester),
             maxLines = maxLines,
             textStyle = Typography.caption.copy(color = Color.Black),
             visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
@@ -81,6 +86,7 @@ fun EditText(
                         contentDescription = null,
                         modifier = Modifier.clickable {
                             onClearClicked.invoke()
+                            focusRequester.requestFocus()
                         },
                         tint = GreyDark
                     )

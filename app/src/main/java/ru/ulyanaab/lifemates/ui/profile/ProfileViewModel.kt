@@ -50,7 +50,7 @@ class ProfileViewModel @Inject constructor(
 
     fun onSaveClick(
         name: String,
-        age: String,
+        birthday: String,
         gender: RoundedBlockUiModel?,
         showingGender: RoundedBlockUiModel?,
         description: String,
@@ -64,7 +64,7 @@ class ProfileViewModel @Inject constructor(
             name = name,
             description = description,
             gender = mapGender(gender),
-            birthday = age,
+            birthday = birthday,
             showingGender = mapGender(showingGender),
             telegram = telegram,
             vk = vk,
