@@ -35,7 +35,7 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
 import ru.ulyanaab.lifemates.R
-import ru.ulyanaab.lifemates.ui.common.model.OtherUserUiModel
+import ru.ulyanaab.lifemates.ui.common.widget.BadgeNew
 import ru.ulyanaab.lifemates.ui.common.widget.Button
 import ru.ulyanaab.lifemates.ui.common.widget.ContactsDialog
 import ru.ulyanaab.lifemates.ui.common.widget.LoadingView
@@ -130,25 +130,31 @@ fun MatchView(
 
 @Composable
 fun MatchItem(
-    model: OtherUserUiModel
+    model: MatchUiModel
 ) {
     val openContactsDialog = remember { mutableStateOf(false) }
 
     ContactsDialog(
         openDialog = openContactsDialog,
-        contacts = model.contacts
+        contacts = model.user.contacts
     )
 
-    OtherUserView(model = model) {
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            onClick = {
-                openContactsDialog.value = true
-            },
-            text = "Начать общение!"
-        )
+    Box {
+        OtherUserView(model = model.user) {
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                onClick = {
+                    openContactsDialog.value = true
+                },
+                text = "Начать общение!"
+            )
+        }
+
+        if (!model.isSeen) {
+            BadgeNew(Modifier.align(Alignment.TopStart).padding(8.dp))
+        }
     }
 }
 

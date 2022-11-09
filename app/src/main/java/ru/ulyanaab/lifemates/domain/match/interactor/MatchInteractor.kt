@@ -1,6 +1,7 @@
 package ru.ulyanaab.lifemates.domain.match.interactor
 
 import ru.ulyanaab.lifemates.domain.common.utils.ResultProcessorWithTokensRefreshing
+import ru.ulyanaab.lifemates.domain.match.model.MatchesModel
 import ru.ulyanaab.lifemates.domain.match.repository.MatchRepository
 import ru.ulyanaab.lifemates.domain.users.model.OtherUserModel
 import javax.inject.Inject
@@ -10,7 +11,7 @@ class MatchInteractor @Inject constructor(
     private val resultProcessorWithTokensRefreshing: ResultProcessorWithTokensRefreshing,
 ) {
 
-    suspend fun getMatches(offset: Int, limit: Int): List<OtherUserModel>? {
+    suspend fun getMatches(offset: Int, limit: Int): MatchesModel? {
         return resultProcessorWithTokensRefreshing.proceedAndReturn(
             resultProducer = {
                 matchRepository.getMatches(offset, limit)

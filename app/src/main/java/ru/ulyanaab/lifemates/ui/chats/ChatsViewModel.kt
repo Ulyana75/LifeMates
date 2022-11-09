@@ -18,8 +18,8 @@ class ChatsViewModel @Inject constructor(
 
     fun attach() {
         CoroutineScope(Dispatchers.Default).launch {
-            val matchesList = matchInteractor.getMatches(0, 1)
-            _hasMatches.value = !matchesList.isNullOrEmpty()
+            val matchesCount = matchInteractor.getMatches(0, 0)?.count
+            _hasMatches.value = matchesCount != null && matchesCount > 0
         }
     }
 

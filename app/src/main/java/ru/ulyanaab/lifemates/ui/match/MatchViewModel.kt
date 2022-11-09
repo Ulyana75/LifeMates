@@ -15,9 +15,9 @@ class MatchViewModel @Inject constructor(
     private val matchMapper: MatchMapper,
 ) {
 
-    private val _matchesStateFlow: MutableStateFlow<MutableList<OtherUserUiModel>> =
+    private val _matchesStateFlow: MutableStateFlow<MutableList<MatchUiModel>> =
         MutableStateFlow(mutableListOf())
-    val matchesStateFlow: StateFlow<List<OtherUserUiModel>> = _matchesStateFlow.asStateFlow()
+    val matchesStateFlow: StateFlow<List<MatchUiModel>> = _matchesStateFlow.asStateFlow()
 
     private val _isLoading = MutableStateFlow(true)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
@@ -42,12 +42,19 @@ class MatchViewModel @Inject constructor(
                 val nextMatchesList = matchInteractor.getMatches(
                     _matchesStateFlow.value.size,
                     MATCHES_REQUEST_COUNT
-                )
+                )?.matches
 
                 if (nextMatchesList.isNullOrEmpty()) {
                     _matchesAreFinishedFlow.value = true
                 } else {
-                    _matchesStateFlow.value.addAll(nextMatchesList.map(matchMapper::mapToUiModel))
+                    _matchesStateFlow.value.addAll(
+                        nextMatchesList.map {
+                            MatchUiModel(
+                                user = matchMapper.mapToUiModel(it.user),
+                                isSeen = false//it.isSeen
+                            )
+                        }
+                    )
                 }
 
                 _isLoading.value = false
