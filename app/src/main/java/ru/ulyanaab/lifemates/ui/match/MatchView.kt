@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -38,11 +40,13 @@ import ru.ulyanaab.lifemates.ui.common.widget.Button
 import ru.ulyanaab.lifemates.ui.common.widget.ContactsDialog
 import ru.ulyanaab.lifemates.ui.common.widget.LoadingView
 import ru.ulyanaab.lifemates.ui.common.widget.OtherUserView
+import ru.ulyanaab.lifemates.ui.common.widget.TopBar
 
 
 @ExperimentalPagerApi
 @Composable
 fun MatchScreen(
+    navController: NavController,
     matchViewModel: MatchViewModel
 ) {
     val isLoading by matchViewModel.isLoading.collectAsState()
@@ -50,12 +54,13 @@ fun MatchScreen(
     if (isLoading) {
         LoadingView(backgroundColor = Color.White)
     }
-    MatchView(matchViewModel = matchViewModel)
+    MatchView(matchViewModel = matchViewModel, navController = navController)
 }
 
 @ExperimentalPagerApi
 @Composable
 fun MatchView(
+    navController: NavController,
     matchViewModel: MatchViewModel
 ) {
     LaunchedEffect(Unit) {
@@ -70,41 +75,56 @@ fun MatchView(
 
     val scope = rememberCoroutineScope()
 
-    Box(modifier = Modifier.fillMaxSize()) {
-
-        HorizontalPager(
-            count = count,
-            modifier = Modifier.fillMaxSize(),
-            state = pagerState
-        ) { page ->
-            LaunchedEffect(page) {
-                if (prevPage < page && page == count - MatchViewModel.MATCHES_TILL_END_TO_REQUEST) {
-                    matchViewModel.requestNext()
-                }
-                prevPage = page
-            }
-            MatchItem(model = matches[page])
-        }
-
-        ArrowsView(
-            isLeftArrowEnabled = pagerState.currentPage != 0,
-            isRightArrowEnabled = !(pagerState.currentPage == count - 1 && areMatchesFinished),
-            onLeftArrowClick = {
-                scope.launch {
-                    if (pagerState.currentPage != 0) {
-                        pagerState.animateScrollToPage(pagerState.currentPage - 1)
+    Column {
+        TopBar(
+            text = "Ваши метчи",
+            leadIcon = {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_back),
+                    contentDescription = null,
+                    modifier = Modifier.clickable {
+                        navController.popBackStack()
                     }
-                }
+                )
             },
-            onRightArrowClick = {
-                scope.launch {
-                    if (pagerState.currentPage != count) {
-                        pagerState.animateScrollToPage(pagerState.currentPage + 1)
-                    }
-                }
-            },
-            modifier = Modifier.align(Alignment.TopCenter)
         )
+
+        Box(modifier = Modifier.fillMaxSize()) {
+
+            HorizontalPager(
+                count = count,
+                modifier = Modifier.fillMaxSize(),
+                state = pagerState
+            ) { page ->
+                LaunchedEffect(page) {
+                    if (prevPage < page && page == count - MatchViewModel.MATCHES_TILL_END_TO_REQUEST) {
+                        matchViewModel.requestNext()
+                    }
+                    prevPage = page
+                }
+                MatchItem(model = matches[page])
+            }
+
+            ArrowsView(
+                isLeftArrowEnabled = pagerState.currentPage != 0,
+                isRightArrowEnabled = !(pagerState.currentPage == count - 1 && areMatchesFinished),
+                onLeftArrowClick = {
+                    scope.launch {
+                        if (pagerState.currentPage != 0) {
+                            pagerState.animateScrollToPage(pagerState.currentPage - 1)
+                        }
+                    }
+                },
+                onRightArrowClick = {
+                    scope.launch {
+                        if (pagerState.currentPage != count) {
+                            pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                        }
+                    }
+                },
+                modifier = Modifier.align(Alignment.Center)
+            )
+        }
     }
 }
 

@@ -7,6 +7,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import ru.ulyanaab.lifemates.ui.chats.ChatsViewModel
@@ -21,23 +22,23 @@ import ru.ulyanaab.lifemates.ui.profile.ProfileViewModel
 @ExperimentalAnimationApi
 @Composable
 fun MainScreen(
-    navController: NavHostController,
+    bottomNavController: NavHostController,
+    chatsNavController: NavHostController,
     profileViewModel: ProfileViewModel,
     feedViewModel: FeedViewModel,
-    matchViewModel: MatchViewModel,
     chatsViewModel: ChatsViewModel,
 ) {
     Scaffold(
         bottomBar = {
-            BottomNavigation(navController = navController)
+            BottomNavigation(navController = bottomNavController)
         }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
             BottomNavGraph(
-                navController = navController,
+                bottomNavController = bottomNavController,
+                chatsNavController = chatsNavController,
                 profileViewModel = profileViewModel,
                 feedViewModel = feedViewModel,
-                matchViewModel = matchViewModel,
                 chatsViewModel = chatsViewModel,
             )
         }

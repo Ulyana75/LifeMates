@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import ru.ulyanaab.lifemates.ui.common.navigation.chats.ChatsNavItem
+import ru.ulyanaab.lifemates.ui.common.navigation.main.MainNavItem
 import ru.ulyanaab.lifemates.ui.common.theme.GreyDark
 import ru.ulyanaab.lifemates.ui.common.theme.GreyLight
 import ru.ulyanaab.lifemates.ui.common.theme.Shapes
@@ -52,7 +52,7 @@ fun ChatsView(
     ) {
         if (hasMatches) {
             MatchesCard {
-                navController.navigate(ChatsNavItem.Matches.screenRoute)
+                navController.navigate(MainNavItem.Matches.screenRoute)
             }
         }
         ChatsList()

@@ -15,6 +15,7 @@ import ru.ulyanaab.lifemates.domain.common.state_holders.AuthStateHolder
 import ru.ulyanaab.lifemates.ui.auth.AuthViewModel
 import ru.ulyanaab.lifemates.ui.chats.ChatsViewModel
 import ru.ulyanaab.lifemates.ui.common.navigation.auth.AuthNavGraph
+import ru.ulyanaab.lifemates.ui.common.navigation.main.MainNavGraph
 import ru.ulyanaab.lifemates.ui.feed.FeedViewModel
 import ru.ulyanaab.lifemates.ui.loading.LoadingScreen
 import ru.ulyanaab.lifemates.ui.loading.LoadingViewModel
@@ -52,14 +53,14 @@ fun GeneralNavGraph(
         }
         composable(GeneralNavItem.MainOrAuth.screenRoute) {
             if (authState == AuthState.AUTHORIZED) {
-                val bottomNavController = rememberNavController()
+                val mainNavController = rememberNavController()
 
-                MainScreen(
-                    navController = bottomNavController,
+                MainNavGraph(
+                    navController = mainNavController,
                     profileViewModel = profileViewModel,
                     feedViewModel = feedViewModel,
                     matchViewModel = matchViewModel,
-                    chatsViewModel = chatsViewModel,
+                    chatsViewModel = chatsViewModel
                 )
 
             } else {
