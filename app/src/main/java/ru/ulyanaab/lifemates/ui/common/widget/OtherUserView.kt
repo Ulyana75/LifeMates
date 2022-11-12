@@ -6,15 +6,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,6 +25,9 @@ import ru.ulyanaab.lifemates.ui.common.theme.Shapes
 import ru.ulyanaab.lifemates.ui.common.theme.Typography
 import ru.ulyanaab.lifemates.ui.feed.LikeDislikeSliderWithPrompt
 
+private val PHOTO_HEIGHT = 450.dp
+private val CARD_OFFSET = 60.dp
+
 @Composable
 fun OtherUserView(
     model: OtherUserUiModel,
@@ -36,17 +38,21 @@ fun OtherUserView(
             .fillMaxSize()
             .background(color = GreyLight)
     ) {
-        Box(modifier = Modifier.height(450.dp)) {
+        Box(modifier = Modifier.height(PHOTO_HEIGHT)) {
             PhotoOrPlaceholder(model.imageUrl)
-            DescriptionBlock(
-                model = model,
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .align(Alignment.TopCenter)
-                    .offset(y = 390.dp),
-                bottomContent = bottomContent
-            )
         }
+        DescriptionBlock(
+            model = model,
+            modifier = Modifier
+                .padding(
+                    start = 16.dp,
+                    end = 16.dp,
+                    top = PHOTO_HEIGHT - CARD_OFFSET,
+                    bottom = 16.dp
+                )
+                .align(Alignment.TopCenter),
+            bottomContent = bottomContent
+        )
     }
 }
 
@@ -82,16 +88,22 @@ fun DescriptionBlock(
                     .padding(bottom = 25.dp, start = 21.dp, end = 21.dp)
             )
             if (model.description != null) {
-                Text(
-                    text = model.description,
-                    style = Typography.body1.copy(color = Color.Black),
-                    textAlign = TextAlign.Center,
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 15.dp, start = 21.dp, end = 21.dp)
-                )
+                        .padding(start = 21.dp, end = 21.dp)
+                        .verticalScroll(rememberScrollState())
+                        .weight(weight = 2f, fill = false)
+                ) {
+                    Text(
+                        text = model.description,
+                        style = Typography.body1.copy(color = Color.Black),
+                        textAlign = TextAlign.Center,
+                    )
+                }
             }
-            bottomContent?.invoke()
+            Box(modifier = Modifier.padding(top = 15.dp)) {
+                bottomContent?.invoke()
+            }
         }
     }
 }
@@ -102,9 +114,9 @@ fun OtherUserPreview() {
     OtherUserView(
         model = OtherUserUiModel(
             id = 1,
-            title = "Ryan, 36",
+            title = "Ryan Ryan Ryan Ryan Ryan Ryan , 36",
             subtitle = "Los Angeles, USA",
-            description = "I'm giving you a night call to tell you how I feel. I want to drive you through the night, down the hills.",
+            description = "I'm giving you a night call to tell you how I feel. I want to drive you through the night, down the hills. I'm giving you a night call to tell you how I feel. I want to drive you through the night, down the hills. I'm giving you a night call to tell you how I feel. I want to drive you through the night, down the hills. I'm giving you a night call to tell you how I feel. I want to drive you through the night, down the hills. I'm giving you a night call to tell you how I feel. I want to drive you through the night, down the hills. I'm giving you a night call to tell you how I feel. I want to drive you through the night, down the hills. I'm giving you a night call to tell you how I feel. I want to drive you through the night, down the hills.",
             imageUrl = null,
             contacts = emptyList()
         ),

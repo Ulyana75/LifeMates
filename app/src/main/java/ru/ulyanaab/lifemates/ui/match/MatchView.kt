@@ -107,7 +107,8 @@ fun MatchView(
 
             ArrowsView(
                 isLeftArrowEnabled = pagerState.currentPage != 0,
-                isRightArrowEnabled = !(pagerState.currentPage == count - 1 && areMatchesFinished),
+                isRightArrowEnabled = !(pagerState.currentPage == count - 1
+                        && (areMatchesFinished || count < MatchViewModel.MATCHES_REQUEST_COUNT)),
                 onLeftArrowClick = {
                     scope.launch {
                         if (pagerState.currentPage != 0) {

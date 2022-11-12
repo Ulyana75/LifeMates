@@ -325,8 +325,8 @@ fun LikeDislikeSlider(
                 .align(Alignment.Center),
             onValueChangeFinished = {
                 when {
-                    value > 0.8f -> onLike.invoke()
-                    value < 0.2f -> onDislike.invoke()
+                    value > 0.7f -> onLike.invoke()
+                    value < 0.3f -> onDislike.invoke()
                     else -> value = 0.5f
                 }
             },

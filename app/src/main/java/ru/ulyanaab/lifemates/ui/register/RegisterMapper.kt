@@ -19,11 +19,11 @@ class RegisterMapper @Inject constructor() {
             email = uiModel.email,
             password = uiModel.password,
             name = uiModel.name,
-            description = uiModel.description.nullIfEmpty()?.let {
+            description = uiModel.description.nullIfEmpty(),
+            gender = mapGender(uiModel.gender),
+            birthday = uiModel.birthday.nullIfEmpty()?.let {
                 LocalDate.parse(it, dateFormatterUsual()).format(dateFormatterUniversal())
             },
-            gender = mapGender(uiModel.gender),
-            birthday = uiModel.birthday.nullIfEmpty(),
             imageUrls = listOfNotNull(uiModel.imageUrl),
             location = null,
             settings = UserSettingsModel(mapGender(uiModel.showingGender)),

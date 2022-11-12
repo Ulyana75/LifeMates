@@ -51,7 +51,7 @@ class MatchViewModel @Inject constructor(
                         nextMatchesList.map {
                             MatchUiModel(
                                 user = matchMapper.mapToUiModel(it.user),
-                                isSeen = false//it.isSeen
+                                isSeen = it.isSeen
                             )
                         }
                     )
@@ -63,7 +63,7 @@ class MatchViewModel @Inject constructor(
     }
 
     companion object {
-        private const val MATCHES_REQUEST_COUNT = 5
+        const val MATCHES_REQUEST_COUNT = 5
         const val MATCHES_TILL_END_TO_REQUEST = 2
     }
 }

@@ -4,7 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -25,7 +27,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import ru.ulyanaab.lifemates.R
 import ru.ulyanaab.lifemates.ui.common.theme.GreyDark
 import ru.ulyanaab.lifemates.ui.common.theme.GreyHint
@@ -41,15 +45,22 @@ fun EditText(
     value: String = "",
     onValueChange: (String) -> Unit,
     onClearClicked: () -> Unit,
-    maxLines: Int = 1,
-    isPassword: Boolean = false
+    isPassword: Boolean = false,
+    maxCharacters: Int? = null,
+    height: Dp = Size.S,
 ) {
     val focusRequester = remember { FocusRequester() }
 
-    Box(modifier = modifier) {
+    Column(modifier = modifier) {
         BasicTextField(
             value = value,
-            onValueChange = { onValueChange.invoke(it) },
+            onValueChange = {
+                if (maxCharacters == null || it.length <= maxCharacters) {
+                    onValueChange.invoke(it)
+                } else {
+                    onValueChange.invoke(it.substring(0, maxCharacters - 1))
+                }
+            },
             modifier = Modifier
                 .background(
                     color = GreyLight,
@@ -60,10 +71,10 @@ fun EditText(
                     color = if (isError) Color.Red else Color.Transparent,
                     shape = Shapes.medium
                 )
-                .height(44.dp)
+                .height(height)
                 .fillMaxWidth()
                 .focusRequester(focusRequester),
-            maxLines = maxLines,
+            singleLine = height == Size.S,
             textStyle = Typography.caption.copy(color = Color.Black),
             visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
             keyboardOptions = if (isPassword)
@@ -72,9 +83,17 @@ fun EditText(
             decorationBox = { innerTextField ->
                 Row(
                     Modifier.padding(start = 16.dp, end = 13.5.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = if (height == Size.S)
+                        Alignment.CenterVertically else Alignment.Top
                 ) {
-                    Box(Modifier.weight(1f)) {
+                    Box(
+                        Modifier
+                            .weight(1f)
+                            .padding(
+                                vertical = if (height == Size.S)
+                                    0.dp else 11.dp
+                            )
+                    ) {
                         if (value.isEmpty()) {
                             Text(
                                 text = hint,
@@ -84,28 +103,68 @@ fun EditText(
                         }
                         innerTextField()
                     }
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_close),
-                        contentDescription = null,
-                        modifier = Modifier.clickable {
-                            onClearClicked.invoke()
-                            focusRequester.requestFocus()
-                        },
-                        tint = GreyDark
-                    )
+                    Box(
+                        modifier = Modifier
+                            .height(Size.S)
+                            .clickable {
+                                onClearClicked.invoke()
+                                focusRequester.requestFocus()
+                            }
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_close),
+                            contentDescription = null,
+                            tint = GreyDark,
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    }
                 }
             }
         )
+        if (maxCharacters != null) {
+            Text(
+                text = "${value.length}/$maxCharacters",
+                style = Typography.subtitle1.copy(color = GreyDark),
+                modifier = Modifier
+                    .padding(end = 8.dp)
+                    .align(Alignment.End)
+            )
+        }
     }
 }
 
 @Preview
 @Composable
 fun EditTextPreview() {
-    EditText(
-        modifier = Modifier.fillMaxWidth(),
-        hint = "Логин",
-        onValueChange = {},
-        onClearClicked = {}
-    )
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+    ) {
+        EditText(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            hint = "Логин",
+            onValueChange = {},
+            onClearClicked = {},
+            maxCharacters = 200,
+            height = 132.dp
+        )
+        EditText(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            hint = "Логин",
+            onValueChange = {},
+            onClearClicked = {},
+            maxCharacters = 200,
+        )
+    }
+}
+
+object Size {
+    val S = 44.dp
+    val M = 88.dp
+    val L = 132.dp
 }

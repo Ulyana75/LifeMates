@@ -47,7 +47,9 @@ fun UserInfoEditText(
     paddingTop: Dp = 0.dp,
     paddingBottom: Dp = 0.dp,
     isError: Boolean = false,
-    isPassword: Boolean = false
+    isPassword: Boolean = false,
+    maxCharacters: Int? = null,
+    height: Dp,
 ) {
 
     EditText(
@@ -59,7 +61,9 @@ fun UserInfoEditText(
         value = value,
         onValueChange = onValueChange,
         onClearClicked = onValueClear,
-        isPassword = isPassword
+        isPassword = isPassword,
+        maxCharacters = maxCharacters,
+        height = height
     )
 }
 
@@ -131,6 +135,8 @@ fun UserInfoTitleWithInputs(
     hintList: List<String>,
     isErrorList: List<Boolean> = emptyList(),
     isPasswordList: List<Boolean> = emptyList(),
+    maxCharactersList: List<Int?> = emptyList(),
+    heightsList: List<Dp> = emptyList(),
     needBigBottomPadding: Boolean = true,
 ) {
     UserInfoBlockTitle(
@@ -145,7 +151,9 @@ fun UserInfoTitleWithInputs(
             hint = hintList[i],
             isError = isErrorList.getOrNull(i) ?: false,
             paddingBottom = if (i == inputsCount - 1 && needBigBottomPadding) 45.dp else 10.dp,
-            isPassword = isPasswordList.getOrNull(i) ?: false
+            isPassword = isPasswordList.getOrNull(i) ?: false,
+            maxCharacters = maxCharactersList.getOrNull(i),
+            height = heightsList.getOrNull(i) ?: Size.S,
         )
     }
 }
@@ -276,6 +284,7 @@ fun PersonalUserInfo(
         hintList = listOf("Имя"),
         isErrorList = listOf(isNameError),
         needBigBottomPadding = false,
+        maxCharactersList = listOf(30),
     )
 
     UserInfoDateOfBirth(
@@ -321,6 +330,8 @@ fun DescriptionBlock(
         onValueChangeList = listOf(onDescriptionChange),
         onValueClearList = listOf(onDescriptionClear),
         hintList = listOf("О себе"),
+        maxCharactersList = listOf(250),
+        heightsList = listOf(Size.L),
     )
 }
 
