@@ -226,7 +226,6 @@ fun AuthPreview() {
                 onLoginButtonClick = { _, _ ->
                 },
                 onRegisterButtonClick = {
-                    // TODO navigate
                 }
             )
         }

@@ -9,6 +9,9 @@ import kotlinx.coroutines.launch
 import ru.ulyanaab.lifemates.domain.auth.interactor.AuthInteractor
 import ru.ulyanaab.lifemates.domain.common.interactor.UploadPhotoInteractor
 import ru.ulyanaab.lifemates.domain.common.state_holders.RegisterEventsStateHolder
+import ru.ulyanaab.lifemates.ui.common.mapper.GenderMapper.Companion.MAN
+import ru.ulyanaab.lifemates.ui.common.mapper.GenderMapper.Companion.NON_BINARY
+import ru.ulyanaab.lifemates.ui.common.mapper.GenderMapper.Companion.WOMAN
 import ru.ulyanaab.lifemates.ui.common.UploadPhotoViewModel
 import ru.ulyanaab.lifemates.ui.common.model.RoundedBlockUiModel
 import javax.inject.Inject
@@ -86,18 +89,18 @@ class RegisterViewModel @Inject constructor(
     fun getGenderModels(): List<RoundedBlockUiModel> {
         val gender = savedRegisterModel?.gender
         return listOf(
-            RoundedBlockUiModel("Мужской", gender?.text == "Мужской"),
-            RoundedBlockUiModel("Женский", gender?.text == "Женский"),
-            RoundedBlockUiModel("Не бинарный", gender?.text == "Не бинарный"),
+            RoundedBlockUiModel(MAN, gender?.text == MAN),
+            RoundedBlockUiModel(WOMAN, gender?.text == WOMAN),
+            RoundedBlockUiModel(NON_BINARY, gender?.text == NON_BINARY),
         )
     }
 
     fun getShowingGenderModels(): List<RoundedBlockUiModel> {
         val gender = savedRegisterModel?.showingGender
         return listOf(
-            RoundedBlockUiModel("Мужской", gender?.text == "Мужской"),
-            RoundedBlockUiModel("Женский", gender?.text == "Женский"),
-            RoundedBlockUiModel("Не бинарный", gender?.text == "Не бинарный"),
+            RoundedBlockUiModel(MAN, gender?.text == MAN),
+            RoundedBlockUiModel(WOMAN, gender?.text == WOMAN),
+            RoundedBlockUiModel(NON_BINARY, gender?.text == NON_BINARY),
         )
     }
 

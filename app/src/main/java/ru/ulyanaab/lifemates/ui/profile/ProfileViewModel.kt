@@ -8,8 +8,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ru.ulyanaab.lifemates.domain.auth.interactor.AuthInteractor
 import ru.ulyanaab.lifemates.domain.common.interactor.UploadPhotoInteractor
-import ru.ulyanaab.lifemates.domain.common.model.GenderModel
 import ru.ulyanaab.lifemates.domain.user_info.interactor.UserInfoInteractor
+import ru.ulyanaab.lifemates.ui.common.mapper.GenderMapper
+import ru.ulyanaab.lifemates.ui.common.mapper.GenderMapper.Companion.MAN
+import ru.ulyanaab.lifemates.ui.common.mapper.GenderMapper.Companion.NON_BINARY
+import ru.ulyanaab.lifemates.ui.common.mapper.GenderMapper.Companion.WOMAN
 import ru.ulyanaab.lifemates.ui.common.UploadPhotoViewModel
 import ru.ulyanaab.lifemates.ui.common.model.RoundedBlockUiModel
 import javax.inject.Inject
@@ -18,6 +21,7 @@ class ProfileViewModel @Inject constructor(
     private val userInfoInteractor: UserInfoInteractor,
     private val profileMapper: ProfileMapper,
     private val authInteractor: AuthInteractor,
+    private val genderMapper: GenderMapper,
     uploadPhotoInteractor: UploadPhotoInteractor,
 ) : UploadPhotoViewModel(uploadPhotoInteractor) {
 
@@ -63,9 +67,9 @@ class ProfileViewModel @Inject constructor(
         val uiModel = ProfileUiModel(
             name = name,
             description = description,
-            gender = mapGender(gender),
+            gender = genderMapper.mapToModel(gender),
             birthday = birthday,
-            showingGender = mapGender(showingGender),
+            showingGender = genderMapper.mapToModel(showingGender),
             telegram = telegram,
             vk = vk,
             viber = viber,
@@ -86,35 +90,18 @@ class ProfileViewModel @Inject constructor(
     fun getGenderModels(): List<RoundedBlockUiModel> {
         val gender = _profileState.value?.gender
         return listOf(
-            RoundedBlockUiModel("Мужской", gender?.let(::mapGender) == "Мужской"),
-            RoundedBlockUiModel("Женский", gender?.let(::mapGender) == "Женский"),
-            RoundedBlockUiModel("Не бинарный", gender?.let(::mapGender) == "Не бинарный"),
+            RoundedBlockUiModel(MAN, gender?.let(genderMapper::mapToText) == MAN),
+            RoundedBlockUiModel(WOMAN, gender?.let(genderMapper::mapToText) == WOMAN),
+            RoundedBlockUiModel(NON_BINARY, gender?.let(genderMapper::mapToText) == NON_BINARY),
         )
     }
 
     fun getShowingGenderModels(): List<RoundedBlockUiModel> {
         val gender = _profileState.value?.showingGender
         return listOf(
-            RoundedBlockUiModel("Мужской", gender?.let(::mapGender) == "Мужской"),
-            RoundedBlockUiModel("Женский", gender?.let(::mapGender) == "Женский"),
-            RoundedBlockUiModel("Не бинарный", gender?.let(::mapGender) == "Не бинарный"),
+            RoundedBlockUiModel(MAN, gender?.let(genderMapper::mapToText) == MAN),
+            RoundedBlockUiModel(WOMAN, gender?.let(genderMapper::mapToText) == WOMAN),
+            RoundedBlockUiModel(NON_BINARY, gender?.let(genderMapper::mapToText) == NON_BINARY),
         )
-    }
-
-    // TODO map beautiful
-    private fun mapGender(uiModel: RoundedBlockUiModel?): GenderModel {
-        return when (uiModel?.text) {
-            "Мужской" -> GenderModel.MAN
-            "Женский" -> GenderModel.WOMAN
-            else -> GenderModel.NON_BINARY
-        }
-    }
-
-    private fun mapGender(model: GenderModel): String {
-        return when (model) {
-            GenderModel.MAN -> "Мужской"
-            GenderModel.WOMAN -> "Женский"
-            GenderModel.NON_BINARY -> "Не бинарный"
-        }
     }
 }

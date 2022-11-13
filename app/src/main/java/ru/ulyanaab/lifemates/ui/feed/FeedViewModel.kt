@@ -111,7 +111,6 @@ class FeedViewModel @Inject constructor(
     }
 
     fun onLocationPermissionNotGranted() {
-        // TODO send null
         if (!locationWasSent) {
             locationUpdateJob = CoroutineScope(Dispatchers.IO).launch {
                 userInfoInteractor.updateLocation(null)

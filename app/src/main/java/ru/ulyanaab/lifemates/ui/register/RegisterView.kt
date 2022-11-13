@@ -50,7 +50,6 @@ fun RegisterFirstStage(
     navController: NavController
 ) {
 
-    // TODO validate password
     var login by remember { mutableStateOf(registerViewModel.getLoginAndPassword().first) }
     var password by remember { mutableStateOf(registerViewModel.getLoginAndPassword().second) }
     var passwordRepeat by remember { mutableStateOf(registerViewModel.getLoginAndPassword().second) }
