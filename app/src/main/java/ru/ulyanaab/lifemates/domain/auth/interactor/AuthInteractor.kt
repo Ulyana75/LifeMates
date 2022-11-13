@@ -1,5 +1,6 @@
 package ru.ulyanaab.lifemates.domain.auth.interactor
 
+import ru.ulyanaab.lifemates.BuildConfig
 import ru.ulyanaab.lifemates.common.Error
 import ru.ulyanaab.lifemates.common.Result
 import ru.ulyanaab.lifemates.domain.auth.model.LoginModel
@@ -16,6 +17,8 @@ import ru.ulyanaab.lifemates.domain.common.state_holders.AuthStateHolder
 import ru.ulyanaab.lifemates.domain.common.state_holders.RegisterEvent
 import ru.ulyanaab.lifemates.domain.common.state_holders.RegisterEventType
 import ru.ulyanaab.lifemates.domain.common.state_holders.RegisterEventsStateHolder
+import java.nio.charset.StandardCharsets
+import java.security.MessageDigest
 import javax.inject.Inject
 
 class AuthInteractor @Inject constructor(
@@ -39,8 +42,13 @@ class AuthInteractor @Inject constructor(
     }
 
     suspend fun login(loginModel: LoginModel): Boolean {
-        // TODO hash password
-        return proceedResult(authRepository.login(loginModel)) {
+        var modelWithHashedPassword = loginModel
+        if (!BuildConfig.DEBUG) {
+            modelWithHashedPassword =
+                loginModel.copy(password = hashPassword(loginModel.password))
+        }
+
+        return proceedResult(authRepository.login(modelWithHashedPassword)) {
             authEventsStateHolder.emit(
                 when (it.error) {
                     Error.Forbidden -> AuthEvent(AuthEventType.WRONG_PASSWORD)
@@ -56,8 +64,13 @@ class AuthInteractor @Inject constructor(
     }
 
     suspend fun register(registerModel: RegisterModel): Boolean {
-        // TODO hash password
-        return proceedResult(authRepository.register(registerModel)) {
+        var modelWithHashedPassword = registerModel
+        if (!BuildConfig.DEBUG) {
+            modelWithHashedPassword =
+                registerModel.copy(password = hashPassword(registerModel.password))
+        }
+
+        return proceedResult(authRepository.register(modelWithHashedPassword)) {
             registerEventsStateHolder.emit(
                 when (it.error) {
                     Error.Forbidden -> RegisterEvent(RegisterEventType.REGISTRATION_FAILED)
@@ -82,5 +95,15 @@ class AuthInteractor @Inject constructor(
                 false
             }
         }
+    }
+
+    private fun hashPassword(password: String): String {
+        val md = MessageDigest.getInstance("MD5")
+        val hashInBytes = md.digest(password.toByteArray(StandardCharsets.UTF_8))
+        val sb = StringBuilder()
+        for (b in hashInBytes) {
+            sb.append(String.format("%02x", b))
+        }
+        return sb.toString()
     }
 }

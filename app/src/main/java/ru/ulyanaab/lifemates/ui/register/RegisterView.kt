@@ -117,7 +117,9 @@ fun RegisterFirstStage(
                 if (passwordRepeat.isEmpty()) {
                     isPasswordRepeatError = true
                 }
-                if (login.isNotEmpty() && password.isNotEmpty() && passwordRepeat.isNotEmpty()) {
+                if (login.isNotEmpty() && password.isNotEmpty()
+                    && passwordRepeat.isNotEmpty() && password.length >= 8
+                ) {
                     if (password != passwordRepeat) {
                         isPasswordError = true
                         isPasswordRepeatError = true

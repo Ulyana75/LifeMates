@@ -1,6 +1,5 @@
 package ru.ulyanaab.lifemates.data.repositoryimpl
 
-import android.util.Log
 import retrofit2.awaitResponse
 import ru.ulyanaab.lifemates.common.Error
 import ru.ulyanaab.lifemates.common.Result
@@ -10,8 +9,8 @@ import ru.ulyanaab.lifemates.data.dto.request.LoginRequestDto
 import ru.ulyanaab.lifemates.data.mapper.RegisterMapper
 import ru.ulyanaab.lifemates.domain.auth.model.LoginModel
 import ru.ulyanaab.lifemates.domain.auth.model.RegisterModel
-import ru.ulyanaab.lifemates.domain.common.model.TokensModel
 import ru.ulyanaab.lifemates.domain.auth.repository.AuthRepository
+import ru.ulyanaab.lifemates.domain.common.model.TokensModel
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -20,7 +19,6 @@ class AuthRepositoryImpl @Inject constructor(
 ) : AuthRepository {
 
     override suspend fun login(loginModel: LoginModel): Result<TokensModel> {
-        Log.d("LOL", "${loginModel.toLoginRequestDto()}")
         val response = authApi.login(loginModel.toLoginRequestDto()).awaitResponse()
         return when (response.code()) {
             200 -> Result.Success(response.body()?.toTokensModel() ?: TokensModel.EMPTY)
