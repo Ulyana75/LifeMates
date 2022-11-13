@@ -47,6 +47,7 @@ class FeedViewModel @Inject constructor(
     private var likeDislikeJob: Job? = null
 
     fun attach() {
+        _matchStateFlow.value = null
         if (_currentUserStateFlow.value == null) {
             requestNextSingleUser()
         }

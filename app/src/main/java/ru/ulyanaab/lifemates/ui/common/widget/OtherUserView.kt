@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ru.ulyanaab.lifemates.ui.common.model.OtherUserUiModel
 import ru.ulyanaab.lifemates.ui.common.theme.GreyDark
@@ -26,11 +27,17 @@ import ru.ulyanaab.lifemates.ui.common.theme.Typography
 import ru.ulyanaab.lifemates.ui.feed.LikeDislikeSliderWithPrompt
 
 private val PHOTO_HEIGHT = 450.dp
-private val CARD_OFFSET = 60.dp
+
+object CardOffset {
+    val S = 60.dp
+    val M = 90.dp
+    val L = 120.dp
+}
 
 @Composable
 fun OtherUserView(
     model: OtherUserUiModel,
+    cardOffset: Dp,
     bottomContent: (@Composable () -> Unit)? = null,
 ) {
     Box(
@@ -47,7 +54,7 @@ fun OtherUserView(
                 .padding(
                     start = 16.dp,
                     end = 16.dp,
-                    top = PHOTO_HEIGHT - CARD_OFFSET,
+                    top = PHOTO_HEIGHT - cardOffset,
                     bottom = 16.dp
                 )
                 .align(Alignment.TopCenter),
@@ -120,6 +127,7 @@ fun OtherUserPreview() {
             imageUrl = null,
             contacts = emptyList()
         ),
+        cardOffset = CardOffset.S,
         bottomContent = {
             LikeDislikeSliderWithPrompt(
                 userModel = null,

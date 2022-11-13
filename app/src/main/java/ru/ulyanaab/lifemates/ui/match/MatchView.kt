@@ -37,6 +37,7 @@ import kotlinx.coroutines.launch
 import ru.ulyanaab.lifemates.R
 import ru.ulyanaab.lifemates.ui.common.widget.BadgeNew
 import ru.ulyanaab.lifemates.ui.common.widget.Button
+import ru.ulyanaab.lifemates.ui.common.widget.CardOffset
 import ru.ulyanaab.lifemates.ui.common.widget.ContactsDialog
 import ru.ulyanaab.lifemates.ui.common.widget.LoadingView
 import ru.ulyanaab.lifemates.ui.common.widget.OtherUserView
@@ -141,11 +142,14 @@ fun MatchItem(
     )
 
     Box {
-        OtherUserView(model = model.user) {
+        OtherUserView(
+            model = model.user,
+            cardOffset = CardOffset.M
+        ) {
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(bottom = 16.dp, start = 16.dp, end = 16.dp),
                 onClick = {
                     openContactsDialog.value = true
                 },

@@ -60,6 +60,7 @@ import ru.ulyanaab.lifemates.ui.common.theme.Shapes
 import ru.ulyanaab.lifemates.ui.common.theme.Typography
 import ru.ulyanaab.lifemates.ui.common.utils.RequestPermission
 import ru.ulyanaab.lifemates.ui.common.widget.Button
+import ru.ulyanaab.lifemates.ui.common.widget.CardOffset
 import ru.ulyanaab.lifemates.ui.common.widget.ContactsDialog
 import ru.ulyanaab.lifemates.ui.common.widget.LoadingView
 import ru.ulyanaab.lifemates.ui.common.widget.MainHeartIcon
@@ -124,6 +125,7 @@ fun FeedView(feedViewModel: FeedViewModel) {
             targetState?.let {
                 OtherUserView(
                     model = it,
+                    cardOffset = CardOffset.S,
                     bottomContent = {
                         LikeDislikeSliderWithPrompt(
                             userModel = it,
