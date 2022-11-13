@@ -395,6 +395,7 @@ fun validateInputs(
     showingGender: RoundedBlockUiModel?,
     onNameError: () -> Unit,
     onContactsError: () -> Unit,
+    isPhotoUploaded: Boolean = true,
 ): Boolean {
 
     if (name.isEmpty()) {
@@ -416,6 +417,10 @@ fun validateInputs(
     }
     if (showingGender == null) {
         showToast("Вы не указали, какой пол показывать в ленте", context)
+        return false
+    }
+    if (!isPhotoUploaded) {
+        showToast("Пожалуйста, загрузите фото", context)
         return false
     }
 

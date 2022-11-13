@@ -110,6 +110,10 @@ fun RegisterFirstStage(
                 if (password.isEmpty()) {
                     isPasswordError = true
                 }
+                if (password.length < 8) {
+                    isPasswordError = true
+                    showToast("Минимальная длина пароля: 8 символов", context)
+                }
                 if (passwordRepeat.isEmpty()) {
                     isPasswordRepeatError = true
                 }
@@ -267,7 +271,8 @@ fun RegisterSecondStageView(
                             chosenGender = chosenGender,
                             showingGender = chosenShowingGender,
                             onNameError = { isNameError = true },
-                            onContactsError = { isContactsError = true }
+                            onContactsError = { isContactsError = true },
+                            isPhotoUploaded = registerViewModel.isPhotoUploaded()
                         )
                     ) {
                         registerViewModel.onRegisterClick(

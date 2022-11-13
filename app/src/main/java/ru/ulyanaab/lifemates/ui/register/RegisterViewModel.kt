@@ -100,4 +100,8 @@ class RegisterViewModel @Inject constructor(
             RoundedBlockUiModel("Не бинарный", gender?.text == "Не бинарный"),
         )
     }
+
+    fun isPhotoUploaded(): Boolean {
+        return linkStateFlow.value != null
+    }
 }

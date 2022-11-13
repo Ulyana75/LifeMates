@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ru.ulyanaab.lifemates.domain.match.interactor.MatchInteractor
-import ru.ulyanaab.lifemates.ui.common.model.OtherUserUiModel
 import javax.inject.Inject
 
 class MatchViewModel @Inject constructor(
