@@ -82,7 +82,7 @@ fun UserInfoDateOfBirth(
     val datePickerDialog = DatePickerDialog(
         context,
         { _, y, m, d ->
-            onValueChange(LocalDate.of(y, m, d).format(dateFormatterUsual()))
+            onValueChange(LocalDate.of(y, m + 1, d).format(dateFormatterUsual()))
         },
         year,
         month,
