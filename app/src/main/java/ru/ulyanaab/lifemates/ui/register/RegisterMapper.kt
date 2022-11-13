@@ -17,7 +17,7 @@ class RegisterMapper @Inject constructor(
 
     fun mapToDomainModel(uiModel: RegisterUiModel): RegisterModel {
         return RegisterModel(
-            email = uiModel.email,
+            email = uiModel.email.trim(),
             password = uiModel.password,
             name = uiModel.name,
             description = uiModel.description.nullIfEmpty(),

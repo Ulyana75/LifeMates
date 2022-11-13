@@ -27,7 +27,7 @@ class AuthViewModel @Inject constructor(
     fun onLoginClick(login: String, password: String) {
         CoroutineScope(Dispatchers.IO).launch {
             _isLoading.value = true
-            val loginModel = LoginModel(login, password)
+            val loginModel = LoginModel(login.trim(), password)
             savedLoginModel = loginModel
             authInteractor.login(loginModel)
             _isLoading.value = false
