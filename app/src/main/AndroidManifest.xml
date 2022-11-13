@@ -9,9 +9,9 @@
     <application
         android:name=".App"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_heart_blue"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/ic_heart_blue"
         android:supportsRtl="true"
         android:theme="@style/Theme.LifeMates"
         android:usesCleartextTraffic="true">
@@ -19,6 +19,7 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.LifeMates.NoActionBar"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>

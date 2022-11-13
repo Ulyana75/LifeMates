@@ -17,10 +17,11 @@ class OtherUserMapper @Inject constructor(
         else
             "${model.name}, ${model.age}"
 
-        val subtitle = if (model.distance == null)
-            genderMapper.mapToTextAsDescription(model.gender)
-        else
-            "${genderMapper.mapToTextAsDescription(model.gender)}, ${model.distance} км от вас"
+        val subtitle = when (model.distance) {
+            null -> genderMapper.mapToTextAsDescription(model.gender)
+            0 -> "${genderMapper.mapToTextAsDescription(model.gender)}, менее 1 км от вас"
+            else -> "${genderMapper.mapToTextAsDescription(model.gender)}, ${model.distance} км от вас"
+        }
 
         return OtherUserUiModel(
             id = model.id,

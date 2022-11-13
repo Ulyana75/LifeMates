@@ -4,6 +4,7 @@ import retrofit2.awaitResponse
 import ru.ulyanaab.lifemates.common.Error
 import ru.ulyanaab.lifemates.common.Result
 import ru.ulyanaab.lifemates.data.api.MeApi
+import ru.ulyanaab.lifemates.data.dto.request.UpdateLocationRequestDto
 import ru.ulyanaab.lifemates.data.mapper.LocationMapper
 import ru.ulyanaab.lifemates.data.mapper.MeMapper
 import ru.ulyanaab.lifemates.domain.common.model.LocationModel
@@ -37,7 +38,9 @@ class UserInfoRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateUserLocation(location: LocationModel?): Result<Unit> {
-        val response = meApi.updateLocation(locationMapper.mapToDto(location)).awaitResponse()
+        val response = meApi.updateLocation(
+            UpdateLocationRequestDto(locationMapper.mapToDto(location))
+        ).awaitResponse()
         return when (response.code()) {
             200 -> Result.Success(Unit)
             401 -> Result.Failure(Error.Unauthorized)
