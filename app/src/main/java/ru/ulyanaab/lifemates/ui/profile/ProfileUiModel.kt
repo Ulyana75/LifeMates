@@ -14,4 +14,5 @@ data class ProfileUiModel(
     val whatsapp: String,
     val instagram: String,
     val imageUrl: String?,
+    val interests: List<Int>,
 )

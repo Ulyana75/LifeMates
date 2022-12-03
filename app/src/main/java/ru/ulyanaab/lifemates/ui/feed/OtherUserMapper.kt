@@ -30,6 +30,7 @@ class OtherUserMapper @Inject constructor(
             imageUrl = model.imagesUrls.firstOrNull(),
             description = model.description,
             contacts = model.contacts.map(contactMapper::mapToUiModel),
+            interests = model.interests,
         )
     }
 

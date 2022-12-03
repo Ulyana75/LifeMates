@@ -12,7 +12,7 @@ data class UserInfoGetModel(
     val gender: GenderModel,
     val birthday: String?,
     val settings: UserSettingsModel,
-    val interests: List<Int> = emptyList(),
+    val interests: List<Int>,
     val imagesUrls: List<String>,
     val contacts: List<ContactModel>,
 )
@@ -22,7 +22,7 @@ data class UserInfoUpdateModel(
     val description: String?,
     val gender: GenderModel,
     val birthday: String?,
-    val interests: List<Int> = emptyList(),
+    val interests: List<Int>,
     val imagesUrls: List<String>,
     val location: LocationModel?,
     val settings: UserSettingsModel,

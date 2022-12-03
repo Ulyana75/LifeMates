@@ -22,7 +22,7 @@ data class OtherUserDto(
     val distance: Int?,
 
     @Json(name = "interests")
-    val interests: List<Int>,
+    val interests: List<String>,
 
     @Json(name = "imagesUrls")
     val imagesUrls: List<String>,

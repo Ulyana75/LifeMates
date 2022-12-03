@@ -12,7 +12,7 @@ data class RegisterModel(
     val description: String?,
     val gender: GenderModel,
     val birthday: String?,
-    val interests: List<Int> = emptyList(),
+    val interests: List<Int>,
     val imageUrls: List<String>,
     val location: LocationModel?,
     val settings: UserSettingsModel,

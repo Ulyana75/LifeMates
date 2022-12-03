@@ -28,6 +28,7 @@ import ru.ulyanaab.lifemates.ui.common.utils.showToast
 import ru.ulyanaab.lifemates.ui.common.widget.ContactsBlock
 import ru.ulyanaab.lifemates.ui.common.widget.DescriptionBlock
 import ru.ulyanaab.lifemates.ui.common.widget.GenderChoiceBlock
+import ru.ulyanaab.lifemates.ui.common.widget.InterestsChoiceBlock
 import ru.ulyanaab.lifemates.ui.common.widget.LoadingView
 import ru.ulyanaab.lifemates.ui.common.widget.PersonalUserInfo
 import ru.ulyanaab.lifemates.ui.common.widget.ShowingGenderChoiceBlock
@@ -67,6 +68,7 @@ fun ProfileView(
     ) {
         if (isModelReady) {
             val userUiModel by profileViewModel.profileState.collectAsState()
+            val interests by profileViewModel.interestsFlow.collectAsState()
 
             var name by remember { mutableStateOf(userUiModel?.name ?: "") }
             var description by remember { mutableStateOf(userUiModel?.description ?: "") }
@@ -88,6 +90,11 @@ fun ProfileView(
             var chosenShowingGender by remember {
                 mutableStateOf(
                     profileViewModel.getShowingGenderModels().find { it.isChosen }
+                )
+            }
+            var chosenInterests by remember {
+                mutableStateOf(
+                    profileViewModel.getInterestsModels().filter { it.isChosen }
                 )
             }
 
@@ -123,6 +130,14 @@ fun ProfileView(
                     elements = profileViewModel.getShowingGenderModels(),
                     onChoiceChanged = { chosenShowingGender = it }
                 )
+                if (interests.isNotEmpty()) {
+                    InterestsChoiceBlock(
+                        elements = profileViewModel.getInterestsModels(),
+                        onChoiceChanged = {
+                            chosenInterests = it
+                        }
+                    )
+                }
                 DescriptionBlock(
                     description = description,
                     onDescriptionChange = { description = it },
@@ -191,7 +206,8 @@ fun ProfileView(
                                 vk = vk,
                                 viber = viber,
                                 whatsapp = whatsapp,
-                                instagram = instagram
+                                instagram = instagram,
+                                interests = chosenInterests,
                             )
                             showToast("Сохранено", context)
                         }

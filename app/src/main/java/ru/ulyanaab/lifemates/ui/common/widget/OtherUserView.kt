@@ -3,6 +3,7 @@ package ru.ulyanaab.lifemates.ui.common.widget
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ru.ulyanaab.lifemates.ui.common.model.OtherUserUiModel
+import ru.ulyanaab.lifemates.ui.common.model.RoundedBlockUiModel
 import ru.ulyanaab.lifemates.ui.common.theme.GreyDark
 import ru.ulyanaab.lifemates.ui.common.theme.GreyLight
 import ru.ulyanaab.lifemates.ui.common.theme.Shapes
@@ -78,40 +80,72 @@ fun DescriptionBlock(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = model.title,
-                style = Typography.h4.copy(color = Color.Black),
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp, bottom = 5.dp, start = 21.dp, end = 21.dp)
+            TitleSubtitle(
+                title = model.title,
+                subtitle = model.subtitle
             )
-            Text(
-                text = model.subtitle,
-                style = Typography.body1.copy(color = GreyDark),
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 25.dp, start = 21.dp, end = 21.dp)
-            )
+            if (model.interests.isNotEmpty()) {
+                Interests(interests = model.interests)
+            }
             if (model.description != null) {
-                Column(
-                    modifier = Modifier
-                        .padding(start = 21.dp, end = 21.dp)
-                        .verticalScroll(rememberScrollState())
-                        .weight(weight = 2f, fill = false)
-                ) {
-                    Text(
-                        text = model.description,
-                        style = Typography.body1.copy(color = Color.Black),
-                        textAlign = TextAlign.Center,
-                    )
-                }
+                Description(description = model.description)
             }
             Box(modifier = Modifier.padding(top = 15.dp)) {
                 bottomContent?.invoke()
             }
         }
+    }
+}
+
+@Composable
+fun TitleSubtitle(
+    title: String,
+    subtitle: String,
+) {
+    Text(
+        text = title,
+        style = Typography.h4.copy(color = Color.Black),
+        textAlign = TextAlign.Center,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp, bottom = 5.dp, start = 21.dp, end = 21.dp)
+    )
+    Text(
+        text = subtitle,
+        style = Typography.body1.copy(color = GreyDark),
+        textAlign = TextAlign.Center,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 15.dp, start = 21.dp, end = 21.dp)
+    )
+}
+
+@Composable
+fun Interests(interests: List<String>) {
+    RoundedBlocksWithoutChoice(
+        elementsList = interests.map {
+            RoundedBlockUiModel(
+                text = it,
+                isChosen = true,
+            )
+        },
+        modifier = Modifier.padding(bottom = 15.dp)
+    )
+}
+
+@Composable
+fun ColumnScope.Description(description: String) {
+    Column(
+        modifier = Modifier
+            .padding(start = 21.dp, end = 21.dp)
+            .verticalScroll(rememberScrollState())
+            .weight(weight = 2f, fill = false)
+    ) {
+        Text(
+            text = description,
+            style = Typography.body1.copy(color = Color.Black),
+            textAlign = TextAlign.Center,
+        )
     }
 }
 
@@ -125,7 +159,8 @@ fun OtherUserPreview() {
             subtitle = "Los Angeles, USA",
             description = "I'm giving you a night call to tell you how I feel. I want to drive you through the night, down the hills. I'm giving you a night call to tell you how I feel. I want to drive you through the night, down the hills. I'm giving you a night call to tell you how I feel. I want to drive you through the night, down the hills. I'm giving you a night call to tell you how I feel. I want to drive you through the night, down the hills. I'm giving you a night call to tell you how I feel. I want to drive you through the night, down the hills. I'm giving you a night call to tell you how I feel. I want to drive you through the night, down the hills. I'm giving you a night call to tell you how I feel. I want to drive you through the night, down the hills.",
             imageUrl = null,
-            contacts = emptyList()
+            contacts = emptyList(),
+            interests = listOf("Drive", "Nightcall", "Pyaterochka")
         ),
         cardOffset = CardOffset.S,
         bottomContent = {

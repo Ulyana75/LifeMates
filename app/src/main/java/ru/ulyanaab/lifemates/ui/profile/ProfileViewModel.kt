@@ -7,7 +7,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ru.ulyanaab.lifemates.domain.auth.interactor.AuthInteractor
+import ru.ulyanaab.lifemates.domain.common.interactor.InterestsInteractor
 import ru.ulyanaab.lifemates.domain.common.interactor.UploadPhotoInteractor
+import ru.ulyanaab.lifemates.domain.common.model.InterestModel
 import ru.ulyanaab.lifemates.domain.user_info.interactor.UserInfoInteractor
 import ru.ulyanaab.lifemates.ui.common.mapper.GenderMapper
 import ru.ulyanaab.lifemates.ui.common.mapper.GenderMapper.Companion.MAN
@@ -19,6 +21,7 @@ import javax.inject.Inject
 
 class ProfileViewModel @Inject constructor(
     private val userInfoInteractor: UserInfoInteractor,
+    private val interestsInteractor: InterestsInteractor,
     private val profileMapper: ProfileMapper,
     private val authInteractor: AuthInteractor,
     private val genderMapper: GenderMapper,
@@ -31,6 +34,9 @@ class ProfileViewModel @Inject constructor(
     private val _isLoading: MutableStateFlow<Boolean> = MutableStateFlow(true)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
+    private val _interestsFlow: MutableStateFlow<List<InterestModel>> = MutableStateFlow(emptyList())
+    val interestsFlow: StateFlow<List<InterestModel>> = _interestsFlow.asStateFlow()
+
     private val _isModelReady = MutableStateFlow(false)
     val isModelReady: StateFlow<Boolean> = _isModelReady.asStateFlow()
 
@@ -42,6 +48,7 @@ class ProfileViewModel @Inject constructor(
             val uiModel = userInfoModel?.let {
                 profileMapper.mapToUiModel(userInfoModel)
             }
+            getInterests()
             _profileState.value = uiModel
             _isModelReady.value = true
             _isLoading.value = false
@@ -62,7 +69,8 @@ class ProfileViewModel @Inject constructor(
         vk: String,
         viber: String,
         whatsapp: String,
-        instagram: String
+        instagram: String,
+        interests: List<RoundedBlockUiModel>?,
     ) {
         val uiModel = ProfileUiModel(
             name = name,
@@ -75,7 +83,8 @@ class ProfileViewModel @Inject constructor(
             viber = viber,
             whatsapp = whatsapp,
             instagram = instagram,
-            imageUrl = linkStateFlow.value ?: _profileState.value?.imageUrl
+            imageUrl = linkStateFlow.value ?: _profileState.value?.imageUrl,
+            interests = interests?.mapNotNull { it.id } ?: emptyList(),
         )
         val updateModel = profileMapper.mapToUpdateModel(uiModel)
         userInfoInteractor.updateUserInfo(updateModel)
@@ -103,5 +112,21 @@ class ProfileViewModel @Inject constructor(
             RoundedBlockUiModel(WOMAN, gender?.let(genderMapper::mapToText) == WOMAN),
             RoundedBlockUiModel(NON_BINARY, gender?.let(genderMapper::mapToText) == NON_BINARY),
         )
+    }
+
+    fun getInterestsModels(): List<RoundedBlockUiModel> {
+        val interests = _profileState.value?.interests
+        return _interestsFlow.value.map { model ->
+            RoundedBlockUiModel(
+                text = model.value,
+                isChosen = interests?.contains(model.id) ?: false,
+                id = model.id,
+            )
+        }
+    }
+
+    private suspend fun getInterests() {
+        val interests = interestsInteractor.getInterests()
+        _interestsFlow.value = interests
     }
 }

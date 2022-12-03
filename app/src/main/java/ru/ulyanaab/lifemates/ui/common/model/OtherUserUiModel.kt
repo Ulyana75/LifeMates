@@ -7,4 +7,5 @@ class OtherUserUiModel(
     val imageUrl: String?,
     val description: String?,
     val contacts: List<ContactUiModel>,
+    val interests: List<String>,
 )

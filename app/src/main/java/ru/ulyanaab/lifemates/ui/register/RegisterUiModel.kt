@@ -16,4 +16,5 @@ data class RegisterUiModel(
     val whatsapp: String,
     val instagram: String,
     val imageUrl: String?,
+    val interests: List<RoundedBlockUiModel>?,
 )

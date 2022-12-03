@@ -267,6 +267,25 @@ fun UserInfoChoiceBlock(
 }
 
 @Composable
+fun InterestsChoiceBlock(
+    elements: List<RoundedBlockUiModel>,
+    onChoiceChanged: (List<RoundedBlockUiModel>) -> Unit
+) {
+    UserInfoBlockTitle(
+        text = "Выберите 3 ваших интереса",
+        paddingBottom = 10.dp,
+    )
+    RoundedBlockMultipleChoice(
+        onChoiceChanged = onChoiceChanged,
+        elementsList = elements,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 45.dp),
+        choiceLimit = 3,
+    )
+}
+
+@Composable
 fun PersonalUserInfo(
     name: String,
     birthday: String,

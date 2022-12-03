@@ -11,6 +11,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,6 +34,7 @@ import ru.ulyanaab.lifemates.ui.common.widget.ContactsBlock
 import ru.ulyanaab.lifemates.ui.common.widget.DescriptionBlock
 import ru.ulyanaab.lifemates.ui.common.widget.GenderChoiceBlock
 import ru.ulyanaab.lifemates.ui.common.widget.InfoDialog
+import ru.ulyanaab.lifemates.ui.common.widget.InterestsChoiceBlock
 import ru.ulyanaab.lifemates.ui.common.widget.LoadingView
 import ru.ulyanaab.lifemates.ui.common.widget.PersonalUserInfo
 import ru.ulyanaab.lifemates.ui.common.widget.ShowingGenderChoiceBlock
@@ -49,6 +51,10 @@ fun RegisterFirstStage(
     registerViewModel: RegisterViewModel,
     navController: NavController
 ) {
+
+    LaunchedEffect(Unit) {
+        registerViewModel.attach()
+    }
 
     var login by remember { mutableStateOf(registerViewModel.getLoginAndPassword().first) }
     var password by remember { mutableStateOf(registerViewModel.getLoginAndPassword().second) }
@@ -161,6 +167,7 @@ fun RegisterSecondStageView(
     navController: NavController
 ) {
     val savedModel = registerViewModel.savedRegisterModel
+    val interests by registerViewModel.interestsFlow.collectAsState()
 
     var name by remember { mutableStateOf(savedModel?.name ?: "") }
     var description by remember { mutableStateOf(savedModel?.description ?: "") }
@@ -176,6 +183,7 @@ fun RegisterSecondStageView(
     var isContactsError by remember { mutableStateOf(false) }
     var chosenGender by remember { mutableStateOf(savedModel?.gender) }
     var chosenShowingGender by remember { mutableStateOf(savedModel?.showingGender) }
+    var chosenInterests by remember { mutableStateOf(savedModel?.interests) }
 
     Column(
         Modifier
@@ -217,6 +225,12 @@ fun RegisterSecondStageView(
                 elements = registerViewModel.getShowingGenderModels(),
                 onChoiceChanged = { chosenShowingGender = it }
             )
+            if (interests.isNotEmpty()) {
+                InterestsChoiceBlock(
+                    elements = registerViewModel.getInterestsModels(),
+                    onChoiceChanged = { chosenInterests = it }
+                )
+            }
             DescriptionBlock(
                 description = description,
                 onDescriptionChange = { description = it },
@@ -286,7 +300,8 @@ fun RegisterSecondStageView(
                             vk = vk,
                             viber = viber,
                             whatsapp = whatsapp,
-                            instagram = instagram
+                            instagram = instagram,
+                            interests = chosenInterests,
                         )
                     }
                 }
