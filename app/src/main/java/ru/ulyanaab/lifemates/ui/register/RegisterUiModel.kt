@@ -1,5 +1,6 @@
 package ru.ulyanaab.lifemates.ui.register
 
+import ru.ulyanaab.lifemates.domain.common.model.InterestModel
 import ru.ulyanaab.lifemates.ui.common.model.RoundedBlockUiModel
 
 data class RegisterUiModel(
@@ -16,5 +17,5 @@ data class RegisterUiModel(
     val whatsapp: String,
     val instagram: String,
     val imageUrl: String?,
-    val interests: List<RoundedBlockUiModel>?,
+    val interests: List<InterestModel>,
 )

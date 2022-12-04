@@ -6,7 +6,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import ru.ulyanaab.lifemates.ui.chats.ChatsScreen
 import ru.ulyanaab.lifemates.ui.chats.ChatsViewModel
@@ -21,7 +20,7 @@ import ru.ulyanaab.lifemates.ui.profile.ProfileViewModel
 @Composable
 fun BottomNavGraph(
     bottomNavController: NavHostController,
-    chatsNavController: NavHostController,
+    mainNavController: NavHostController,
     profileViewModel: ProfileViewModel,
     feedViewModel: FeedViewModel,
     chatsViewModel: ChatsViewModel,
@@ -31,14 +30,17 @@ fun BottomNavGraph(
         startDestination = BottomNavItem.Feed.screenRoute
     ) {
         composable(BottomNavItem.Profile.screenRoute) {
-            ProfileScreen(profileViewModel = profileViewModel)
+            ProfileScreen(
+                profileViewModel = profileViewModel,
+                navController = mainNavController,
+            )
         }
         composable(BottomNavItem.Feed.screenRoute) {
             FeedScreen(feedViewModel = feedViewModel)
         }
         composable(BottomNavItem.Chats.screenRoute) {
             ChatsScreen(
-                navController = chatsNavController,
+                navController = mainNavController,
                 chatsViewModel = chatsViewModel
             )
         }

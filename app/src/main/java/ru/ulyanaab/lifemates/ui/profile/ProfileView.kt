@@ -22,8 +22,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import ru.ulyanaab.lifemates.R
 import ru.ulyanaab.lifemates.ui.common.UploadPhotoViewModel
+import ru.ulyanaab.lifemates.ui.common.navigation.main.MainNavItem
 import ru.ulyanaab.lifemates.ui.common.utils.showToast
 import ru.ulyanaab.lifemates.ui.common.widget.ContactsBlock
 import ru.ulyanaab.lifemates.ui.common.widget.DescriptionBlock
@@ -40,6 +42,7 @@ import ru.ulyanaab.lifemates.ui.common.widget.validateInputs
 @Composable
 fun ProfileScreen(
     profileViewModel: ProfileViewModel,
+    navController: NavController,
 ) {
     LaunchedEffect(Unit) {
         profileViewModel.attach()
@@ -50,13 +53,18 @@ fun ProfileScreen(
     if (isLoading) {
         LoadingView(backgroundColor = Color.White)
     }
-    ProfileView(profileViewModel = profileViewModel, uploadPhotoViewModel = profileViewModel)
+    ProfileView(
+        profileViewModel = profileViewModel,
+        uploadPhotoViewModel = profileViewModel,
+        navController = navController,
+    )
 }
 
 @Composable
 fun ProfileView(
     profileViewModel: ProfileViewModel,
-    uploadPhotoViewModel: UploadPhotoViewModel
+    uploadPhotoViewModel: UploadPhotoViewModel,
+    navController: NavController,
 ) {
     val isModelReady by profileViewModel.isModelReady.collectAsState()
 
@@ -68,7 +76,6 @@ fun ProfileView(
     ) {
         if (isModelReady) {
             val userUiModel by profileViewModel.profileState.collectAsState()
-            val interests by profileViewModel.interestsFlow.collectAsState()
 
             var name by remember { mutableStateOf(userUiModel?.name ?: "") }
             var description by remember { mutableStateOf(userUiModel?.description ?: "") }
@@ -90,11 +97,6 @@ fun ProfileView(
             var chosenShowingGender by remember {
                 mutableStateOf(
                     profileViewModel.getShowingGenderModels().find { it.isChosen }
-                )
-            }
-            var chosenInterests by remember {
-                mutableStateOf(
-                    profileViewModel.getInterestsModels().filter { it.isChosen }
                 )
             }
 
@@ -130,14 +132,12 @@ fun ProfileView(
                     elements = profileViewModel.getShowingGenderModels(),
                     onChoiceChanged = { chosenShowingGender = it }
                 )
-                if (interests.isNotEmpty()) {
-                    InterestsChoiceBlock(
-                        elements = profileViewModel.getInterestsModels(),
-                        onChoiceChanged = {
-                            chosenInterests = it
-                        }
-                    )
-                }
+                InterestsChoiceBlock(
+                    elements = profileViewModel.getChosenInterests(),
+                    onChangeButtonClick = {
+                        navController.navigate(MainNavItem.Interests.screenRoute)
+                    }
+                )
                 DescriptionBlock(
                     description = description,
                     onDescriptionChange = { description = it },
@@ -207,7 +207,6 @@ fun ProfileView(
                                 viber = viber,
                                 whatsapp = whatsapp,
                                 instagram = instagram,
-                                interests = chosenInterests,
                             )
                             showToast("Сохранено", context)
                         }

@@ -6,4 +6,5 @@ sealed class AuthNavItem(
     object Auth : AuthNavItem("auth")
     object RegisterFirst : AuthNavItem("register_first")
     object RegisterSecond : AuthNavItem("register_second")
+    object Interests : AuthNavItem("interests")
 }

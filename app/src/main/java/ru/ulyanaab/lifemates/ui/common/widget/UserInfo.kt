@@ -269,19 +269,27 @@ fun UserInfoChoiceBlock(
 @Composable
 fun InterestsChoiceBlock(
     elements: List<RoundedBlockUiModel>,
-    onChoiceChanged: (List<RoundedBlockUiModel>) -> Unit
+    onChangeButtonClick: () -> Unit
 ) {
     UserInfoBlockTitle(
-        text = "Выберите 3 ваших интереса",
+        text = "Ваши интересы",
         paddingBottom = 10.dp,
     )
-    RoundedBlockMultipleChoice(
-        onChoiceChanged = onChoiceChanged,
-        elementsList = elements,
+    if (elements.isNotEmpty()) {
+        RoundedBlocksWithoutChoice(
+            elementsList = elements,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+        )
+    }
+    Button(
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 45.dp),
-        choiceLimit = 3,
+        onClick = onChangeButtonClick,
+        isHighlighted = elements.isEmpty(),
+        text = if (elements.isEmpty()) "Выбрать" else "Изменить"
     )
 }
 

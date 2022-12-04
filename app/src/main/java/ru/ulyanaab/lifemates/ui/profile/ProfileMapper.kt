@@ -22,7 +22,7 @@ class ProfileMapper @Inject constructor() {
             birthday = model.birthday?.let {
               LocalDate.parse(it, dateFormatterWithTime()).format(dateFormatterUsual())
             } ?: "",
-            interests = model.interests,
+            interests = model.interests.map { it.id },
             showingGender = model.settings.showingGender,
             telegram = model.contacts.find {
                 it.type == ContactType.TELEGRAM

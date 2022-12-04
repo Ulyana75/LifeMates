@@ -6,4 +6,5 @@ sealed class MainNavItem(
     object MainScreen : MainNavItem("main")
     object Matches : MainNavItem("matches")
     object SingleChat : MainNavItem("single_chat")
+    object Interests : MainNavItem("interests")
 }

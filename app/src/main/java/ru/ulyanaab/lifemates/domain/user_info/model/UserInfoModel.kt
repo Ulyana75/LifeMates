@@ -2,6 +2,7 @@ package ru.ulyanaab.lifemates.domain.user_info.model
 
 import ru.ulyanaab.lifemates.domain.common.model.ContactModel
 import ru.ulyanaab.lifemates.domain.common.model.GenderModel
+import ru.ulyanaab.lifemates.domain.common.model.InterestModel
 import ru.ulyanaab.lifemates.domain.common.model.LocationModel
 
 data class UserInfoGetModel(
@@ -12,7 +13,7 @@ data class UserInfoGetModel(
     val gender: GenderModel,
     val birthday: String?,
     val settings: UserSettingsModel,
-    val interests: List<Int>,
+    val interests: List<InterestModel>,
     val imagesUrls: List<String>,
     val contacts: List<ContactModel>,
 )

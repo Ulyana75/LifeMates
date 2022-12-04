@@ -7,21 +7,20 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ru.ulyanaab.lifemates.domain.auth.interactor.AuthInteractor
-import ru.ulyanaab.lifemates.domain.common.interactor.InterestsInteractor
 import ru.ulyanaab.lifemates.domain.common.interactor.UploadPhotoInteractor
-import ru.ulyanaab.lifemates.domain.common.model.InterestModel
 import ru.ulyanaab.lifemates.domain.common.state_holders.RegisterEventsStateHolder
+import ru.ulyanaab.lifemates.ui.common.UploadPhotoViewModel
 import ru.ulyanaab.lifemates.ui.common.mapper.GenderMapper.Companion.MAN
 import ru.ulyanaab.lifemates.ui.common.mapper.GenderMapper.Companion.NON_BINARY
 import ru.ulyanaab.lifemates.ui.common.mapper.GenderMapper.Companion.WOMAN
-import ru.ulyanaab.lifemates.ui.common.UploadPhotoViewModel
 import ru.ulyanaab.lifemates.ui.common.model.RoundedBlockUiModel
+import ru.ulyanaab.lifemates.ui.interests.InterestsRepository
 import javax.inject.Inject
 
 class RegisterViewModel @Inject constructor(
     private val authInteractor: AuthInteractor,
     private val registerMapper: RegisterMapper,
-    private val interestsInteractor: InterestsInteractor,
+    private val interestsRepository: InterestsRepository,
     registerEventsStateHolder: RegisterEventsStateHolder,
     uploadPhotoInteractor: UploadPhotoInteractor,
 ) : UploadPhotoViewModel(uploadPhotoInteractor) {
@@ -31,9 +30,6 @@ class RegisterViewModel @Inject constructor(
     private val _isLoading: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
-    private val _interestsFlow: MutableStateFlow<List<InterestModel>> = MutableStateFlow(emptyList())
-    val interestsFlow: StateFlow<List<InterestModel>> = _interestsFlow.asStateFlow()
-
     private var login = ""
     private var password = ""
 
@@ -41,7 +37,7 @@ class RegisterViewModel @Inject constructor(
         private set
 
     fun attach() {
-        getInterests()
+        // no-op
     }
 
     fun detach() {
@@ -70,7 +66,6 @@ class RegisterViewModel @Inject constructor(
         viber: String,
         whatsapp: String,
         instagram: String,
-        interests: List<RoundedBlockUiModel>?,
     ) {
         CoroutineScope(Dispatchers.IO).launch {
             _isLoading.value = true
@@ -89,7 +84,7 @@ class RegisterViewModel @Inject constructor(
                 whatsapp = whatsapp,
                 instagram = instagram,
                 imageUrl = linkStateFlow.value,
-                interests = interests,
+                interests = interestsRepository.chosenInterests,
             )
             savedRegisterModel = model
             authInteractor.register(registerMapper.mapToDomainModel(model))
@@ -116,25 +111,17 @@ class RegisterViewModel @Inject constructor(
         )
     }
 
-    fun getInterestsModels(): List<RoundedBlockUiModel> {
-        val interests = savedRegisterModel?.interests
-        return _interestsFlow.value.map { model ->
-            RoundedBlockUiModel(
-                text = model.value,
-                isChosen = interests?.map { it.id }?.contains(model.id) ?: false,
-                id = model.id,
-            )
-        }
-    }
-
     fun isPhotoUploaded(): Boolean {
         return linkStateFlow.value != null
     }
 
-    private fun getInterests() {
-        CoroutineScope(Dispatchers.IO).launch {
-            val interests = interestsInteractor.getInterests()
-            _interestsFlow.value = interests
+    fun getChosenInterests(): List<RoundedBlockUiModel> {
+        return interestsRepository.chosenInterests.map {
+            RoundedBlockUiModel(
+                text = it.value,
+                isChosen = true,
+                id = it.id,
+            )
         }
     }
 }

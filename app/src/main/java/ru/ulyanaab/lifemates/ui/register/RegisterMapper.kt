@@ -35,7 +35,7 @@ class RegisterMapper @Inject constructor(
                 uiModel.whatsapp.nullIfEmpty()?.let { ContactModel(ContactType.WHATSAPP, it) },
                 uiModel.instagram.nullIfEmpty()?.let { ContactModel(ContactType.INSTAGRAM, it) },
             ),
-            interests = uiModel.interests?.mapNotNull { it.id } ?: emptyList(),
+            interests = uiModel.interests.map { it.id },
         )
     }
 }

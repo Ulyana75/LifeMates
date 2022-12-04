@@ -16,6 +16,7 @@ import ru.ulyanaab.lifemates.ui.common.navigation.general.GeneralNavGraph
 import ru.ulyanaab.lifemates.ui.common.theme.LifeMatesTheme
 import ru.ulyanaab.lifemates.ui.common.utils.ViewModelsDetachHelper
 import ru.ulyanaab.lifemates.ui.feed.FeedViewModel
+import ru.ulyanaab.lifemates.ui.interests.InterestsViewModel
 import ru.ulyanaab.lifemates.ui.loading.LoadingViewModel
 import ru.ulyanaab.lifemates.ui.match.MatchViewModel
 import ru.ulyanaab.lifemates.ui.profile.ProfileViewModel
@@ -51,6 +52,9 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var chatsViewModel: ChatsViewModel
+
+    @Inject
+    lateinit var interestsViewModel: InterestsViewModel
 
     lateinit var viewModelsDetachHelper: ViewModelsDetachHelper
 
@@ -88,6 +92,7 @@ class MainActivity : ComponentActivity() {
                     authStateHolder = authStateHolder,
                     matchViewModel = matchViewModel,
                     chatsViewModel = chatsViewModel,
+                    interestsViewModel = interestsViewModel,
                 )
             }
         }

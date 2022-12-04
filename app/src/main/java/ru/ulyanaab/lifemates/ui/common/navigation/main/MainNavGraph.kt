@@ -10,6 +10,8 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import ru.ulyanaab.lifemates.ui.chats.ChatsViewModel
 import ru.ulyanaab.lifemates.ui.feed.FeedViewModel
+import ru.ulyanaab.lifemates.ui.interests.InterestsScreen
+import ru.ulyanaab.lifemates.ui.interests.InterestsViewModel
 import ru.ulyanaab.lifemates.ui.main.MainScreen
 import ru.ulyanaab.lifemates.ui.match.MatchScreen
 import ru.ulyanaab.lifemates.ui.match.MatchViewModel
@@ -25,6 +27,7 @@ fun MainNavGraph(
     feedViewModel: FeedViewModel,
     matchViewModel: MatchViewModel,
     chatsViewModel: ChatsViewModel,
+    interestsViewModel: InterestsViewModel
 ) {
     NavHost(
         navController = navController,
@@ -46,6 +49,13 @@ fun MainNavGraph(
             MatchScreen(
                 matchViewModel = matchViewModel,
                 navController = navController
+            )
+        }
+
+        composable(MainNavItem.Interests.screenRoute) {
+            InterestsScreen(
+                interestsViewModel = interestsViewModel,
+                navController = navController,
             )
         }
     }

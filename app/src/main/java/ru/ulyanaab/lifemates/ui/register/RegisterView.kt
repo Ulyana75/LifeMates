@@ -167,7 +167,6 @@ fun RegisterSecondStageView(
     navController: NavController
 ) {
     val savedModel = registerViewModel.savedRegisterModel
-    val interests by registerViewModel.interestsFlow.collectAsState()
 
     var name by remember { mutableStateOf(savedModel?.name ?: "") }
     var description by remember { mutableStateOf(savedModel?.description ?: "") }
@@ -183,7 +182,6 @@ fun RegisterSecondStageView(
     var isContactsError by remember { mutableStateOf(false) }
     var chosenGender by remember { mutableStateOf(savedModel?.gender) }
     var chosenShowingGender by remember { mutableStateOf(savedModel?.showingGender) }
-    var chosenInterests by remember { mutableStateOf(savedModel?.interests) }
 
     Column(
         Modifier
@@ -225,12 +223,12 @@ fun RegisterSecondStageView(
                 elements = registerViewModel.getShowingGenderModels(),
                 onChoiceChanged = { chosenShowingGender = it }
             )
-            if (interests.isNotEmpty()) {
-                InterestsChoiceBlock(
-                    elements = registerViewModel.getInterestsModels(),
-                    onChoiceChanged = { chosenInterests = it }
-                )
-            }
+            InterestsChoiceBlock(
+                elements = registerViewModel.getChosenInterests(),
+                onChangeButtonClick = {
+                    navController.navigate(AuthNavItem.Interests.screenRoute)
+                }
+            )
             DescriptionBlock(
                 description = description,
                 onDescriptionChange = { description = it },
@@ -301,7 +299,6 @@ fun RegisterSecondStageView(
                             viber = viber,
                             whatsapp = whatsapp,
                             instagram = instagram,
-                            interests = chosenInterests,
                         )
                     }
                 }
