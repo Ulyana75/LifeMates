@@ -2,8 +2,8 @@ package ru.ulyanaab.lifemates.ui.interests
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -70,7 +71,7 @@ fun InterestsScreen(
 }
 
 @Composable
-fun ColumnScope.InterestsView(
+fun InterestsView(
     interestsViewModel: InterestsViewModel,
     navController: NavController,
 ) {
@@ -79,49 +80,58 @@ fun ColumnScope.InterestsView(
     val interests by remember { mutableStateOf(interestsViewModel.getAllInterests()) }
     var chosenInterests by remember { mutableStateOf(interestsViewModel.getChosenInterests()) }
 
-    EditText(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 25.dp, start = 16.dp, end = 16.dp, top = 16.dp),
-        hint = "Поиск...",
-        value = searchFilter,
-        onValueChange = { searchFilter = it },
-        onClearClicked = { searchFilter = "" }
-    )
-
     Column(
-        modifier = Modifier
-            .verticalScroll(rememberScrollState())
-            .weight(weight = 1f, fill = false)
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
-        if (interests.isNotEmpty()) {
-            RoundedBlockMultipleChoice(
-                onChoiceChanged = { chosenInterests = it },
-                elementsList = interests.filter {
-                    it.text.lowercase().contains(searchFilter.lowercase())
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp, start = 16.dp, end = 16.dp),
-                choiceLimit = 3,
-            )
-        }
-    }
-
-    Card(
-        modifier = Modifier
-            .fillMaxWidth(),
-        elevation = 4.dp,
-    ) {
-        Button(
+        EditText(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            onClick = {
-                interestsViewModel.onDoneButtonClick(chosenInterests)
-                navController.popBackStack()
-            },
-            text = "Готово"
+                .padding(bottom = 25.dp, start = 16.dp, end = 16.dp, top = 16.dp),
+            hint = "Поиск...",
+            value = searchFilter,
+            onValueChange = { searchFilter = it },
+            onClearClicked = { searchFilter = "" }
         )
+
+        Column(modifier = Modifier.weight(1f)) {
+            Column(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .weight(weight = 1f, fill = false),
+                verticalArrangement = Arrangement.Top
+            ) {
+                if (interests.isNotEmpty()) {
+                    RoundedBlockMultipleChoice(
+                        onChoiceChanged = { chosenInterests = it },
+                        elementsList = interests.filter {
+                            it.text.lowercase().contains(searchFilter.lowercase())
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp, start = 16.dp, end = 16.dp),
+                        choiceLimit = 3,
+                    )
+                }
+            }
+        }
+
+        Card(
+            modifier = Modifier
+                .fillMaxWidth(),
+            elevation = 4.dp,
+            shape = RectangleShape,
+        ) {
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                onClick = {
+                    interestsViewModel.onDoneButtonClick(chosenInterests)
+                    navController.popBackStack()
+                },
+                text = "Готово"
+            )
+        }
     }
 }
