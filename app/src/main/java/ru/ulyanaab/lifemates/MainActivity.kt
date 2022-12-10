@@ -21,6 +21,7 @@ import ru.ulyanaab.lifemates.ui.loading.LoadingViewModel
 import ru.ulyanaab.lifemates.ui.match.MatchViewModel
 import ru.ulyanaab.lifemates.ui.profile.ProfileViewModel
 import ru.ulyanaab.lifemates.ui.register.RegisterViewModel
+import ru.ulyanaab.lifemates.ui.single_chat.di.SingleChatDependencies
 import javax.inject.Inject
 
 @ExperimentalPagerApi
@@ -55,6 +56,9 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var interestsViewModel: InterestsViewModel
+
+    @Inject
+    lateinit var singleChatDependencies: SingleChatDependencies
 
     lateinit var viewModelsDetachHelper: ViewModelsDetachHelper
 
@@ -93,6 +97,7 @@ class MainActivity : ComponentActivity() {
                     matchViewModel = matchViewModel,
                     chatsViewModel = chatsViewModel,
                     interestsViewModel = interestsViewModel,
+                    singleChatDependencies = singleChatDependencies,
                 )
             }
         }

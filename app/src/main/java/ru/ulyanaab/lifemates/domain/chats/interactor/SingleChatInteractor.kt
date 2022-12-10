@@ -27,7 +27,7 @@ class SingleChatInteractor @Inject constructor(
             when (val messagesResult = chatsRepository.getMessages(chatId, MESSAGE_COUNT, 0)) {
                 is Result.Success -> {
                     messagesResult.data?.let {
-                        emit(compareEndFilterNewMessages(it))
+                        emit(compareEndFilterNewMessages(it).toSet())
                     }
                 }
                 is Result.Failure -> {
@@ -49,6 +49,17 @@ class SingleChatInteractor @Inject constructor(
             },
             onTokensRefreshedSuccessfully = {
                 getMessages(offset, limit)
+            }
+        )
+    }
+
+    suspend fun sendMessage(text: String): Unit? {
+        return resultProcessorWithTokensRefreshing.proceedAndReturn(
+            resultProducer = {
+                chatsRepository.sendMessage(chatId, text)
+            },
+            onTokensRefreshedSuccessfully = {
+                sendMessage(text)
             }
         )
     }

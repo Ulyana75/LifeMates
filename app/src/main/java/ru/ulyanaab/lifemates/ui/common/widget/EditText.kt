@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
@@ -29,7 +30,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import ru.ulyanaab.lifemates.R
 import ru.ulyanaab.lifemates.ui.common.theme.GreyDark
 import ru.ulyanaab.lifemates.ui.common.theme.GreyHint
@@ -48,6 +48,8 @@ fun EditText(
     isPassword: Boolean = false,
     maxCharacters: Int? = null,
     height: Dp = Size.S,
+    heightMax: Dp = height,
+    isSingleLine: Boolean = height == Size.S,
 ) {
     val focusRequester = remember { FocusRequester() }
 
@@ -71,10 +73,10 @@ fun EditText(
                     color = if (isError) Color.Red else Color.Transparent,
                     shape = Shapes.medium
                 )
-                .height(height)
+                .heightIn(height, heightMax)
                 .fillMaxWidth()
                 .focusRequester(focusRequester),
-            singleLine = height == Size.S,
+            singleLine = isSingleLine,
             textStyle = Typography.caption.copy(color = Color.Black),
             visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
             keyboardOptions = if (isPassword)
@@ -143,7 +145,6 @@ fun EditTextPreview() {
     ) {
         EditText(
             modifier = Modifier
-                .fillMaxWidth()
                 .padding(16.dp),
             hint = "Логин",
             onValueChange = {},
@@ -159,6 +160,19 @@ fun EditTextPreview() {
             onValueChange = {},
             onClearClicked = {},
             maxCharacters = 200,
+        )
+
+        EditText(
+            modifier = Modifier
+                .padding(16.dp),
+            hint = "Логин",
+            value = "startdfa",
+            onValueChange = {},
+            onClearClicked = {},
+            maxCharacters = 200,
+            height = Size.S,
+            heightMax = Size.M,
+            isSingleLine = false
         )
     }
 }

@@ -22,6 +22,8 @@ import ru.ulyanaab.lifemates.ui.main.MainScreen
 import ru.ulyanaab.lifemates.ui.match.MatchScreen
 import ru.ulyanaab.lifemates.ui.match.MatchViewModel
 import ru.ulyanaab.lifemates.ui.profile.ProfileViewModel
+import ru.ulyanaab.lifemates.ui.single_chat.SingleChatScreen
+import ru.ulyanaab.lifemates.ui.single_chat.SingleChatScreenConfig
 import ru.ulyanaab.lifemates.ui.single_chat.di.DaggerSingleChatComponent
 import ru.ulyanaab.lifemates.ui.single_chat.di.SingleChatDependencies
 
@@ -86,7 +88,16 @@ fun MainNavGraph(
                     chatId = it.arguments?.getLong(CHAT_ID_ARGUMENT) ?: 0,
                     userId = it.arguments?.getLong(USER_ID_ARGUMENT) ?: 0,
                     dependencies = singleChatDependencies,
+                ).singleChatViewModel
+
+            SingleChatScreen(
+                singleChatViewModel = viewModel,
+                navController = navController,
+                config = SingleChatScreenConfig(
+                    userName = it.arguments?.getString(USER_NAME_ARGUMENT) ?: "",
+                    userImageUrl = it.arguments?.getString(USER_IMAGE_URL_ARGUMENT) ?: ""
                 )
+            )
         }
     }
 }
