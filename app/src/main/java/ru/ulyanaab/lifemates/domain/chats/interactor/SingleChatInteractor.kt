@@ -1,5 +1,6 @@
 package ru.ulyanaab.lifemates.domain.chats.interactor
 
+import android.util.Log
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import ru.ulyanaab.lifemates.common.Error
@@ -20,14 +21,18 @@ class SingleChatInteractor @Inject constructor(
     private val resultProcessorWithTokensRefreshing: ResultProcessorWithTokensRefreshing,
 ) {
 
-    private val previousMessages: List<ChatMessageModel> = emptyList()
+    private var previousMessages: List<ChatMessageModel> = emptyList()
 
     val messagesFlow = flow {
         while (true) {
-            when (val messagesResult = chatsRepository.getMessages(chatId, MESSAGE_COUNT, 0)) {
+            when (val messagesResult = chatsRepository.getMessages(chatId, 0, MESSAGE_COUNT)) {
                 is Result.Success -> {
                     messagesResult.data?.let {
-                        emit(compareEndFilterNewMessages(it).toSet())
+                        val newMessages = compareEndFilterNewMessages(it).toSet()
+                        if (newMessages.isNotEmpty()) {
+                            previousMessages = newMessages.toList()
+                            emit(newMessages)
+                        }
                     }
                 }
                 is Result.Failure -> {

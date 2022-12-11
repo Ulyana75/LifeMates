@@ -8,14 +8,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ru.ulyanaab.lifemates.domain.chats.interactor.SingleChatInteractor
-import ru.ulyanaab.lifemates.ui.single_chat.di.WITH_USER_ID
-import java.util.Collections
 import java.util.UUID
 import javax.inject.Inject
-import javax.inject.Named
 
 class SingleChatViewModel @Inject constructor(
-    @Named(WITH_USER_ID) private val withUserId: Long,
     private val singleChatInteractor: SingleChatInteractor,
     private val messageMapper: MessageMapper,
 ) {
@@ -30,14 +26,9 @@ class SingleChatViewModel @Inject constructor(
     private val _messagesAreFinishedFlow = MutableStateFlow(false)
     val messagesAreFinishedFlow: StateFlow<Boolean> = _messagesAreFinishedFlow.asStateFlow()
 
-    private val _messagesInProgress: MutableStateFlow<MutableList<Long>> =
-        MutableStateFlow(mutableListOf())
-    val messagesInProgress: StateFlow<List<Long>> = _messagesInProgress.asStateFlow()
-
     private var messagesPollingJob: Job? = null
 
-    private val stubsForRemoving: MutableList<UUID> =
-        Collections.synchronizedList(emptyList())
+    private val stubsForRemoving: MutableList<UUID> = mutableListOf()
 
     fun attach() {
         messagesPollingJob = CoroutineScope(Dispatchers.IO).launch {
@@ -48,12 +39,15 @@ class SingleChatViewModel @Inject constructor(
                 val removed = mutableListOf<UUID>()
                 stubsForRemoving.forEach { id ->
                     newList.removeIf {
-                        it is MessageUiModel.StubMessageUiModel && it.id == id
-                        removed.add(id)
+                        if (it is MessageUiModel.StubMessageUiModel && it.id == id) {
+                            removed.add(id)
+                            true
+                        } else false
                     }
                 }
 
                 _messagesStateFlow.value = newList
+                _isLoading.value = false
 
                 stubsForRemoving.removeAll(removed)
 
@@ -70,7 +64,6 @@ class SingleChatViewModel @Inject constructor(
             val stub = MessageUiModel.StubMessageUiModel(
                 id = UUID.randomUUID(),
                 text = text,
-                date = "", // TODO
             )
             _messagesStateFlow.value = (listOf(stub) + _messagesStateFlow.value).toMutableList()
 

@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 
 data class GetMessagesResponseDto(
     @Json(name = "messages")
-    val messages: List<ChatMessageDto>,
+    val messages: List<MessageDto>,
 )
 
 data class MessageDto(

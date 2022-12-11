@@ -35,6 +35,7 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
 import ru.ulyanaab.lifemates.R
+import ru.ulyanaab.lifemates.ui.common.navigation.main.MainNavItem
 import ru.ulyanaab.lifemates.ui.common.widget.BadgeNew
 import ru.ulyanaab.lifemates.ui.common.widget.Button
 import ru.ulyanaab.lifemates.ui.common.widget.CardOffset
@@ -103,7 +104,19 @@ fun MatchView(
                     }
                     prevPage = page
                 }
-                MatchItem(model = matches[page])
+                val item = matches[page]
+                MatchItem(
+                    model = item,
+                    onGoToChatClick = {
+                        navController.navigate(
+                            MainNavItem.SingleChat.screenRoute +
+                                    "/${item.id}" +
+                                    "/${item.user.id}" +
+                                    "/${item.user.actualName}" +
+                                    "?imageUrl=${item.user.imageUrl}"
+                        )
+                    }
+                )
             }
 
             ArrowsView(
@@ -132,7 +145,8 @@ fun MatchView(
 
 @Composable
 fun MatchItem(
-    model: MatchUiModel
+    model: MatchUiModel,
+    onGoToChatClick: () -> Unit,
 ) {
     val openContactsDialog = remember { mutableStateOf(false) }
 
@@ -151,7 +165,7 @@ fun MatchItem(
                     .fillMaxWidth()
                     .padding(bottom = 16.dp, start = 16.dp, end = 16.dp),
                 onClick = {
-                    openContactsDialog.value = true
+                    onGoToChatClick.invoke()
                 },
                 text = "Начать общение!"
             )

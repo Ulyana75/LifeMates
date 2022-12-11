@@ -49,6 +49,7 @@ class MatchViewModel @Inject constructor(
                     _matchesStateFlow.value.addAll(
                         nextMatchesList.map {
                             MatchUiModel(
+                                id = it.id,
                                 user = matchMapper.mapToUiModel(it.user),
                                 isSeen = it.isSeen
                             )

@@ -12,6 +12,9 @@ data class GetMatchesResponseDto(
 )
 
 data class MatchDto(
+    @Json(name = "id")
+    val id: Long,
+
     @Json(name = "user")
     val user: OtherUserDto,
 

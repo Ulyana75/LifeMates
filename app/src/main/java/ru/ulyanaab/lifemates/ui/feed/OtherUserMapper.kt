@@ -31,6 +31,7 @@ class OtherUserMapper @Inject constructor(
             description = model.description,
             contacts = model.contacts.map(contactMapper::mapToUiModel),
             interests = model.interests,
+            actualName = model.name,
         )
     }
 

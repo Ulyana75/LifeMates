@@ -22,6 +22,7 @@ class MatchRepositoryImpl @Inject constructor(
                 MatchesModel(
                     matches = it.matches.map { matchDto ->
                         MatchModel(
+                            id = matchDto.id,
                             user = usersMapper.mapToOtherUserModel(matchDto.user),
                             isSeen = matchDto.isSeen,
                         )

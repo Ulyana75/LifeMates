@@ -2,6 +2,7 @@ package ru.ulyanaab.lifemates.ui.common.navigation.main
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -74,8 +75,8 @@ fun MainNavGraph(
             route = MainNavItem.SingleChat.screenRoute +
                     "/{$CHAT_ID_ARGUMENT}" +
                     "/{${USER_ID_ARGUMENT}}" +
-                    "/{${USER_IMAGE_URL_ARGUMENT}}" +
-                    "/{${USER_NAME_ARGUMENT}}",
+                    "/{${USER_NAME_ARGUMENT}}" +
+                    "?imageUrl={${USER_IMAGE_URL_ARGUMENT}}",
             arguments = listOf(
                 navArgument(CHAT_ID_ARGUMENT) { type = NavType.LongType },
                 navArgument(USER_ID_ARGUMENT) { type = NavType.LongType },
@@ -83,12 +84,14 @@ fun MainNavGraph(
                 navArgument(USER_NAME_ARGUMENT) { type = NavType.StringType },
             )
         ) {
-            val viewModel = DaggerSingleChatComponent.factory()
-                .create(
-                    chatId = it.arguments?.getLong(CHAT_ID_ARGUMENT) ?: 0,
-                    userId = it.arguments?.getLong(USER_ID_ARGUMENT) ?: 0,
-                    dependencies = singleChatDependencies,
-                ).singleChatViewModel
+            val viewModel = remember {
+                DaggerSingleChatComponent.factory()
+                    .create(
+                        chatId = it.arguments?.getLong(CHAT_ID_ARGUMENT) ?: 0,
+                        userId = it.arguments?.getLong(USER_ID_ARGUMENT) ?: 0,
+                        dependencies = singleChatDependencies,
+                    ).singleChatViewModel
+            }
 
             SingleChatScreen(
                 singleChatViewModel = viewModel,

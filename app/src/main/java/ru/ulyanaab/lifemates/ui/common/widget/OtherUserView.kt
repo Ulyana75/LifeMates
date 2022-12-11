@@ -160,7 +160,8 @@ fun OtherUserPreview() {
             description = "I'm giving you a night call to tell you how I feel. I want to drive you through the night, down the hills. I'm giving you a night call to tell you how I feel. I want to drive you through the night, down the hills. I'm giving you a night call to tell you how I feel. I want to drive you through the night, down the hills. I'm giving you a night call to tell you how I feel. I want to drive you through the night, down the hills. I'm giving you a night call to tell you how I feel. I want to drive you through the night, down the hills. I'm giving you a night call to tell you how I feel. I want to drive you through the night, down the hills. I'm giving you a night call to tell you how I feel. I want to drive you through the night, down the hills.",
             imageUrl = null,
             contacts = emptyList(),
-            interests = listOf("Drive", "Nightcall", "Pyaterochka")
+            interests = listOf("Drive", "Nightcall", "Pyaterochka"),
+            actualName = ""
         ),
         cardOffset = CardOffset.S,
         bottomContent = {

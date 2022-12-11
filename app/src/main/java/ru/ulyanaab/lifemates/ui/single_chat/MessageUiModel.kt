@@ -31,7 +31,6 @@ sealed class MessageUiModel {
     data class StubMessageUiModel(
         val id: UUID,
         val text: String,
-        val date: String,
         val isFailed: Boolean = false,
     ) : MessageUiModel() {
 
