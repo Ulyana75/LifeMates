@@ -55,17 +55,33 @@ class RegisterViewModel @Inject constructor(
         return Pair(login, password)
     }
 
+    fun saveSnapshot(
+        name: String? = savedRegisterModel?.name,
+        birthday: String? = savedRegisterModel?.birthday,
+        gender: RoundedBlockUiModel? = savedRegisterModel?.gender,
+        showingGender: RoundedBlockUiModel? = savedRegisterModel?.showingGender,
+        description: String? = savedRegisterModel?.description,
+    ) {
+        val model = RegisterUiModel(
+            email = login,
+            password = password,
+            name = name ?: "",
+            description = description ?: "",
+            gender = gender,
+            showingGender = showingGender,
+            birthday = birthday ?: "",
+            imageUrl = linkStateFlow.value,
+            interests = interestsRepository.chosenInterests,
+        )
+        savedRegisterModel = model
+    }
+
     fun onRegisterClick(
         name: String,
         birthday: String,
         gender: RoundedBlockUiModel?,
         showingGender: RoundedBlockUiModel?,
         description: String,
-        telegram: String,
-        vk: String,
-        viber: String,
-        whatsapp: String,
-        instagram: String,
     ) {
         CoroutineScope(Dispatchers.IO).launch {
             _isLoading.value = true
@@ -78,11 +94,6 @@ class RegisterViewModel @Inject constructor(
                 gender = gender,
                 showingGender = showingGender,
                 birthday = birthday,
-                telegram = telegram,
-                vk = vk,
-                viber = viber,
-                whatsapp = whatsapp,
-                instagram = instagram,
                 imageUrl = linkStateFlow.value,
                 interests = interestsRepository.chosenInterests,
             )
@@ -113,6 +124,10 @@ class RegisterViewModel @Inject constructor(
 
     fun isPhotoUploaded(): Boolean {
         return linkStateFlow.value != null
+    }
+
+    fun getImageUrl(): String? {
+        return linkStateFlow.value
     }
 
     fun getChosenInterests(): List<RoundedBlockUiModel> {

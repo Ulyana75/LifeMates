@@ -103,19 +103,24 @@ fun ChatsView(
                     navController.navigate(MainNavItem.Matches.screenRoute)
                 }
             }
-            ChatsList(
-                chats = chats,
-                requestNext = chatsViewModel::requestNext,
-                onChatClick = {
-                    navController.navigate(
-                        MainNavItem.SingleChat.screenRoute +
-                                "/${it.id}" +
-                                "/${it.userId}" +
-                                "/${it.userName}" +
-                                "?imageUrl=${it.userImageUrl}"
-                    )
-                }
-            )
+
+            if (chats.isEmpty()) {
+                EmptyChatsView()
+            } else {
+                ChatsList(
+                    chats = chats,
+                    requestNext = chatsViewModel::requestNext,
+                    onChatClick = {
+                        navController.navigate(
+                            MainNavItem.SingleChat.screenRoute +
+                                    "/${it.id}" +
+                                    "/${it.userId}" +
+                                    "/${it.userName}" +
+                                    "?imageUrl=${it.userImageUrl}"
+                        )
+                    }
+                )
+            }
         }
     }
 }
@@ -174,6 +179,24 @@ fun ChatsList(
                onChatClick = onChatClick
            )
        }
+    }
+}
+
+@Composable
+fun EmptyChatsView() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.White)
+    ) {
+        Text(
+            text = "У вас пока нет чатов. Лайкайте людей, чтобы начать общение",
+            textAlign = TextAlign.Center,
+            style = Typography.body1.copy(color = GreyDark),
+            modifier = Modifier
+                .align(Alignment.Center)
+                .padding(horizontal = 16.dp)
+        )
     }
 }
 

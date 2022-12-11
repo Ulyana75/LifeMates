@@ -8,11 +8,6 @@ data class ProfileUiModel(
     val gender: GenderModel,
     val birthday: String,
     val showingGender: GenderModel,
-    val telegram: String,
-    val vk: String,
-    val viber: String,
-    val whatsapp: String,
-    val instagram: String,
     val imageUrl: String?,
     val interests: List<Int>,
 )

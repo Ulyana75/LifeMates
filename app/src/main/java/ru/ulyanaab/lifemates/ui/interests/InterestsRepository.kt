@@ -7,4 +7,8 @@ import javax.inject.Inject
 @AppScope
 class InterestsRepository @Inject constructor() {
     var chosenInterests: List<InterestModel> = emptyList()
+
+    fun clear() {
+        chosenInterests = emptyList()
+    }
 }

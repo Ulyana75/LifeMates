@@ -1,8 +1,6 @@
 package ru.ulyanaab.lifemates.ui.register
 
 import ru.ulyanaab.lifemates.domain.auth.model.RegisterModel
-import ru.ulyanaab.lifemates.domain.common.model.ContactModel
-import ru.ulyanaab.lifemates.domain.common.model.ContactType
 import ru.ulyanaab.lifemates.domain.user_info.model.UserSettingsModel
 import ru.ulyanaab.lifemates.ui.common.mapper.GenderMapper
 import ru.ulyanaab.lifemates.ui.common.utils.dateFormatterUniversal
@@ -28,13 +26,7 @@ class RegisterMapper @Inject constructor(
             imageUrls = listOfNotNull(uiModel.imageUrl),
             location = null,
             settings = UserSettingsModel(genderMapper.mapToModel(uiModel.showingGender)),
-            contacts = listOfNotNull(
-                uiModel.telegram.nullIfEmpty()?.let { ContactModel(ContactType.TELEGRAM, it) },
-                uiModel.vk.nullIfEmpty()?.let { ContactModel(ContactType.VK, it) },
-                uiModel.viber.nullIfEmpty()?.let { ContactModel(ContactType.VIBER, it) },
-                uiModel.whatsapp.nullIfEmpty()?.let { ContactModel(ContactType.WHATSAPP, it) },
-                uiModel.instagram.nullIfEmpty()?.let { ContactModel(ContactType.INSTAGRAM, it) },
-            ),
+            contacts = listOf(),
             interests = uiModel.interests.map { it.id },
         )
     }

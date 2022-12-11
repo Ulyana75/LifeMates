@@ -40,7 +40,6 @@ import ru.ulyanaab.lifemates.ui.common.widget.ArrowsView
 import ru.ulyanaab.lifemates.ui.common.widget.BadgeNew
 import ru.ulyanaab.lifemates.ui.common.widget.Button
 import ru.ulyanaab.lifemates.ui.common.widget.CardOffset
-import ru.ulyanaab.lifemates.ui.common.widget.ContactsDialog
 import ru.ulyanaab.lifemates.ui.common.widget.LoadingView
 import ru.ulyanaab.lifemates.ui.common.widget.OtherUserView
 import ru.ulyanaab.lifemates.ui.common.widget.TopBar
@@ -149,13 +148,6 @@ fun MatchItem(
     model: MatchUiModel,
     onGoToChatClick: () -> Unit,
 ) {
-    val openContactsDialog = remember { mutableStateOf(false) }
-
-    ContactsDialog(
-        openDialog = openContactsDialog,
-        contacts = model.user.contacts
-    )
-
     Box {
         OtherUserView(
             model = model.user,

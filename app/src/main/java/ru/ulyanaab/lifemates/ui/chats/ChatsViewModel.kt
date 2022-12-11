@@ -53,6 +53,7 @@ class ChatsViewModel @Inject constructor(
 
     fun detach() {
         pollingJob?.cancel()
+        _chatsStateFlow.value = mutableListOf()
     }
 
     fun requestNext() {

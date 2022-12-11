@@ -362,80 +362,18 @@ fun DescriptionBlock(
     )
 }
 
-@Composable
-fun ContactsBlock(
-    telegram: String,
-    vk: String,
-    viber: String,
-    whatsapp: String,
-    instagram: String,
-    onTelegramChange: (String) -> Unit,
-    onVkChange: (String) -> Unit,
-    onViberChange: (String) -> Unit,
-    onWhatsappChange: (String) -> Unit,
-    onInstagramChange: (String) -> Unit,
-    onTelegramClear: () -> Unit,
-    onVkClear: () -> Unit,
-    onViberClear: () -> Unit,
-    onWhatsappClear: () -> Unit,
-    onInstagramClear: () -> Unit,
-    isContactsError: Boolean
-) {
-    UserInfoTitleWithInputs(
-        inputsCount = 5,
-        title = "Ваши контакты",
-        valueList = listOf(telegram, vk, viber, whatsapp, instagram),
-        onValueChangeList = listOf(
-            onTelegramChange,
-            onVkChange,
-            onViberChange,
-            onWhatsappChange,
-            onInstagramChange,
-        ),
-        onValueClearList = listOf(
-            onTelegramClear,
-            onVkClear,
-            onViberClear,
-            onWhatsappClear,
-            onInstagramClear,
-        ),
-        hintList = listOf("Telegram", "VK", "Viber", "Whatsapp", "Instagram"),
-        isErrorList = listOf(
-            isContactsError,
-            isContactsError,
-            isContactsError,
-            isContactsError,
-            isContactsError
-        )
-    )
-}
-
 fun validateInputs(
     context: Context,
     name: String,
-    telegram: String,
-    vk: String,
-    viber: String,
-    whatsapp: String,
-    instagram: String,
     chosenGender: RoundedBlockUiModel?,
     showingGender: RoundedBlockUiModel?,
     onNameError: () -> Unit,
-    onContactsError: () -> Unit,
     isPhotoUploaded: Boolean = true,
 ): Boolean {
 
     if (name.isEmpty()) {
         onNameError.invoke()
         showToast("Имя не должно быть пустым", context)
-        return false
-    }
-    if (telegram.isEmpty() && vk.isEmpty()
-        && viber.isEmpty() && whatsapp.isEmpty()
-        && instagram.isEmpty()
-    ) {
-        onContactsError.invoke()
-        showToast("Заполните хотя бы один контакт", context)
         return false
     }
     if (chosenGender == null) {

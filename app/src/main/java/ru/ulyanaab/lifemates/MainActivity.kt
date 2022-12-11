@@ -14,8 +14,9 @@ import ru.ulyanaab.lifemates.ui.auth.AuthViewModel
 import ru.ulyanaab.lifemates.ui.chats.ChatsViewModel
 import ru.ulyanaab.lifemates.ui.common.navigation.general.GeneralNavGraph
 import ru.ulyanaab.lifemates.ui.common.theme.LifeMatesTheme
-import ru.ulyanaab.lifemates.ui.common.utils.ViewModelsDetachHelper
+import ru.ulyanaab.lifemates.ui.common.utils.OnExitClearHelper
 import ru.ulyanaab.lifemates.ui.feed.FeedViewModel
+import ru.ulyanaab.lifemates.ui.interests.InterestsRepository
 import ru.ulyanaab.lifemates.ui.interests.InterestsViewModel
 import ru.ulyanaab.lifemates.ui.loading.LoadingViewModel
 import ru.ulyanaab.lifemates.ui.match.MatchViewModel
@@ -64,7 +65,10 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var otherProfileViewModelFactory: OtherProfileViewModelFactory
 
-    lateinit var viewModelsDetachHelper: ViewModelsDetachHelper
+    @Inject
+    lateinit var interestsRepository: InterestsRepository
+
+    lateinit var onExitClearHelper: OnExitClearHelper
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,15 +80,16 @@ class MainActivity : ComponentActivity() {
         val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         feedViewModel.setFusedLocationClient(fusedLocationClient)
 
-        viewModelsDetachHelper = ViewModelsDetachHelper(
+        onExitClearHelper = OnExitClearHelper(
             profileViewModel,
             feedViewModel,
             matchViewModel,
             chatsViewModel,
             authStateHolder,
-            registerViewModel
+            registerViewModel,
+            interestsRepository
         )
-        viewModelsDetachHelper.observeAuthState()
+        onExitClearHelper.observeAuthState()
 
         setContent {
             LifeMatesTheme {

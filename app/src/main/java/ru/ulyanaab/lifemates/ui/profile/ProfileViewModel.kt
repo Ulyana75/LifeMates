@@ -63,11 +63,6 @@ class ProfileViewModel @Inject constructor(
         gender: RoundedBlockUiModel?,
         showingGender: RoundedBlockUiModel?,
         description: String,
-        telegram: String,
-        vk: String,
-        viber: String,
-        whatsapp: String,
-        instagram: String,
     ) {
         val uiModel = ProfileUiModel(
             name = name,
@@ -75,11 +70,6 @@ class ProfileViewModel @Inject constructor(
             gender = genderMapper.mapToModel(gender),
             birthday = birthday,
             showingGender = genderMapper.mapToModel(showingGender),
-            telegram = telegram,
-            vk = vk,
-            viber = viber,
-            whatsapp = whatsapp,
-            instagram = instagram,
             imageUrl = linkStateFlow.value ?: _profileState.value?.imageUrl,
             interests = interestsRepository.chosenInterests.map { it.id },
         )

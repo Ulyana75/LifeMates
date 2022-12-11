@@ -63,7 +63,6 @@ import ru.ulyanaab.lifemates.ui.common.theme.Typography
 import ru.ulyanaab.lifemates.ui.common.utils.RequestPermission
 import ru.ulyanaab.lifemates.ui.common.widget.Button
 import ru.ulyanaab.lifemates.ui.common.widget.CardOffset
-import ru.ulyanaab.lifemates.ui.common.widget.ContactsDialog
 import ru.ulyanaab.lifemates.ui.common.widget.LoadingView
 import ru.ulyanaab.lifemates.ui.common.widget.MainHeartIcon
 import ru.ulyanaab.lifemates.ui.common.widget.OtherUserView
@@ -229,12 +228,6 @@ fun MatchView(
     onGoToChatClick: () -> Unit
 ) {
     var needShow by remember(matchUiModel) { mutableStateOf(true) }
-    val openDialog = remember { mutableStateOf(false) }
-
-    ContactsDialog(
-        openDialog = openDialog,
-        contacts = matchUiModel.contacts
-    )
 
     if (needShow) {
         BoxWithConstraints(

@@ -30,7 +30,6 @@ import ru.ulyanaab.lifemates.domain.common.state_holders.RegisterEventType
 import ru.ulyanaab.lifemates.ui.common.UploadPhotoViewModel
 import ru.ulyanaab.lifemates.ui.common.navigation.auth.AuthNavItem
 import ru.ulyanaab.lifemates.ui.common.utils.showToast
-import ru.ulyanaab.lifemates.ui.common.widget.ContactsBlock
 import ru.ulyanaab.lifemates.ui.common.widget.DescriptionBlock
 import ru.ulyanaab.lifemates.ui.common.widget.GenderChoiceBlock
 import ru.ulyanaab.lifemates.ui.common.widget.InfoDialog
@@ -170,16 +169,10 @@ fun RegisterSecondStageView(
 
     var name by remember { mutableStateOf(savedModel?.name ?: "") }
     var description by remember { mutableStateOf(savedModel?.description ?: "") }
-    var telegram by remember { mutableStateOf(savedModel?.telegram ?: "") }
-    var vk by remember { mutableStateOf(savedModel?.vk ?: "") }
-    var viber by remember { mutableStateOf(savedModel?.viber ?: "") }
-    var whatsapp by remember { mutableStateOf(savedModel?.whatsapp ?: "") }
-    var instagram by remember { mutableStateOf(savedModel?.instagram ?: "") }
 
     var birthday by remember { mutableStateOf(savedModel?.birthday ?: "") }
 
     var isNameError by remember { mutableStateOf(false) }
-    var isContactsError by remember { mutableStateOf(false) }
     var chosenGender by remember { mutableStateOf(savedModel?.gender) }
     var chosenShowingGender by remember { mutableStateOf(savedModel?.showingGender) }
 
@@ -202,7 +195,7 @@ fun RegisterSecondStageView(
         ) {
             UserInfoPhotoBlock(
                 uploadPhotoViewModel = uploadPhotoViewModel,
-                imageUrl = savedModel?.imageUrl
+                imageUrl = registerViewModel.getImageUrl()
             )
             PersonalUserInfo(
                 name = name,
@@ -210,18 +203,31 @@ fun RegisterSecondStageView(
                 onNameChange = {
                     name = it
                     isNameError = false
+                    registerViewModel.saveSnapshot(name = name)
                 },
-                onBirthdayChange = { birthday = it },
-                onNameClear = { name = "" },
+                onBirthdayChange = {
+                    birthday = it
+                    registerViewModel.saveSnapshot(birthday = birthday)
+                },
+                onNameClear = {
+                    name = ""
+                    registerViewModel.saveSnapshot(name = name)
+                },
                 isNameError = isNameError
             )
             GenderChoiceBlock(
                 elements = registerViewModel.getGenderModels(),
-                onChoiceChanged = { chosenGender = it }
+                onChoiceChanged = {
+                    chosenGender = it
+                    registerViewModel.saveSnapshot(gender = chosenGender)
+                }
             )
             ShowingGenderChoiceBlock(
                 elements = registerViewModel.getShowingGenderModels(),
-                onChoiceChanged = { chosenShowingGender = it }
+                onChoiceChanged = {
+                    chosenShowingGender = it
+                    registerViewModel.saveSnapshot(showingGender = chosenShowingGender)
+                }
             )
             InterestsChoiceBlock(
                 elements = registerViewModel.getChosenInterests(),
@@ -231,41 +237,14 @@ fun RegisterSecondStageView(
             )
             DescriptionBlock(
                 description = description,
-                onDescriptionChange = { description = it },
-                onDescriptionClear = { description = "" }
-            )
-            ContactsBlock(
-                telegram = telegram,
-                vk = vk,
-                viber = viber,
-                whatsapp = whatsapp,
-                instagram = instagram,
-                onTelegramChange = {
-                    telegram = it
-                    isContactsError = false
+                onDescriptionChange = {
+                    description = it
+                    registerViewModel.saveSnapshot(description = description)
                 },
-                onVkChange = {
-                    vk = it
-                    isContactsError = false
-                },
-                onViberChange = {
-                    viber = it
-                    isContactsError = false
-                },
-                onWhatsappChange = {
-                    whatsapp = it
-                    isContactsError = false
-                },
-                onInstagramChange = {
-                    instagram = it
-                    isContactsError = false
-                },
-                onTelegramClear = { telegram = "" },
-                onVkClear = { vk = "" },
-                onViberClear = { viber = "" },
-                onWhatsappClear = { whatsapp = "" },
-                onInstagramClear = { instagram = "" },
-                isContactsError = isContactsError
+                onDescriptionClear = {
+                    description = ""
+                    registerViewModel.saveSnapshot(description = description)
+                }
             )
             val context = LocalContext.current
             UserInfoButton(
@@ -276,15 +255,9 @@ fun RegisterSecondStageView(
                         validateInputs(
                             context = context,
                             name = name,
-                            telegram = telegram,
-                            vk = vk,
-                            viber = viber,
-                            whatsapp = whatsapp,
-                            instagram = instagram,
                             chosenGender = chosenGender,
                             showingGender = chosenShowingGender,
                             onNameError = { isNameError = true },
-                            onContactsError = { isContactsError = true },
                             isPhotoUploaded = registerViewModel.isPhotoUploaded()
                         )
                     ) {
@@ -294,11 +267,6 @@ fun RegisterSecondStageView(
                             gender = chosenGender,
                             showingGender = chosenShowingGender,
                             description = description,
-                            telegram = telegram,
-                            vk = vk,
-                            viber = viber,
-                            whatsapp = whatsapp,
-                            instagram = instagram,
                         )
                     }
                 }

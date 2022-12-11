@@ -27,7 +27,6 @@ import ru.ulyanaab.lifemates.R
 import ru.ulyanaab.lifemates.ui.common.UploadPhotoViewModel
 import ru.ulyanaab.lifemates.ui.common.navigation.main.MainNavItem
 import ru.ulyanaab.lifemates.ui.common.utils.showToast
-import ru.ulyanaab.lifemates.ui.common.widget.ContactsBlock
 import ru.ulyanaab.lifemates.ui.common.widget.DescriptionBlock
 import ru.ulyanaab.lifemates.ui.common.widget.GenderChoiceBlock
 import ru.ulyanaab.lifemates.ui.common.widget.InterestsChoiceBlock
@@ -79,16 +78,10 @@ fun ProfileView(
 
             var name by remember { mutableStateOf(userUiModel?.name ?: "") }
             var description by remember { mutableStateOf(userUiModel?.description ?: "") }
-            var telegram by remember { mutableStateOf(userUiModel?.telegram ?: "") }
-            var vk by remember { mutableStateOf(userUiModel?.vk ?: "") }
-            var viber by remember { mutableStateOf(userUiModel?.viber ?: "") }
-            var whatsapp by remember { mutableStateOf(userUiModel?.whatsapp ?: "") }
-            var instagram by remember { mutableStateOf(userUiModel?.instagram ?: "") }
 
             var birthday by remember { mutableStateOf(userUiModel?.birthday ?: "") }
 
             var isNameError by remember { mutableStateOf(false) }
-            var isContactsError by remember { mutableStateOf(false) }
             var chosenGender by remember {
                 mutableStateOf(
                     profileViewModel.getGenderModels().find { it.isChosen }
@@ -143,39 +136,6 @@ fun ProfileView(
                     onDescriptionChange = { description = it },
                     onDescriptionClear = { description = "" }
                 )
-                ContactsBlock(
-                    telegram = telegram,
-                    vk = vk,
-                    viber = viber,
-                    whatsapp = whatsapp,
-                    instagram = instagram,
-                    onTelegramChange = {
-                        telegram = it
-                        isContactsError = false
-                    },
-                    onVkChange = {
-                        vk = it
-                        isContactsError = false
-                    },
-                    onViberChange = {
-                        viber = it
-                        isContactsError = false
-                    },
-                    onWhatsappChange = {
-                        whatsapp = it
-                        isContactsError = false
-                    },
-                    onInstagramChange = {
-                        instagram = it
-                        isContactsError = false
-                    },
-                    onTelegramClear = { telegram = "" },
-                    onVkClear = { vk = "" },
-                    onViberClear = { viber = "" },
-                    onWhatsappClear = { whatsapp = "" },
-                    onInstagramClear = { instagram = "" },
-                    isContactsError = isContactsError
-                )
                 val context = LocalContext.current
                 UserInfoButton(
                     text = "Сохранить",
@@ -185,15 +145,9 @@ fun ProfileView(
                             validateInputs(
                                 context = context,
                                 name = name,
-                                telegram = telegram,
-                                vk = vk,
-                                viber = viber,
-                                whatsapp = whatsapp,
-                                instagram = instagram,
                                 chosenGender = chosenGender,
                                 showingGender = chosenShowingGender,
                                 onNameError = { isNameError = true },
-                                onContactsError = { isContactsError = true }
                             )
                         ) {
                             profileViewModel.onSaveClick(
@@ -202,11 +156,6 @@ fun ProfileView(
                                 gender = chosenGender,
                                 showingGender = chosenShowingGender,
                                 description = description,
-                                telegram = telegram,
-                                vk = vk,
-                                viber = viber,
-                                whatsapp = whatsapp,
-                                instagram = instagram,
                             )
                             showToast("Сохранено", context)
                         }
