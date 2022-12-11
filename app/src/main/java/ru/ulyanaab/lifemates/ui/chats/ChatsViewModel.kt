@@ -79,5 +79,6 @@ class ChatsViewModel @Inject constructor(
 
     companion object {
         private const val CHATS_REQUEST_COUNT = 20
+        const val CHATS_TILL_END_TO_REQUEST = 8
     }
 }

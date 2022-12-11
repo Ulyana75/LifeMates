@@ -15,7 +15,7 @@ class ChatsMapper @Inject constructor() {
         return ChatUserModel(
             id = dto.id,
             name = dto.name,
-            imageUrls = dto.imageUrls,
+            imageUrls = dto.imagesUrls,
         )
     }
 

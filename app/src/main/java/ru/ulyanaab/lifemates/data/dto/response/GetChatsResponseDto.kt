@@ -28,8 +28,8 @@ data class ChatUserDto(
     @Json(name = "name")
     val name: String,
 
-    @Json(name = "imageUrls")
-    val imageUrls: List<String>
+    @Json(name = "imagesUrls")
+    val imagesUrls: List<String>
 )
 
 data class ChatMessageDto(

@@ -8,8 +8,9 @@ class ChatsMapper @Inject constructor() {
     fun map(model: ChatModel): ChatUiModel {
         return ChatUiModel(
             id = model.id,
+            userId = model.user.id,
             userName = model.user.name,
-            userImageUrl = model.user.imageUrls.first(),
+            userImageUrl = model.user.imageUrls.firstOrNull() ?: "",
             message = model.message.let {
                 val isFromMe = it.userId != model.user.id
                 if (isFromMe) {
