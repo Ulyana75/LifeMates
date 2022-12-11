@@ -3,7 +3,6 @@ package ru.ulyanaab.lifemates.ui.common.widget
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -90,15 +89,22 @@ fun DescriptionBlock(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            TitleSubtitle(
-                title = model.title,
-                subtitle = model.subtitle
-            )
-            if (model.interests.isNotEmpty()) {
-                Interests(interests = model.interests)
-            }
-            if (model.description != null) {
-                Description(description = model.description)
+            Column(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .weight(weight = 1f, fill = false),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                TitleSubtitle(
+                    title = model.title,
+                    subtitle = model.subtitle
+                )
+                if (model.interests.isNotEmpty()) {
+                    Interests(interests = model.interests)
+                }
+                if (model.description != null) {
+                    Description(description = model.description)
+                }
             }
             Box(modifier = Modifier.padding(top = 15.dp)) {
                 bottomContent?.invoke()
@@ -144,19 +150,12 @@ fun Interests(interests: List<String>) {
 }
 
 @Composable
-fun ColumnScope.Description(description: String) {
-    Column(
-        modifier = Modifier
-            .padding(start = 21.dp, end = 21.dp)
-            .verticalScroll(rememberScrollState())
-            .weight(weight = 2f, fill = false)
-    ) {
-        Text(
-            text = description,
-            style = Typography.body1.copy(color = Color.Black),
-            textAlign = TextAlign.Center,
-        )
-    }
+fun Description(description: String) {
+    Text(
+        text = description,
+        style = Typography.body1.copy(color = Color.Black),
+        textAlign = TextAlign.Center,
+    )
 }
 
 @Composable
