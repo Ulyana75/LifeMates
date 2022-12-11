@@ -22,6 +22,8 @@ import ru.ulyanaab.lifemates.ui.interests.InterestsViewModel
 import ru.ulyanaab.lifemates.ui.main.MainScreen
 import ru.ulyanaab.lifemates.ui.match.MatchScreen
 import ru.ulyanaab.lifemates.ui.match.MatchViewModel
+import ru.ulyanaab.lifemates.ui.other_profile.OtherProfileScreen
+import ru.ulyanaab.lifemates.ui.other_profile.OtherProfileViewModelFactory
 import ru.ulyanaab.lifemates.ui.profile.ProfileViewModel
 import ru.ulyanaab.lifemates.ui.single_chat.SingleChatScreen
 import ru.ulyanaab.lifemates.ui.single_chat.SingleChatScreenConfig
@@ -40,6 +42,7 @@ fun MainNavGraph(
     chatsViewModel: ChatsViewModel,
     interestsViewModel: InterestsViewModel,
     singleChatDependencies: SingleChatDependencies,
+    otherProfileViewModelFactory: OtherProfileViewModelFactory,
 ) {
     NavHost(
         navController = navController,
@@ -97,9 +100,27 @@ fun MainNavGraph(
                 singleChatViewModel = viewModel,
                 navController = navController,
                 config = SingleChatScreenConfig(
+                    userId = it.arguments?.getLong(USER_ID_ARGUMENT) ?: 0,
                     userName = it.arguments?.getString(USER_NAME_ARGUMENT) ?: "",
                     userImageUrl = it.arguments?.getString(USER_IMAGE_URL_ARGUMENT) ?: ""
                 )
+            )
+        }
+
+        composable(
+            route = MainNavItem.OtherProfile.screenRoute +
+                    "/{$USER_ID_ARGUMENT}",
+            arguments = listOf(navArgument(USER_ID_ARGUMENT) { type = NavType.LongType })
+        ) {
+            val viewModel = remember {
+                otherProfileViewModelFactory.create(
+                    userId = it.arguments?.getLong(USER_ID_ARGUMENT) ?: 0,
+                )
+            }
+
+            OtherProfileScreen(
+                otherProfileViewModel = viewModel,
+                navController = navController
             )
         }
     }

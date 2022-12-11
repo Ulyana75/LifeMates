@@ -27,10 +27,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
 import ru.ulyanaab.lifemates.ui.chats.ChatsViewModel.Companion.CHATS_TILL_END_TO_REQUEST
@@ -59,11 +62,27 @@ fun ChatsView(
     navController: NavController,
     chatsViewModel: ChatsViewModel,
 ) {
+    val lifecycle = LocalLifecycleOwner.current
+
     DisposableEffect(Unit) {
         chatsViewModel.attach()
 
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_STOP -> {
+                    chatsViewModel.detach()
+                }
+                Lifecycle.Event.ON_RESUME -> {
+                    chatsViewModel.attach()
+                }
+                else -> Unit
+            }
+        }
+
+        lifecycle.lifecycle.addObserver(observer)
+
         onDispose {
-            chatsViewModel.detach()
+            lifecycle.lifecycle.removeObserver(observer)
         }
     }
 

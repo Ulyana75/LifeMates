@@ -21,6 +21,7 @@ import ru.ulyanaab.lifemates.ui.interests.InterestsViewModel
 import ru.ulyanaab.lifemates.ui.loading.LoadingScreen
 import ru.ulyanaab.lifemates.ui.loading.LoadingViewModel
 import ru.ulyanaab.lifemates.ui.match.MatchViewModel
+import ru.ulyanaab.lifemates.ui.other_profile.OtherProfileViewModelFactory
 import ru.ulyanaab.lifemates.ui.profile.ProfileViewModel
 import ru.ulyanaab.lifemates.ui.register.RegisterViewModel
 import ru.ulyanaab.lifemates.ui.single_chat.di.SingleChatDependencies
@@ -40,6 +41,7 @@ fun GeneralNavGraph(
     matchViewModel: MatchViewModel,
     chatsViewModel: ChatsViewModel,
     interestsViewModel: InterestsViewModel,
+    otherProfileViewModelFactory: OtherProfileViewModelFactory,
     singleChatDependencies: SingleChatDependencies,
 ) {
     val authState by authStateHolder.authStateFlow.collectAsState()
@@ -66,6 +68,7 @@ fun GeneralNavGraph(
                     chatsViewModel = chatsViewModel,
                     interestsViewModel = interestsViewModel,
                     singleChatDependencies = singleChatDependencies,
+                    otherProfileViewModelFactory = otherProfileViewModelFactory,
                 )
 
             } else {

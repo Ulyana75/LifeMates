@@ -53,7 +53,6 @@ class ChatsViewModel @Inject constructor(
 
     fun detach() {
         pollingJob?.cancel()
-        _hasMatches.value = false
     }
 
     fun requestNext() {

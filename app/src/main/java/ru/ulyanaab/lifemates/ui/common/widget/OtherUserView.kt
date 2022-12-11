@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.Text
@@ -20,6 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import ru.ulyanaab.lifemates.domain.report.model.ReportType
 import ru.ulyanaab.lifemates.ui.common.model.OtherUserUiModel
 import ru.ulyanaab.lifemates.ui.common.model.RoundedBlockUiModel
 import ru.ulyanaab.lifemates.ui.common.theme.GreyDark
@@ -40,6 +43,7 @@ object CardOffset {
 fun OtherUserView(
     model: OtherUserUiModel,
     cardOffset: Dp,
+    onReportClick: (ReportType) -> Unit = {},
     bottomContent: (@Composable () -> Unit)? = null,
 ) {
     Box(
@@ -50,6 +54,12 @@ fun OtherUserView(
         Box(modifier = Modifier.height(PHOTO_HEIGHT)) {
             PhotoOrPlaceholder(model.imageUrl)
         }
+        ReportIcon(
+            onReportClick = onReportClick,
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(8.dp)
+        )
         DescriptionBlock(
             model = model,
             modifier = Modifier
@@ -146,6 +156,20 @@ fun ColumnScope.Description(description: String) {
             style = Typography.body1.copy(color = Color.Black),
             textAlign = TextAlign.Center,
         )
+    }
+}
+
+@Composable
+fun ReportIcon(
+    onReportClick: (ReportType) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        shape = CircleShape,
+        elevation = 4.dp,
+        modifier = modifier.size(32.dp)
+    ) {
+        ReportsMenu(onReportClick = onReportClick)
     }
 }
 

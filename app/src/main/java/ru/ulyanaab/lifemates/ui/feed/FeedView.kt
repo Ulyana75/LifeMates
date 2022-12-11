@@ -154,6 +154,7 @@ fun FeedView(
                 OtherUserView(
                     model = it,
                     cardOffset = CardOffset.S,
+                    onReportClick = feedViewModel::onReportClick,
                     bottomContent = {
                         LikeDislikeSliderWithPrompt(
                             userModel = it,

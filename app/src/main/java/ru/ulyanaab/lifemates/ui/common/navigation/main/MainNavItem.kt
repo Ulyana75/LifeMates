@@ -7,6 +7,7 @@ sealed class MainNavItem(
     object Matches : MainNavItem("matches")
     object SingleChat : MainNavItem("single_chat")
     object Interests : MainNavItem("interests")
+    object OtherProfile : MainNavItem("other_profile")
 
     companion object {
         const val CHAT_ID_ARGUMENT = "chat_id"

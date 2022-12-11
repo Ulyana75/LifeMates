@@ -8,12 +8,18 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ru.ulyanaab.lifemates.domain.chats.interactor.SingleChatInteractor
+import ru.ulyanaab.lifemates.domain.report.interactor.ReportsInteractor
+import ru.ulyanaab.lifemates.domain.report.model.ReportType
+import ru.ulyanaab.lifemates.ui.single_chat.di.WITH_USER_ID
 import java.util.UUID
 import javax.inject.Inject
+import javax.inject.Named
 
 class SingleChatViewModel @Inject constructor(
+    @Named(WITH_USER_ID) private val withUserId: Long,
     private val singleChatInteractor: SingleChatInteractor,
     private val messageMapper: MessageMapper,
+    private val reportsInteractor: ReportsInteractor,
 ) {
 
     private val _messagesStateFlow: MutableStateFlow<MutableList<MessageUiModel>> =
@@ -64,6 +70,7 @@ class SingleChatViewModel @Inject constructor(
 
     fun detach() {
         messagesPollingJob?.cancel()
+        _themesStateFlow.value = emptyList()
     }
 
     fun sendMessage(text: String) {
@@ -86,6 +93,10 @@ class SingleChatViewModel @Inject constructor(
                 stubsForRemoving.add(stub.id)
             }
         }
+    }
+
+    fun onReportClick(reportType: ReportType) {
+        reportsInteractor.report(withUserId, reportType)
     }
 
     fun requestNext() {
@@ -111,10 +122,12 @@ class SingleChatViewModel @Inject constructor(
     }
 
     private suspend fun fetchThemes() {
-        val themes = singleChatInteractor.getThemes(0, 99) ?: return
-        _themesStateFlow.value = themes.shuffled().map {
-            ThemeUiModel(it.value)
-        }.take(THEMES_COUNT)
+        if (_themesStateFlow.value.isEmpty()) {
+            val themes = singleChatInteractor.getThemes(0, 99) ?: return
+            _themesStateFlow.value = themes.shuffled().map {
+                ThemeUiModel(it.value)
+            }.take(THEMES_COUNT)
+        }
     }
 
     companion object {

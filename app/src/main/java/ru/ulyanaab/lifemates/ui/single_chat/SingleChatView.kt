@@ -32,14 +32,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
 import com.google.accompanist.pager.ExperimentalPagerApi
 import ru.ulyanaab.lifemates.R
+import ru.ulyanaab.lifemates.ui.common.navigation.main.MainNavItem
 import ru.ulyanaab.lifemates.ui.common.theme.GreyDark
 import ru.ulyanaab.lifemates.ui.common.theme.GreyLight
 import ru.ulyanaab.lifemates.ui.common.theme.Typography
@@ -48,6 +52,7 @@ import ru.ulyanaab.lifemates.ui.common.widget.LoadingView
 import ru.ulyanaab.lifemates.ui.common.widget.MainHeartIcon
 import ru.ulyanaab.lifemates.ui.common.widget.PhotoLoadingPlaceholder
 import ru.ulyanaab.lifemates.ui.common.widget.PhotoPlaceholder
+import ru.ulyanaab.lifemates.ui.common.widget.ReportsMenu
 import ru.ulyanaab.lifemates.ui.common.widget.Size
 import ru.ulyanaab.lifemates.ui.common.widget.TopBar
 import ru.ulyanaab.lifemates.ui.single_chat.SingleChatViewModel.Companion.MESSAGES_TILL_END_TO_REQUEST
@@ -59,11 +64,27 @@ fun SingleChatScreen(
     navController: NavController,
     config: SingleChatScreenConfig,
 ) {
-    DisposableEffect(singleChatViewModel) {
+    val lifecycle = LocalLifecycleOwner.current
+
+    DisposableEffect(Unit) {
         singleChatViewModel.attach()
 
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_STOP -> {
+                    singleChatViewModel.detach()
+                }
+                Lifecycle.Event.ON_RESUME -> {
+                    singleChatViewModel.attach()
+                }
+                else -> Unit
+            }
+        }
+
+        lifecycle.lifecycle.addObserver(observer)
+
         onDispose {
-            singleChatViewModel.detach()
+            lifecycle.lifecycle.removeObserver(observer)
         }
     }
 
@@ -79,29 +100,40 @@ fun SingleChatScreen(
         TopBar(
             text = config.userName,
             leadIcon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_back),
-                    contentDescription = null,
-                    modifier = Modifier.clickable {
-                        navController.popBackStack()
-                    }
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_back),
+                        contentDescription = null,
+                        modifier = Modifier.clickable {
+                            navController.popBackStack()
+                        }
+                    )
+                    SubcomposeAsyncImage(
+                        model = config.userImageUrl,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(44.dp)
+                            .clip(CircleShape)
+                            .clickable {
+                                navController.navigate(
+                                    MainNavItem.OtherProfile.screenRoute + "/${config.userId}"
+                                )
+                            },
+                        contentScale = ContentScale.Crop,
+                        loading = {
+                            PhotoLoadingPlaceholder()
+                        },
+                        error = {
+                            PhotoPlaceholder()
+                        }
+                    )
+                }
             },
             trailIcon = {
-                SubcomposeAsyncImage(
-                    model = config.userImageUrl,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(44.dp)
-                        .clip(CircleShape),
-                    contentScale = ContentScale.Crop,
-                    loading = {
-                        PhotoLoadingPlaceholder()
-                    },
-                    error = {
-                        PhotoPlaceholder()
-                    }
-                )
+                ReportsMenu(onReportClick = singleChatViewModel::onReportClick)
             }
         )
 
