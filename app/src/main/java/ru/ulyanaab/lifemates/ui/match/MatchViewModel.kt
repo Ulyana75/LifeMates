@@ -46,15 +46,14 @@ class MatchViewModel @Inject constructor(
                 if (nextMatchesList.isNullOrEmpty()) {
                     _matchesAreFinishedFlow.value = true
                 } else {
-                    _matchesStateFlow.value.addAll(
-                        nextMatchesList.map {
-                            MatchUiModel(
-                                id = it.id,
-                                user = matchMapper.mapToUiModel(it.user),
-                                isSeen = it.isSeen
-                            )
-                        }
-                    )
+                    _matchesStateFlow.value = (_matchesStateFlow.value +
+                            nextMatchesList.map {
+                                MatchUiModel(
+                                    id = it.id,
+                                    user = matchMapper.mapToUiModel(it.user),
+                                    isSeen = it.isSeen
+                                )
+                            }).toMutableList()
                 }
 
                 _isLoading.value = false

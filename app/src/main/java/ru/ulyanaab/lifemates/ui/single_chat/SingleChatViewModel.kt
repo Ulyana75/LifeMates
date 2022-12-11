@@ -20,6 +20,10 @@ class SingleChatViewModel @Inject constructor(
         MutableStateFlow(mutableListOf())
     val messagesStateFlow: StateFlow<List<MessageUiModel>> = _messagesStateFlow.asStateFlow()
 
+    private val _themesStateFlow: MutableStateFlow<List<ThemeUiModel>> =
+        MutableStateFlow(emptyList())
+    val themesStateFlow: StateFlow<List<ThemeUiModel>> = _themesStateFlow.asStateFlow()
+
     private val _isLoading = MutableStateFlow(true)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
@@ -31,7 +35,10 @@ class SingleChatViewModel @Inject constructor(
     private val stubsForRemoving: MutableList<UUID> = mutableListOf()
 
     fun attach() {
+        messagesPollingJob?.cancel()
         messagesPollingJob = CoroutineScope(Dispatchers.IO).launch {
+            fetchThemes()
+
             singleChatInteractor.messagesFlow.collect { newMessages ->
                 val newList =
                     (newMessages.map(messageMapper::map) + _messagesStateFlow.value).toMutableList()
@@ -92,9 +99,10 @@ class SingleChatViewModel @Inject constructor(
                 if (nextMessagesList.isNullOrEmpty()) {
                     _messagesAreFinishedFlow.value = true
                 } else {
-                    _messagesStateFlow.value.addAll(
-                        nextMessagesList.map(messageMapper::map)
-                    )
+                    _messagesStateFlow.value =
+                        (_messagesStateFlow.value + nextMessagesList.map(messageMapper::map))
+                            .toSet()
+                            .toMutableList()
                 }
 
                 _isLoading.value = false
@@ -102,8 +110,16 @@ class SingleChatViewModel @Inject constructor(
         }
     }
 
+    private suspend fun fetchThemes() {
+        val themes = singleChatInteractor.getThemes(0, 99) ?: return
+        _themesStateFlow.value = themes.shuffled().map {
+            ThemeUiModel(it.value)
+        }.take(THEMES_COUNT)
+    }
+
     companion object {
         private const val MESSAGES_REQUEST_COUNT = 20
         const val MESSAGES_TILL_END_TO_REQUEST = 8
+        private const val THEMES_COUNT = 10
     }
 }

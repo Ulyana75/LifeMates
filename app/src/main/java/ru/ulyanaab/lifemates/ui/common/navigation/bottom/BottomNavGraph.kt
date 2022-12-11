@@ -36,7 +36,10 @@ fun BottomNavGraph(
             )
         }
         composable(BottomNavItem.Feed.screenRoute) {
-            FeedScreen(feedViewModel = feedViewModel)
+            FeedScreen(
+                feedViewModel = feedViewModel,
+                navController = mainNavController,
+            )
         }
         composable(BottomNavItem.Chats.screenRoute) {
             ChatsScreen(

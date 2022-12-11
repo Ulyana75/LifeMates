@@ -1,11 +1,11 @@
 package ru.ulyanaab.lifemates.domain.chats.interactor
 
-import android.util.Log
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import ru.ulyanaab.lifemates.common.Error
 import ru.ulyanaab.lifemates.common.Result
 import ru.ulyanaab.lifemates.domain.chats.model.ChatMessageModel
+import ru.ulyanaab.lifemates.domain.chats.model.ThemeModel
 import ru.ulyanaab.lifemates.domain.chats.repository.ChatsRepository
 import ru.ulyanaab.lifemates.domain.common.interactor.TokenInteractor
 import ru.ulyanaab.lifemates.domain.common.utils.ResultProcessorWithTokensRefreshing
@@ -22,10 +22,17 @@ class SingleChatInteractor @Inject constructor(
 ) {
 
     private var previousMessages: List<ChatMessageModel> = emptyList()
+    private var isFirstRequest = true
 
     val messagesFlow = flow {
         while (true) {
-            when (val messagesResult = chatsRepository.getMessages(chatId, 0, MESSAGE_COUNT)) {
+            when (
+                val messagesResult = chatsRepository.getMessages(
+                    chatId,
+                    0,
+                    if (isFirstRequest) MESSAGE_FIRST_REQUEST_COUNT else MESSAGE_COUNT
+                )
+            ) {
                 is Result.Success -> {
                     messagesResult.data?.let {
                         val newMessages = compareEndFilterNewMessages(it).toSet()
@@ -42,7 +49,7 @@ class SingleChatInteractor @Inject constructor(
                     }
                 }
             }
-
+            isFirstRequest = false
             delay(POLLING_TIMEOUT_MS)
         }
     }
@@ -69,6 +76,17 @@ class SingleChatInteractor @Inject constructor(
         )
     }
 
+    suspend fun getThemes(offset: Int, limit: Int): List<ThemeModel>? {
+        return resultProcessorWithTokensRefreshing.proceedAndReturn(
+            resultProducer = {
+                chatsRepository.getThemes(chatId, offset, limit)
+            },
+            onTokensRefreshedSuccessfully = {
+                getThemes(offset, limit)
+            }
+        )
+    }
+
     private fun compareEndFilterNewMessages(newMessages: List<ChatMessageModel>): List<ChatMessageModel> {
         val firstInOld = previousMessages.firstOrNull()
         val lastIndexOfNew = newMessages.indexOf(firstInOld)
@@ -80,5 +98,6 @@ class SingleChatInteractor @Inject constructor(
     companion object {
         private const val POLLING_TIMEOUT_MS = 2000L
         private const val MESSAGE_COUNT = 10
+        private const val MESSAGE_FIRST_REQUEST_COUNT = 20
     }
 }

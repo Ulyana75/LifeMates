@@ -7,6 +7,7 @@ import ru.ulyanaab.lifemates.data.api.ChatsApi
 import ru.ulyanaab.lifemates.data.mapper.ChatsMapper
 import ru.ulyanaab.lifemates.domain.chats.model.ChatMessageModel
 import ru.ulyanaab.lifemates.domain.chats.model.ChatModel
+import ru.ulyanaab.lifemates.domain.chats.model.ThemeModel
 import ru.ulyanaab.lifemates.domain.chats.repository.ChatsRepository
 import javax.inject.Inject
 
@@ -41,6 +42,21 @@ class ChatsRepositoryImpl @Inject constructor(
         val response = chatsApi.getMessages(chatId, offset, limit).awaitResponse()
         return when (response.code()) {
             200 -> Result.Success(response.body()?.messages?.map(chatsMapper::map))
+            401 -> Result.Failure(Error.Unauthorized)
+            else -> Result.Failure(Error.Unknown)
+        }
+    }
+
+    override suspend fun getThemes(
+        chatId: Long,
+        offset: Int,
+        limit: Int
+    ): Result<List<ThemeModel>?> {
+        val response = chatsApi.getThemes(chatId, offset, limit).awaitResponse()
+        return when (response.code()) {
+            200 -> Result.Success(response.body()?.themes?.map {
+                ThemeModel(it.id, it.value)
+            })
             401 -> Result.Failure(Error.Unauthorized)
             else -> Result.Failure(Error.Unknown)
         }

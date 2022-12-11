@@ -120,14 +120,15 @@ fun RoundedBlockMultipleChoice(
 fun RoundedBlock(
     text: String,
     isChosen: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    chosenColor: Color = PinkMain,
 ) {
     Box(
         modifier = Modifier
             .wrapContentSize()
             .clip(Shapes.small)
             .background(
-                color = if (isChosen) PinkMain else GreyLight
+                color = if (isChosen) chosenColor else GreyLight
             )
             .then(modifier)
     ) {
@@ -151,7 +152,7 @@ fun RoundedBlockPreview() {
                 RoundedBlockUiModel("Nightcall", false),
                 RoundedBlockUiModel("Meme", false),
                 RoundedBlockUiModel("Drive", true),
-                RoundedBlockUiModel("Nightcall", false),
+                RoundedBlockUiModel("Nightcall asdasd asdasd asd asd asd asd asd asd asds asd ", false),
                 RoundedBlockUiModel("Meme", false),
                 RoundedBlockUiModel("Drive", true),
                 RoundedBlockUiModel("Nightcall", false),

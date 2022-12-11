@@ -23,10 +23,4 @@ interface UserApi {
 
     @POST("users/{userId}/dislike")
     fun dislike(@Path("userId") userId: Long): Call<Unit>
-
-//    @PUT("users/{userId}/status/{newStatus}")
-//    fun changeStatus(
-//        @Path("userId") userId: String,
-//        @Path("newStatus") newStatus
-//    )
 }

@@ -36,10 +36,12 @@ fun TopBar(
             .background(color),
     ) {
         Box(
-            Modifier.padding(top = 23.dp, bottom = 23.dp, start = 12.dp, end = 12.dp)
+            Modifier.padding(start = 12.dp, end = 12.dp)
         ) {
             Text(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 23.dp, bottom = 23.dp, ),
                 text = text,
                 style = Typography.h3.copy(color = Color.Black),
                 textAlign = TextAlign.Center

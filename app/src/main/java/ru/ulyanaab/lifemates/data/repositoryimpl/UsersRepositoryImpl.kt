@@ -6,6 +6,7 @@ import ru.ulyanaab.lifemates.common.Result
 import ru.ulyanaab.lifemates.data.api.UserApi
 import ru.ulyanaab.lifemates.data.mapper.UsersMapper
 import ru.ulyanaab.lifemates.domain.users.model.FeedModel
+import ru.ulyanaab.lifemates.domain.users.model.LikeModel
 import ru.ulyanaab.lifemates.domain.users.model.OtherUserModel
 import ru.ulyanaab.lifemates.domain.users.repository.UsersRepository
 import javax.inject.Inject
@@ -33,10 +34,12 @@ class UsersRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun likeUser(id: Long): Result<Boolean?> {
+    override suspend fun likeUser(id: Long): Result<LikeModel?> {
         val response = userApi.like(id).awaitResponse()
         return when (response.code()) {
-            200 -> Result.Success(response.body()?.isMatch)
+            200 -> Result.Success(response.body()?.let {
+                LikeModel(it.isMatch, it.chatId)
+            })
             401 -> Result.Failure(Error.Unauthorized)
             else -> Result.Failure(Error.Unknown)
         }

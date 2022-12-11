@@ -55,3 +55,7 @@ fun dateFormatterWithTime(): DateTimeFormatter {
 fun dateFormatterForMessages(): DateTimeFormatter {
     return DateTimeFormatter.ofPattern("dd MMMM H:mm")
 }
+
+fun dateFormatForMessagesFromBack(): DateTimeFormatter {
+    return DateTimeFormatter.ISO_LOCAL_DATE_TIME
+}

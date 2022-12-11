@@ -4,5 +4,8 @@ import com.squareup.moshi.Json
 
 data class LikeResponseDto(
     @Json(name = "isItMutual")
-    val isMatch: Boolean
+    val isMatch: Boolean,
+
+    @Json(name = "chatId")
+    val chatId: Long?,
 )

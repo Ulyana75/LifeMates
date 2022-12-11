@@ -8,6 +8,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 import ru.ulyanaab.lifemates.data.dto.response.GetChatsResponseDto
 import ru.ulyanaab.lifemates.data.dto.response.GetMessagesResponseDto
+import ru.ulyanaab.lifemates.data.dto.response.GetThemesResponseDto
 
 interface ChatsApi {
 
@@ -29,4 +30,11 @@ interface ChatsApi {
         @Query("Offset") offset: Int,
         @Query("Limit") limit: Int
     ): Call<GetMessagesResponseDto>
+
+    @GET("chats/{chatId}/themes")
+    fun getThemes(
+        @Path("chatId") chatId: Long,
+        @Query("Offset") offset: Int,
+        @Query("Limit") limit: Int
+    ): Call<GetThemesResponseDto>
 }

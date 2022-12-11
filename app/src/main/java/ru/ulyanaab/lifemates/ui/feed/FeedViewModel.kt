@@ -68,9 +68,9 @@ class FeedViewModel @Inject constructor(
 
         likeDislikeJob = model?.let {
             CoroutineScope(Dispatchers.IO).launch {
-                val isMatch = usersInteractor.like(it.id)
-                if (isMatch == true) {
-                    _matchStateFlow.value = otherUserMapper.mapToMatchUiModel(it)
+                val likeModel = usersInteractor.like(it.id)
+                if (likeModel?.isMatch == true) {
+                    _matchStateFlow.value = otherUserMapper.mapToMatchUiModel(it, likeModel)
                 }
             }
         }

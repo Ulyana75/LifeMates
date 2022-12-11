@@ -36,6 +36,7 @@ import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
 import ru.ulyanaab.lifemates.R
 import ru.ulyanaab.lifemates.ui.common.navigation.main.MainNavItem
+import ru.ulyanaab.lifemates.ui.common.widget.ArrowsView
 import ru.ulyanaab.lifemates.ui.common.widget.BadgeNew
 import ru.ulyanaab.lifemates.ui.common.widget.Button
 import ru.ulyanaab.lifemates.ui.common.widget.CardOffset
@@ -177,66 +178,6 @@ fun MatchItem(
     }
 }
 
-@Composable
-fun ArrowsView(
-    isLeftArrowEnabled: Boolean,
-    isRightArrowEnabled: Boolean,
-    onLeftArrowClick: () -> Unit,
-    onRightArrowClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Card(
-            shape = CircleShape,
-            elevation = 4.dp
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .background(color = Color.White)
-                    .clickable(enabled = isLeftArrowEnabled) {
-                        onLeftArrowClick.invoke()
-                    }
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_arrow_right),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .rotate(180f)
-                        .align(Alignment.Center)
-                        .alpha(if (isLeftArrowEnabled) 1f else 0.5f)
-                )
-            }
-        }
-
-        Card(
-            shape = CircleShape,
-            elevation = 4.dp
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .background(color = Color.White)
-                    .clickable(enabled = isRightArrowEnabled) {
-                        onRightArrowClick.invoke()
-                    }
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_arrow_right),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .alpha(if (isRightArrowEnabled) 1f else 0.5f)
-                )
-            }
-        }
-    }
-}
 
 @Preview
 @Composable
