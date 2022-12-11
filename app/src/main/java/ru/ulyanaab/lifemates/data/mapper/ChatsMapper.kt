@@ -44,6 +44,7 @@ class ChatsMapper @Inject constructor() {
             id = dto.id,
             message = map(dto.message),
             user = map(dto.user),
+            unreadCount = dto.countUnreadMessages,
         )
     }
 }

@@ -16,6 +16,9 @@ data class ChatDto(
 
     @Json(name = "message")
     val message: ChatMessageDto,
+
+    @Json(name = "countUnreadMessages")
+    val countUnreadMessages: Int,
 )
 
 data class ChatUserDto(
