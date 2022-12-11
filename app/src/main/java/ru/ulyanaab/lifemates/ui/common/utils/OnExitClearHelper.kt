@@ -37,9 +37,8 @@ class OnExitClearHelper constructor(
         profileViewModel.detach()
         feedViewModel.detach()
         matchViewModel.detach()
-        chatsViewModel.detach()
+        chatsViewModel.detachOnExit()
         registerViewModel.detach()
-        chatsViewModel.detach()
         interestsRepository.clear()
     }
 }

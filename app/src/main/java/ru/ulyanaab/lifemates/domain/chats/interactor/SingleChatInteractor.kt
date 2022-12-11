@@ -36,7 +36,10 @@ class SingleChatInteractor @Inject constructor(
                 is Result.Success -> {
                     messagesResult.data?.let {
                         val newMessages = compareEndFilterNewMessages(it).toSet()
-                        if (newMessages.isNotEmpty()) {
+                        if (isFirstRequest) {
+                            previousMessages = newMessages.toList()
+                            emit(newMessages)
+                        } else if (newMessages.isNotEmpty()) {
                             previousMessages = newMessages.toList()
                             emit(newMessages)
                         }
