@@ -22,12 +22,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import ru.ulyanaab.lifemates.R
 import ru.ulyanaab.lifemates.ui.common.UploadPhotoViewModel
+import ru.ulyanaab.lifemates.ui.common.navigation.main.MainNavItem
 import ru.ulyanaab.lifemates.ui.common.utils.showToast
-import ru.ulyanaab.lifemates.ui.common.widget.ContactsBlock
 import ru.ulyanaab.lifemates.ui.common.widget.DescriptionBlock
 import ru.ulyanaab.lifemates.ui.common.widget.GenderChoiceBlock
+import ru.ulyanaab.lifemates.ui.common.widget.InterestsChoiceBlock
 import ru.ulyanaab.lifemates.ui.common.widget.LoadingView
 import ru.ulyanaab.lifemates.ui.common.widget.PersonalUserInfo
 import ru.ulyanaab.lifemates.ui.common.widget.ShowingGenderChoiceBlock
@@ -39,6 +41,7 @@ import ru.ulyanaab.lifemates.ui.common.widget.validateInputs
 @Composable
 fun ProfileScreen(
     profileViewModel: ProfileViewModel,
+    navController: NavController,
 ) {
     LaunchedEffect(Unit) {
         profileViewModel.attach()
@@ -49,13 +52,18 @@ fun ProfileScreen(
     if (isLoading) {
         LoadingView(backgroundColor = Color.White)
     }
-    ProfileView(profileViewModel = profileViewModel, uploadPhotoViewModel = profileViewModel)
+    ProfileView(
+        profileViewModel = profileViewModel,
+        uploadPhotoViewModel = profileViewModel,
+        navController = navController,
+    )
 }
 
 @Composable
 fun ProfileView(
     profileViewModel: ProfileViewModel,
-    uploadPhotoViewModel: UploadPhotoViewModel
+    uploadPhotoViewModel: UploadPhotoViewModel,
+    navController: NavController,
 ) {
     val isModelReady by profileViewModel.isModelReady.collectAsState()
 
@@ -70,16 +78,10 @@ fun ProfileView(
 
             var name by remember { mutableStateOf(userUiModel?.name ?: "") }
             var description by remember { mutableStateOf(userUiModel?.description ?: "") }
-            var telegram by remember { mutableStateOf(userUiModel?.telegram ?: "") }
-            var vk by remember { mutableStateOf(userUiModel?.vk ?: "") }
-            var viber by remember { mutableStateOf(userUiModel?.viber ?: "") }
-            var whatsapp by remember { mutableStateOf(userUiModel?.whatsapp ?: "") }
-            var instagram by remember { mutableStateOf(userUiModel?.instagram ?: "") }
 
             var birthday by remember { mutableStateOf(userUiModel?.birthday ?: "") }
 
             var isNameError by remember { mutableStateOf(false) }
-            var isContactsError by remember { mutableStateOf(false) }
             var chosenGender by remember {
                 mutableStateOf(
                     profileViewModel.getGenderModels().find { it.isChosen }
@@ -123,43 +125,16 @@ fun ProfileView(
                     elements = profileViewModel.getShowingGenderModels(),
                     onChoiceChanged = { chosenShowingGender = it }
                 )
+                InterestsChoiceBlock(
+                    elements = profileViewModel.getChosenInterests(),
+                    onChangeButtonClick = {
+                        navController.navigate(MainNavItem.Interests.screenRoute)
+                    }
+                )
                 DescriptionBlock(
                     description = description,
                     onDescriptionChange = { description = it },
                     onDescriptionClear = { description = "" }
-                )
-                ContactsBlock(
-                    telegram = telegram,
-                    vk = vk,
-                    viber = viber,
-                    whatsapp = whatsapp,
-                    instagram = instagram,
-                    onTelegramChange = {
-                        telegram = it
-                        isContactsError = false
-                    },
-                    onVkChange = {
-                        vk = it
-                        isContactsError = false
-                    },
-                    onViberChange = {
-                        viber = it
-                        isContactsError = false
-                    },
-                    onWhatsappChange = {
-                        whatsapp = it
-                        isContactsError = false
-                    },
-                    onInstagramChange = {
-                        instagram = it
-                        isContactsError = false
-                    },
-                    onTelegramClear = { telegram = "" },
-                    onVkClear = { vk = "" },
-                    onViberClear = { viber = "" },
-                    onWhatsappClear = { whatsapp = "" },
-                    onInstagramClear = { instagram = "" },
-                    isContactsError = isContactsError
                 )
                 val context = LocalContext.current
                 UserInfoButton(
@@ -170,15 +145,9 @@ fun ProfileView(
                             validateInputs(
                                 context = context,
                                 name = name,
-                                telegram = telegram,
-                                vk = vk,
-                                viber = viber,
-                                whatsapp = whatsapp,
-                                instagram = instagram,
                                 chosenGender = chosenGender,
                                 showingGender = chosenShowingGender,
                                 onNameError = { isNameError = true },
-                                onContactsError = { isContactsError = true }
                             )
                         ) {
                             profileViewModel.onSaveClick(
@@ -187,11 +156,6 @@ fun ProfileView(
                                 gender = chosenGender,
                                 showingGender = chosenShowingGender,
                                 description = description,
-                                telegram = telegram,
-                                vk = vk,
-                                viber = viber,
-                                whatsapp = whatsapp,
-                                instagram = instagram
                             )
                             showToast("Сохранено", context)
                         }

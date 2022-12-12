@@ -10,7 +10,7 @@ data class OtherUserModel(
     val gender: GenderModel,
     val age: Int?,
     val distance: Int?,
-    val interests: List<Int>,
+    val interests: List<String>,
     val imagesUrls: List<String>,
     val contacts: List<ContactModel>,
 )

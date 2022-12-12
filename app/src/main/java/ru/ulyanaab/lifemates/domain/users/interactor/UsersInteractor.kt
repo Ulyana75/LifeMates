@@ -2,6 +2,7 @@ package ru.ulyanaab.lifemates.domain.users.interactor
 
 import ru.ulyanaab.lifemates.domain.common.utils.ResultProcessorWithTokensRefreshing
 import ru.ulyanaab.lifemates.domain.users.model.FeedModel
+import ru.ulyanaab.lifemates.domain.users.model.LikeModel
 import ru.ulyanaab.lifemates.domain.users.model.OtherUserModel
 import ru.ulyanaab.lifemates.domain.users.repository.UsersRepository
 import javax.inject.Inject
@@ -33,7 +34,7 @@ class UsersInteractor @Inject constructor(
         )
     }
 
-    suspend fun like(id: Long): Boolean? {
+    suspend fun like(id: Long): LikeModel? {
         return resultProcessorWithTokensRefreshing.proceedAndReturn(
             resultProducer = {
                 usersRepository.likeUser(id)

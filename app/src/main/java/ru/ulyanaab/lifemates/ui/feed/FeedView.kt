@@ -48,9 +48,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
 import com.github.krottv.compose.sliders.SliderValueHorizontal
 import ru.ulyanaab.lifemates.R
 import ru.ulyanaab.lifemates.ui.common.model.OtherUserUiModel
+import ru.ulyanaab.lifemates.ui.common.navigation.main.MainNavItem
 import ru.ulyanaab.lifemates.ui.common.theme.BlueMain
 import ru.ulyanaab.lifemates.ui.common.theme.GreyDark
 import ru.ulyanaab.lifemates.ui.common.theme.GreyLight
@@ -61,7 +63,6 @@ import ru.ulyanaab.lifemates.ui.common.theme.Typography
 import ru.ulyanaab.lifemates.ui.common.utils.RequestPermission
 import ru.ulyanaab.lifemates.ui.common.widget.Button
 import ru.ulyanaab.lifemates.ui.common.widget.CardOffset
-import ru.ulyanaab.lifemates.ui.common.widget.ContactsDialog
 import ru.ulyanaab.lifemates.ui.common.widget.LoadingView
 import ru.ulyanaab.lifemates.ui.common.widget.MainHeartIcon
 import ru.ulyanaab.lifemates.ui.common.widget.OtherUserView
@@ -70,14 +71,23 @@ import ru.ulyanaab.lifemates.ui.common.widget.PhotoOrPlaceholder
 @ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @Composable
-fun FeedScreen(feedViewModel: FeedViewModel) {
-    FeedScreenWithPermissionRequest(feedViewModel = feedViewModel)
+fun FeedScreen(
+    feedViewModel: FeedViewModel,
+    navController: NavController,
+) {
+    FeedScreenWithPermissionRequest(
+        feedViewModel = feedViewModel,
+        navController = navController
+    )
 }
 
 @ExperimentalAnimationApi
 @ExperimentalComposeUiApi
 @Composable
-fun FeedScreenWithPermissionRequest(feedViewModel: FeedViewModel) {
+fun FeedScreenWithPermissionRequest(
+    feedViewModel: FeedViewModel,
+    navController: NavController,
+) {
     val permissionResultReceived = remember { mutableStateOf(false) }
 
     SendLocation(
@@ -95,20 +105,37 @@ fun FeedScreenWithPermissionRequest(feedViewModel: FeedViewModel) {
         if (isLoading) {
             LoadingView(backgroundColor = Color.White)
         }
-        FeedView(feedViewModel = feedViewModel)
+        FeedView(
+            feedViewModel = feedViewModel,
+            navController = navController
+        )
     }
 }
 
 @ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @Composable
-fun FeedView(feedViewModel: FeedViewModel) {
+fun FeedView(
+    feedViewModel: FeedViewModel,
+    navController: NavController,
+) {
     val uiModel by feedViewModel.currentUserStateFlow.collectAsState()
     val matchModel by feedViewModel.matchStateFlow.collectAsState()
     val areUsersFinished by feedViewModel.usersAreFinishedFlow.collectAsState()
 
     matchModel?.let {
-        MatchView(matchUiModel = it)
+        MatchView(
+            matchUiModel = it,
+            onGoToChatClick = {
+                navController.navigate(
+                    MainNavItem.SingleChat.screenRoute +
+                            "/${it.chatId}" +
+                            "/${it.userId}" +
+                            "/${it.actualUserName}" +
+                            "?imageUrl=${it.imageUrl}"
+                )
+            }
+        )
     }
 
     if (areUsersFinished) {
@@ -126,6 +153,7 @@ fun FeedView(feedViewModel: FeedViewModel) {
                 OtherUserView(
                     model = it,
                     cardOffset = CardOffset.S,
+                    onReportClick = feedViewModel::onReportClick,
                     bottomContent = {
                         LikeDislikeSliderWithPrompt(
                             userModel = it,
@@ -196,15 +224,10 @@ fun SendLocation(
 @ExperimentalAnimationApi
 @Composable
 fun MatchView(
-    matchUiModel: MatchUiModel
+    matchUiModel: MatchUiModel,
+    onGoToChatClick: () -> Unit
 ) {
     var needShow by remember(matchUiModel) { mutableStateOf(true) }
-    val openDialog = remember { mutableStateOf(false) }
-
-    ContactsDialog(
-        openDialog = openDialog,
-        contacts = matchUiModel.contacts
-    )
 
     if (needShow) {
         BoxWithConstraints(
@@ -246,7 +269,7 @@ fun MatchView(
                                 .fillMaxWidth()
                                 .padding(16.dp),
                             onClick = {
-                                openDialog.value = true
+                                onGoToChatClick.invoke()
                             },
                             text = "Начать общение!"
                         )
@@ -381,17 +404,17 @@ private fun getColor(
 @Preview
 @Composable
 fun LikeDislikeButtonsPreview() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Color.White)
-    ) {
-        MatchView(
-            matchUiModel = MatchUiModel(
-                title = "У вас мэтч с Абобой",
-                imageUrl = null,
-                contacts = emptyList()
-            )
-        )
-    }
+//    Box(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .background(color = Color.White)
+//    ) {
+//        MatchView(
+//            matchUiModel = MatchUiModel(
+//                title = "У вас мэтч с Абобой",
+//                imageUrl = null,
+//                contacts = emptyList()
+//            )
+//        )
+//    }
 }

@@ -1,5 +1,6 @@
 package ru.ulyanaab.lifemates.ui.feed
 
+import ru.ulyanaab.lifemates.domain.users.model.LikeModel
 import ru.ulyanaab.lifemates.domain.users.model.OtherUserModel
 import ru.ulyanaab.lifemates.ui.common.mapper.ContactMapper
 import ru.ulyanaab.lifemates.ui.common.mapper.GenderMapper
@@ -30,14 +31,19 @@ class OtherUserMapper @Inject constructor(
             imageUrl = model.imagesUrls.firstOrNull(),
             description = model.description,
             contacts = model.contacts.map(contactMapper::mapToUiModel),
+            interests = model.interests,
+            actualName = model.name,
         )
     }
 
-    fun mapToMatchUiModel(model: OtherUserUiModel): MatchUiModel {
+    fun mapToMatchUiModel(model: OtherUserUiModel, likeModel: LikeModel): MatchUiModel {
         return MatchUiModel(
+            userId = model.id,
             title = "${model.title} тоже лайкнул(а) вас!",
             contacts = model.contacts,
-            imageUrl = model.imageUrl
+            imageUrl = model.imageUrl,
+            chatId = likeModel.chatId ?: 0,
+            actualUserName = model.actualName,
         )
     }
 }

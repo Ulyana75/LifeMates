@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ru.ulyanaab.lifemates.domain.common.model.LocationModel
+import ru.ulyanaab.lifemates.domain.report.interactor.ReportsInteractor
+import ru.ulyanaab.lifemates.domain.report.model.ReportType
 import ru.ulyanaab.lifemates.domain.user_info.interactor.UserInfoInteractor
 import ru.ulyanaab.lifemates.domain.users.interactor.UsersInteractor
 import ru.ulyanaab.lifemates.domain.users.model.OtherUserModel
@@ -22,6 +24,7 @@ class FeedViewModel @Inject constructor(
     private val usersInteractor: UsersInteractor,
     private val otherUserMapper: OtherUserMapper,
     private val userInfoInteractor: UserInfoInteractor,
+    private val reportsInteractor: ReportsInteractor,
 ) {
 
     private val _currentUserStateFlow: MutableStateFlow<OtherUserUiModel?> = MutableStateFlow(null)
@@ -68,9 +71,9 @@ class FeedViewModel @Inject constructor(
 
         likeDislikeJob = model?.let {
             CoroutineScope(Dispatchers.IO).launch {
-                val isMatch = usersInteractor.like(it.id)
-                if (isMatch == true) {
-                    _matchStateFlow.value = otherUserMapper.mapToMatchUiModel(it)
+                val likeModel = usersInteractor.like(it.id)
+                if (likeModel?.isMatch == true) {
+                    _matchStateFlow.value = otherUserMapper.mapToMatchUiModel(it, likeModel)
                 }
             }
         }
@@ -118,6 +121,12 @@ class FeedViewModel @Inject constructor(
             }
         }
         locationWasSent = true
+    }
+
+    fun onReportClick(reportType: ReportType) {
+        _currentUserStateFlow.value?.id?.let {
+            reportsInteractor.report(it, reportType)
+        }
     }
 
     private fun requestNextSingleUser() {

@@ -9,16 +9,18 @@ import kotlinx.coroutines.launch
 import ru.ulyanaab.lifemates.domain.auth.interactor.AuthInteractor
 import ru.ulyanaab.lifemates.domain.common.interactor.UploadPhotoInteractor
 import ru.ulyanaab.lifemates.domain.common.state_holders.RegisterEventsStateHolder
+import ru.ulyanaab.lifemates.ui.common.UploadPhotoViewModel
 import ru.ulyanaab.lifemates.ui.common.mapper.GenderMapper.Companion.MAN
 import ru.ulyanaab.lifemates.ui.common.mapper.GenderMapper.Companion.NON_BINARY
 import ru.ulyanaab.lifemates.ui.common.mapper.GenderMapper.Companion.WOMAN
-import ru.ulyanaab.lifemates.ui.common.UploadPhotoViewModel
 import ru.ulyanaab.lifemates.ui.common.model.RoundedBlockUiModel
+import ru.ulyanaab.lifemates.ui.interests.InterestsRepository
 import javax.inject.Inject
 
 class RegisterViewModel @Inject constructor(
     private val authInteractor: AuthInteractor,
     private val registerMapper: RegisterMapper,
+    private val interestsRepository: InterestsRepository,
     registerEventsStateHolder: RegisterEventsStateHolder,
     uploadPhotoInteractor: UploadPhotoInteractor,
 ) : UploadPhotoViewModel(uploadPhotoInteractor) {
@@ -33,6 +35,10 @@ class RegisterViewModel @Inject constructor(
 
     var savedRegisterModel: RegisterUiModel? = null
         private set
+
+    fun attach() {
+        // no-op
+    }
 
     fun detach() {
         savedRegisterModel = null
@@ -49,17 +55,33 @@ class RegisterViewModel @Inject constructor(
         return Pair(login, password)
     }
 
+    fun saveSnapshot(
+        name: String? = savedRegisterModel?.name,
+        birthday: String? = savedRegisterModel?.birthday,
+        gender: RoundedBlockUiModel? = savedRegisterModel?.gender,
+        showingGender: RoundedBlockUiModel? = savedRegisterModel?.showingGender,
+        description: String? = savedRegisterModel?.description,
+    ) {
+        val model = RegisterUiModel(
+            email = login,
+            password = password,
+            name = name ?: "",
+            description = description ?: "",
+            gender = gender,
+            showingGender = showingGender,
+            birthday = birthday ?: "",
+            imageUrl = linkStateFlow.value,
+            interests = interestsRepository.chosenInterests,
+        )
+        savedRegisterModel = model
+    }
+
     fun onRegisterClick(
         name: String,
         birthday: String,
         gender: RoundedBlockUiModel?,
         showingGender: RoundedBlockUiModel?,
         description: String,
-        telegram: String,
-        vk: String,
-        viber: String,
-        whatsapp: String,
-        instagram: String
     ) {
         CoroutineScope(Dispatchers.IO).launch {
             _isLoading.value = true
@@ -72,12 +94,8 @@ class RegisterViewModel @Inject constructor(
                 gender = gender,
                 showingGender = showingGender,
                 birthday = birthday,
-                telegram = telegram,
-                vk = vk,
-                viber = viber,
-                whatsapp = whatsapp,
-                instagram = instagram,
-                imageUrl = linkStateFlow.value
+                imageUrl = linkStateFlow.value,
+                interests = interestsRepository.chosenInterests,
             )
             savedRegisterModel = model
             authInteractor.register(registerMapper.mapToDomainModel(model))
@@ -106,5 +124,19 @@ class RegisterViewModel @Inject constructor(
 
     fun isPhotoUploaded(): Boolean {
         return linkStateFlow.value != null
+    }
+
+    fun getImageUrl(): String? {
+        return linkStateFlow.value
+    }
+
+    fun getChosenInterests(): List<RoundedBlockUiModel> {
+        return interestsRepository.chosenInterests.map {
+            RoundedBlockUiModel(
+                text = it.value,
+                isChosen = true,
+                id = it.id,
+            )
+        }
     }
 }

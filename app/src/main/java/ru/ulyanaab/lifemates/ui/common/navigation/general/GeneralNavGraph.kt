@@ -17,12 +17,14 @@ import ru.ulyanaab.lifemates.ui.chats.ChatsViewModel
 import ru.ulyanaab.lifemates.ui.common.navigation.auth.AuthNavGraph
 import ru.ulyanaab.lifemates.ui.common.navigation.main.MainNavGraph
 import ru.ulyanaab.lifemates.ui.feed.FeedViewModel
+import ru.ulyanaab.lifemates.ui.interests.InterestsViewModel
 import ru.ulyanaab.lifemates.ui.loading.LoadingScreen
 import ru.ulyanaab.lifemates.ui.loading.LoadingViewModel
-import ru.ulyanaab.lifemates.ui.main.MainScreen
 import ru.ulyanaab.lifemates.ui.match.MatchViewModel
+import ru.ulyanaab.lifemates.ui.other_profile.OtherProfileViewModelFactory
 import ru.ulyanaab.lifemates.ui.profile.ProfileViewModel
 import ru.ulyanaab.lifemates.ui.register.RegisterViewModel
+import ru.ulyanaab.lifemates.ui.single_chat.di.SingleChatDependencies
 
 @ExperimentalPagerApi
 @ExperimentalComposeUiApi
@@ -38,6 +40,9 @@ fun GeneralNavGraph(
     authStateHolder: AuthStateHolder,
     matchViewModel: MatchViewModel,
     chatsViewModel: ChatsViewModel,
+    interestsViewModel: InterestsViewModel,
+    otherProfileViewModelFactory: OtherProfileViewModelFactory,
+    singleChatDependencies: SingleChatDependencies,
 ) {
     val authState by authStateHolder.authStateFlow.collectAsState()
 
@@ -60,7 +65,10 @@ fun GeneralNavGraph(
                     profileViewModel = profileViewModel,
                     feedViewModel = feedViewModel,
                     matchViewModel = matchViewModel,
-                    chatsViewModel = chatsViewModel
+                    chatsViewModel = chatsViewModel,
+                    interestsViewModel = interestsViewModel,
+                    singleChatDependencies = singleChatDependencies,
+                    otherProfileViewModelFactory = otherProfileViewModelFactory,
                 )
 
             } else {
@@ -70,6 +78,7 @@ fun GeneralNavGraph(
                     navController = authNavController,
                     authViewModel = authViewModel,
                     registerViewModel = registerViewModel,
+                    interestsViewModel = interestsViewModel,
                 )
             }
         }

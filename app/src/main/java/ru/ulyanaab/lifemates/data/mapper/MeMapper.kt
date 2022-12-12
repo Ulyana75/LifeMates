@@ -12,6 +12,7 @@ class MeMapper @Inject constructor(
     private val contactMapper: ContactMapper,
     private val genderMapper: GenderMapper,
     private val locationMapper: LocationMapper,
+    private val interestsMapper: InterestsMapper,
 ) {
 
     fun mapToDto(model: UserInfoUpdateModel): MeRequestDto {
@@ -37,7 +38,7 @@ class MeMapper @Inject constructor(
             gender = genderMapper.mapToModel(dto.gender),
             birthday = dto.birthday,
             settings = map(dto.settings),
-            interests = dto.interests,
+            interests = dto.interests.map(interestsMapper::mapToModel),
             imagesUrls = dto.imagesUrls,
             contacts = dto.contacts.map(contactMapper::mapToModel)
         )

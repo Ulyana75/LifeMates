@@ -1,5 +1,6 @@
 package ru.ulyanaab.lifemates.ui.register
 
+import ru.ulyanaab.lifemates.domain.common.model.InterestModel
 import ru.ulyanaab.lifemates.ui.common.model.RoundedBlockUiModel
 
 data class RegisterUiModel(
@@ -10,10 +11,6 @@ data class RegisterUiModel(
     val gender: RoundedBlockUiModel?,
     val showingGender: RoundedBlockUiModel?,
     val description: String,
-    val telegram: String,
-    val vk: String,
-    val viber: String,
-    val whatsapp: String,
-    val instagram: String,
     val imageUrl: String?,
+    val interests: List<InterestModel>,
 )

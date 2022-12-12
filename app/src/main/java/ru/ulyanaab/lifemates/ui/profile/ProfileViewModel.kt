@@ -9,12 +9,13 @@ import kotlinx.coroutines.launch
 import ru.ulyanaab.lifemates.domain.auth.interactor.AuthInteractor
 import ru.ulyanaab.lifemates.domain.common.interactor.UploadPhotoInteractor
 import ru.ulyanaab.lifemates.domain.user_info.interactor.UserInfoInteractor
+import ru.ulyanaab.lifemates.ui.common.UploadPhotoViewModel
 import ru.ulyanaab.lifemates.ui.common.mapper.GenderMapper
 import ru.ulyanaab.lifemates.ui.common.mapper.GenderMapper.Companion.MAN
 import ru.ulyanaab.lifemates.ui.common.mapper.GenderMapper.Companion.NON_BINARY
 import ru.ulyanaab.lifemates.ui.common.mapper.GenderMapper.Companion.WOMAN
-import ru.ulyanaab.lifemates.ui.common.UploadPhotoViewModel
 import ru.ulyanaab.lifemates.ui.common.model.RoundedBlockUiModel
+import ru.ulyanaab.lifemates.ui.interests.InterestsRepository
 import javax.inject.Inject
 
 class ProfileViewModel @Inject constructor(
@@ -22,6 +23,7 @@ class ProfileViewModel @Inject constructor(
     private val profileMapper: ProfileMapper,
     private val authInteractor: AuthInteractor,
     private val genderMapper: GenderMapper,
+    private val interestsRepository: InterestsRepository,
     uploadPhotoInteractor: UploadPhotoInteractor,
 ) : UploadPhotoViewModel(uploadPhotoInteractor) {
 
@@ -35,16 +37,19 @@ class ProfileViewModel @Inject constructor(
     val isModelReady: StateFlow<Boolean> = _isModelReady.asStateFlow()
 
     fun attach() {
-        CoroutineScope(Dispatchers.IO).launch {
-            _isModelReady.value = false
-            _isLoading.value = true
-            val userInfoModel = userInfoInteractor.getUserInfo()
-            val uiModel = userInfoModel?.let {
-                profileMapper.mapToUiModel(userInfoModel)
+        if (_profileState.value == null) {
+            CoroutineScope(Dispatchers.IO).launch {
+                _isModelReady.value = false
+                _isLoading.value = true
+                val userInfoModel = userInfoInteractor.getUserInfo()
+                interestsRepository.chosenInterests = userInfoModel?.interests ?: emptyList()
+                val uiModel = userInfoModel?.let {
+                    profileMapper.mapToUiModel(userInfoModel)
+                }
+                _profileState.value = uiModel
+                _isModelReady.value = true
+                _isLoading.value = false
             }
-            _profileState.value = uiModel
-            _isModelReady.value = true
-            _isLoading.value = false
         }
     }
 
@@ -58,11 +63,6 @@ class ProfileViewModel @Inject constructor(
         gender: RoundedBlockUiModel?,
         showingGender: RoundedBlockUiModel?,
         description: String,
-        telegram: String,
-        vk: String,
-        viber: String,
-        whatsapp: String,
-        instagram: String
     ) {
         val uiModel = ProfileUiModel(
             name = name,
@@ -70,15 +70,12 @@ class ProfileViewModel @Inject constructor(
             gender = genderMapper.mapToModel(gender),
             birthday = birthday,
             showingGender = genderMapper.mapToModel(showingGender),
-            telegram = telegram,
-            vk = vk,
-            viber = viber,
-            whatsapp = whatsapp,
-            instagram = instagram,
-            imageUrl = linkStateFlow.value ?: _profileState.value?.imageUrl
+            imageUrl = linkStateFlow.value ?: _profileState.value?.imageUrl,
+            interests = interestsRepository.chosenInterests.map { it.id },
         )
         val updateModel = profileMapper.mapToUpdateModel(uiModel)
         userInfoInteractor.updateUserInfo(updateModel)
+        _profileState.value = uiModel
     }
 
     fun onExitClick() {
@@ -103,5 +100,15 @@ class ProfileViewModel @Inject constructor(
             RoundedBlockUiModel(WOMAN, gender?.let(genderMapper::mapToText) == WOMAN),
             RoundedBlockUiModel(NON_BINARY, gender?.let(genderMapper::mapToText) == NON_BINARY),
         )
+    }
+
+    fun getChosenInterests(): List<RoundedBlockUiModel> {
+        return interestsRepository.chosenInterests.map {
+            RoundedBlockUiModel(
+                text = it.value,
+                isChosen = true,
+                id = it.id,
+            )
+        }
     }
 }

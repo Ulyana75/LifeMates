@@ -8,6 +8,7 @@ data class MatchesModel(
 )
 
 data class MatchModel(
+    val id: Long,
     val user: OtherUserModel,
     val isSeen: Boolean,
 )

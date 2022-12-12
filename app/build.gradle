@@ -33,6 +33,7 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
         useIR = true
+        freeCompilerArgs = ['-Xjvm-default=enable']
     }
     buildFeatures {
         compose true
@@ -49,6 +50,9 @@ android {
 }
 
 dependencies {
+
+    compileOnly 'com.squareup.inject:assisted-inject-annotations-dagger2:0.5.0'
+    kapt 'com.squareup.inject:assisted-inject-processor-dagger2:0.5.0'
 
     // core
     implementation 'androidx.core:core-ktx:1.9.0'
@@ -71,8 +75,8 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:4.2.1'
 
     // dagger
-    implementation 'com.google.dagger:dagger:2.28.3'
-    kapt 'com.google.dagger:dagger-compiler:2.28.3'
+    implementation 'com.google.dagger:dagger:2.36'
+    kapt 'com.google.dagger:dagger-compiler:2.36'
     kapt "org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.4.2"
 
     // datastore
@@ -90,6 +94,8 @@ dependencies {
     // slider
     implementation "com.github.krottv:compose-sliders:0.1.4"
 
-    // pager
+    // accompanist
     implementation "com.google.accompanist:accompanist-pager:0.27.0"
+    implementation "com.google.accompanist:accompanist-flowlayout:0.27.0"
+    implementation "com.google.accompanist:accompanist-pager-indicators:0.27.0"
 }

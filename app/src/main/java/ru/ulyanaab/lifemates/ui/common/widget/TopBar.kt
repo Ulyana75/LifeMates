@@ -26,18 +26,22 @@ import ru.ulyanaab.lifemates.ui.common.theme.Typography
 fun TopBar(
     leadIcon: (@Composable () -> Unit)? = null,
     trailIcon: (@Composable () -> Unit)? = null,
-    text: String = ""
+    text: String = "",
+    color: Color = Color.White,
 ) {
     Column(
         modifier = Modifier
             .wrapContentHeight()
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .background(color),
     ) {
         Box(
-            Modifier.padding(top = 23.dp, bottom = 23.dp, start = 12.dp, end = 12.dp)
+            Modifier.padding(start = 12.dp, end = 12.dp)
         ) {
             Text(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 23.dp, bottom = 23.dp, ),
                 text = text,
                 style = Typography.h3.copy(color = Color.Black),
                 textAlign = TextAlign.Center

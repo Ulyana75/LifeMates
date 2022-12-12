@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.Text
@@ -19,7 +21,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import ru.ulyanaab.lifemates.domain.report.model.ReportType
 import ru.ulyanaab.lifemates.ui.common.model.OtherUserUiModel
+import ru.ulyanaab.lifemates.ui.common.model.RoundedBlockUiModel
 import ru.ulyanaab.lifemates.ui.common.theme.GreyDark
 import ru.ulyanaab.lifemates.ui.common.theme.GreyLight
 import ru.ulyanaab.lifemates.ui.common.theme.Shapes
@@ -38,6 +42,7 @@ object CardOffset {
 fun OtherUserView(
     model: OtherUserUiModel,
     cardOffset: Dp,
+    onReportClick: (ReportType) -> Unit = {},
     bottomContent: (@Composable () -> Unit)? = null,
 ) {
     Box(
@@ -48,6 +53,12 @@ fun OtherUserView(
         Box(modifier = Modifier.height(PHOTO_HEIGHT)) {
             PhotoOrPlaceholder(model.imageUrl)
         }
+        ReportIcon(
+            onReportClick = onReportClick,
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(8.dp)
+        )
         DescriptionBlock(
             model = model,
             modifier = Modifier
@@ -78,40 +89,86 @@ fun DescriptionBlock(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = model.title,
-                style = Typography.h4.copy(color = Color.Black),
-                textAlign = TextAlign.Center,
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp, bottom = 5.dp, start = 21.dp, end = 21.dp)
-            )
-            Text(
-                text = model.subtitle,
-                style = Typography.body1.copy(color = GreyDark),
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 25.dp, start = 21.dp, end = 21.dp)
-            )
-            if (model.description != null) {
-                Column(
-                    modifier = Modifier
-                        .padding(start = 21.dp, end = 21.dp)
-                        .verticalScroll(rememberScrollState())
-                        .weight(weight = 2f, fill = false)
-                ) {
-                    Text(
-                        text = model.description,
-                        style = Typography.body1.copy(color = Color.Black),
-                        textAlign = TextAlign.Center,
-                    )
+                    .verticalScroll(rememberScrollState())
+                    .weight(weight = 1f, fill = false),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                TitleSubtitle(
+                    title = model.title,
+                    subtitle = model.subtitle
+                )
+                if (model.interests.isNotEmpty()) {
+                    Interests(interests = model.interests)
+                }
+                if (model.description != null) {
+                    Description(description = model.description)
                 }
             }
             Box(modifier = Modifier.padding(top = 15.dp)) {
                 bottomContent?.invoke()
             }
         }
+    }
+}
+
+@Composable
+fun TitleSubtitle(
+    title: String,
+    subtitle: String,
+) {
+    Text(
+        text = title,
+        style = Typography.h4.copy(color = Color.Black),
+        textAlign = TextAlign.Center,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp, bottom = 5.dp, start = 21.dp, end = 21.dp)
+    )
+    Text(
+        text = subtitle,
+        style = Typography.body1.copy(color = GreyDark),
+        textAlign = TextAlign.Center,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 15.dp, start = 21.dp, end = 21.dp)
+    )
+}
+
+@Composable
+fun Interests(interests: List<String>) {
+    RoundedBlocksWithoutChoice(
+        elementsList = interests.map {
+            RoundedBlockUiModel(
+                text = it,
+                isChosen = true,
+            )
+        },
+        modifier = Modifier.padding(bottom = 15.dp)
+    )
+}
+
+@Composable
+fun Description(description: String) {
+    Text(
+        text = description,
+        style = Typography.body1.copy(color = Color.Black),
+        textAlign = TextAlign.Center,
+    )
+}
+
+@Composable
+fun ReportIcon(
+    onReportClick: (ReportType) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        shape = CircleShape,
+        elevation = 4.dp,
+        modifier = modifier.size(32.dp)
+    ) {
+        ReportsMenu(onReportClick = onReportClick)
     }
 }
 
@@ -125,7 +182,9 @@ fun OtherUserPreview() {
             subtitle = "Los Angeles, USA",
             description = "I'm giving you a night call to tell you how I feel. I want to drive you through the night, down the hills. I'm giving you a night call to tell you how I feel. I want to drive you through the night, down the hills. I'm giving you a night call to tell you how I feel. I want to drive you through the night, down the hills. I'm giving you a night call to tell you how I feel. I want to drive you through the night, down the hills. I'm giving you a night call to tell you how I feel. I want to drive you through the night, down the hills. I'm giving you a night call to tell you how I feel. I want to drive you through the night, down the hills. I'm giving you a night call to tell you how I feel. I want to drive you through the night, down the hills.",
             imageUrl = null,
-            contacts = emptyList()
+            contacts = emptyList(),
+            interests = listOf("Drive", "Nightcall", "Pyaterochka"),
+            actualName = ""
         ),
         cardOffset = CardOffset.S,
         bottomContent = {
