@@ -123,10 +123,8 @@ class SingleChatViewModel @Inject constructor(
 
     private suspend fun fetchThemes() {
         if (_themesStateFlow.value.isEmpty()) {
-            val themes = singleChatInteractor.getThemes(0, 99) ?: return
-            _themesStateFlow.value = themes.shuffled().map {
-                ThemeUiModel(it.value)
-            }.take(THEMES_COUNT)
+            val themes = singleChatInteractor.getThemes(0, THEMES_COUNT) ?: return
+            _themesStateFlow.value = themes.map { ThemeUiModel(it.value) }
         }
     }
 
